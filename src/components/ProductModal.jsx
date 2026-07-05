@@ -73,7 +73,7 @@ const ProductModal = ({ product, onClose }) => {
           <div className="w-full flex justify-between md:justify-end gap-2 px-4 py-3 pt-[max(1rem,env(safe-area-inset-top,1rem))] z-20 bg-white shrink-0">
             {/* Close Button (Left on mobile, Right on desktop) */}
             <div
-              className="w-10 h-10 bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] transition-colors pointer-events-auto md:order-2"
+              className="w-10 h-10 bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all pointer-events-auto md:order-2"
               onClick={onClose}
               onKeyDown={handleKeyDown(onClose)}
               role="button"
@@ -84,7 +84,7 @@ const ProductModal = ({ product, onClose }) => {
             </div>
             {/* Share Button (Right on mobile, Left on desktop) */}
             <div
-              className="w-10 h-10 bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] transition-colors pointer-events-auto md:order-1"
+              className="w-10 h-10 bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all pointer-events-auto md:order-1"
               onClick={handleShare}
               onKeyDown={handleKeyDown(handleShare)}
               role="button"
@@ -140,7 +140,7 @@ const ProductModal = ({ product, onClose }) => {
                         role="button"
                         tabIndex={0}
                         aria-pressed={!isRemoved}
-                        className={`px-4 py-2 rounded-full text-[14px] font-semibold cursor-pointer transition-colors select-none ${
+                        className={`px-4 py-2 rounded-full text-[14px] font-semibold cursor-pointer active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] focus-visible:ring-offset-1 transition-all select-none ${
                           isRemoved 
                             ? 'bg-[#ECECEE] text-[#8E8E93] line-through hover:bg-[#E5E5E7]' 
                             : 'bg-[#F3F4F6] text-[#1E1E1E] hover:bg-[#ECECEE]'
@@ -169,7 +169,7 @@ const ProductModal = ({ product, onClose }) => {
               <span className="text-[#1E1E1E] font-semibold">Cantidad</span>
               <div className="flex items-center justify-center gap-4">
                 <div
-                  className={`w-10 h-10 flex items-center justify-center bg-[#F3F4F6] rounded-full text-[#1E1E1E] transition-colors ${quantity <= 1 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:bg-[#ECECEE]'}`}
+                  className={`w-10 h-10 flex items-center justify-center bg-[#F3F4F6] rounded-full text-[#1E1E1E] transition-all outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] ${quantity <= 1 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95]'}`}
                   onClick={() => { if (quantity > 1) setQuantity(quantity - 1); }}
                   onKeyDown={handleKeyDown(() => { if (quantity > 1) setQuantity(quantity - 1); })}
                   role="button"
@@ -183,7 +183,7 @@ const ProductModal = ({ product, onClose }) => {
                   {quantity}
                 </span>
                 <div
-                  className="w-10 h-10 flex items-center justify-center bg-[#F3F4F6] rounded-full cursor-pointer text-[#1E1E1E] hover:bg-[#ECECEE] transition-colors"
+                  className="w-10 h-10 flex items-center justify-center bg-[#F3F4F6] rounded-full cursor-pointer text-[#1E1E1E] hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all"
                   onClick={() => setQuantity(quantity + 1)}
                   onKeyDown={handleKeyDown(() => setQuantity(quantity + 1))}
                   role="button"
@@ -200,7 +200,7 @@ const ProductModal = ({ product, onClose }) => {
           {/* Botón inferior */}
           <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:p-6 md:pb-[max(1.5rem,env(safe-area-inset-bottom))] bg-white shrink-0">
             <div
-              className="w-full bg-[#1E1E1E] text-white py-4 rounded-full flex items-center justify-between px-6 font-bold cursor-pointer transition-transform active:scale-[0.98]"
+              className="w-full bg-[#1E1E1E] text-white py-4 rounded-full flex items-center justify-between px-6 font-bold cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
               onClick={handleAdd}
               onKeyDown={handleKeyDown(handleAdd)}
               role="button"

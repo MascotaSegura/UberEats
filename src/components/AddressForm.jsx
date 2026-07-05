@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { X, MapPin } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 
@@ -18,24 +18,30 @@ const AddressForm = ({ onClose, initialData }) => {
   
   const { addAddress, updateAddress, removeAddress } = useCart();
 
-  const handleSearch = async (val) => {
+  const debounceRef = useRef(null);
+
+  const handleSearch = (val) => {
     setQuery(val);
-    if (selectedPlace) setSelectedPlace(null);
-    if (!val || val.trim().length < 3) {
-      setResults([]);
-      return;
-    }
-    try {
-      const key = import.meta.env.VITE_MAPTILER_KEY;
-      if (!key) {
-         console.warn('MapTiler key not set in .env');
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    
+    debounceRef.current = setTimeout(async () => {
+      if (selectedPlace) setSelectedPlace(null);
+      if (!val || val.trim().length < 3) {
+        setResults([]);
+        return;
       }
-      const res = await fetch(`https://api.maptiler.com/geocoding/${encodeURIComponent(val)}.json?key=${key}&limit=5`);
-      const data = await res.json();
-      setResults(data.features || []);
-    } catch (e) {
-      console.error(e);
-    }
+      try {
+        const key = import.meta.env.VITE_MAPTILER_KEY;
+        if (!key) {
+           console.warn('MapTiler key not set in .env');
+        }
+        const res = await fetch(`https://api.maptiler.com/geocoding/${encodeURIComponent(val)}.json?key=${key}&limit=5`);
+        const data = await res.json();
+        setResults(data.features || []);
+      } catch (e) {
+        console.error(e);
+      }
+    }, 400);
   };
 
   const handleSave = () => {
@@ -67,7 +73,7 @@ const AddressForm = ({ onClose, initialData }) => {
       <div className="bg-white w-full h-auto max-h-[90dvh] md:max-h-[85vh] md:max-w-[480px] flex flex-col rounded-t-2xl md:rounded-2xl overflow-hidden relative animate-slide-up md:animate-fade-in">
         <div className="flex items-center px-4 py-3 bg-[#F3F4F6] shrink-0">
           <div
-            className="w-9 h-9 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] transition-colors shrink-0"
+            className="w-9 h-9 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all shrink-0"
             onClick={onClose}
             role="button"
             tabIndex={0}
@@ -99,7 +105,7 @@ const AddressForm = ({ onClose, initialData }) => {
                   {results.map((feature) => (
                     <div 
                       key={feature.id}
-                      className="p-4 bg-[#F3F4F6] hover:bg-[#ECECEE] cursor-pointer rounded-2xl transition-colors"
+                      className="p-4 bg-[#F3F4F6] hover:bg-[#ECECEE] cursor-pointer rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all"
                       onClick={() => {
                         setSelectedPlace(feature);
                         setStreet(feature.place_name);
@@ -176,7 +182,7 @@ const AddressForm = ({ onClose, initialData }) => {
         {selectedPlace && (
           <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] bg-white shrink-0 flex flex-col gap-3">
             <div
-              className={`w-full py-4 rounded-full flex items-center justify-center font-bold transition-transform ${
+              className={`w-full py-4 rounded-full flex items-center justify-center font-bold transition-all outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                 label.trim() && street.trim() 
                   ? 'bg-[#1E1E1E] text-white cursor-pointer active:scale-[0.98]'
                   : 'bg-[#F3F4F6] text-[#8E8E93] cursor-not-allowed opacity-70'
@@ -188,7 +194,7 @@ const AddressForm = ({ onClose, initialData }) => {
             </div>
             {initialData && (
                <div 
-                 className="w-full py-3 flex items-center justify-center font-bold text-[#FF441F] cursor-pointer hover:bg-[#F3F4F6] rounded-full transition-colors"
+                 className="w-full py-3 flex items-center justify-center font-bold text-[#FF441F] cursor-pointer hover:bg-[#F3F4F6] rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all"
                  onClick={() => { removeAddress(initialData.id); onClose(); }}
                  role="button"
                >

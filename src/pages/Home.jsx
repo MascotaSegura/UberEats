@@ -30,7 +30,7 @@ const Home = () => {
 
   return (
     <div className="bg-[#F3F4F6] min-h-screen">
-      <div className="sticky top-0 z-20 w-full bg-white shadow-none pt-[max(0px,env(safe-area-inset-top))]">
+      <div className="sticky top-0 z-20 w-full bg-white pt-[max(0px,env(safe-area-inset-top))]">
         <Header
           onOpenCart={() => setIsCartOpen(true)}
           searchQuery={searchQuery}

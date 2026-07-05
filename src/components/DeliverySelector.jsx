@@ -24,7 +24,7 @@ export const ModalDropdown = ({ isOpen, onClose, title, items, selectedId, onSel
       >
         <div className="flex items-center px-4 py-3 bg-[#F3F4F6] shrink-0">
           <div
-            className="w-9 h-9 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] transition-colors shrink-0"
+            className="w-9 h-9 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all shrink-0"
             onClick={onClose}
             onKeyDown={handleKeyDown(onClose)}
             role="button"
@@ -43,7 +43,7 @@ export const ModalDropdown = ({ isOpen, onClose, title, items, selectedId, onSel
             return (
               <div
                 key={item.id}
-                className={`flex items-center justify-between p-4 rounded-2xl cursor-pointer transition-colors ${
+                className={`flex items-center justify-between p-4 rounded-2xl cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all ${
                   isSelected ? 'bg-[#1E1E1E] text-white' : 'bg-[#F3F4F6] text-[#1E1E1E] hover:bg-[#ECECEE]'
                 }`}
                 onClick={() => {
@@ -68,7 +68,7 @@ export const ModalDropdown = ({ isOpen, onClose, title, items, selectedId, onSel
                 <div className="flex items-center gap-3">
                   {onEditAction && (
                     <div
-                      className={`p-2 rounded-full cursor-pointer transition-colors ${isSelected ? 'hover:bg-white/20 text-white' : 'hover:bg-[#E5E5E7] text-[#1E1E1E]'}`}
+                      className={`p-2 rounded-full cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] active:scale-[0.95] transition-all ${isSelected ? 'hover:bg-white/20 text-white' : 'hover:bg-[#E5E5E7] text-[#1E1E1E]'}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         onEditAction(item);
@@ -88,7 +88,7 @@ export const ModalDropdown = ({ isOpen, onClose, title, items, selectedId, onSel
         {showAddAction && (
           <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] bg-white shrink-0">
             <div
-              className="w-full bg-[#1E1E1E] text-white py-3 rounded-full flex items-center justify-center font-bold cursor-pointer transition-transform active:scale-[0.98]"
+              className="w-full bg-[#1E1E1E] text-white py-3 rounded-full flex items-center justify-center font-bold cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
               onClick={() => { onClose(); onAddAction(); }}
               role="button"
               tabIndex={0}
