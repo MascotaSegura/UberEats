@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Minus, Plus, ShareNetwork } from '@phosphor-icons/react';
+import { X, Minus, Plus, ShareNetwork, Check } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 
 const handleKeyDown = (fn) => (e) => {
@@ -13,6 +13,7 @@ const ProductModal = ({ product, onClose }) => {
   const [quantity, setQuantity] = useState(1);
   const [removedIngredients, setRemovedIngredients] = useState([]);
   const [specialInstructions, setSpecialInstructions] = useState('');
+  const [copied, setCopied] = useState(false);
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -38,8 +39,13 @@ const ProductModal = ({ product, onClose }) => {
         // User cancelled or error sharing
       }
     } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Enlace copiado al portapapeles');
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+      } catch (err) {
+        // Clipboard unavailable, fail silently
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -89,9 +95,11 @@ const ProductModal = ({ product, onClose }) => {
               onKeyDown={handleKeyDown(handleShare)}
               role="button"
               tabIndex={0}
-              aria-label="Compartir"
+              aria-label={copied ? 'Enlace copiado' : 'Compartir'}
             >
-              <ShareNetwork size={20} weight="bold" color="#1E1E1E" />
+              {copied
+                ? <Check size={20} weight="bold" color="#FF441F" />
+                : <ShareNetwork size={20} weight="bold" color="#1E1E1E" />}
             </div>
           </div>
 

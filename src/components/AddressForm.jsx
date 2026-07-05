@@ -75,8 +75,10 @@ const AddressForm = ({ onClose, initialData }) => {
           <div
             className="w-9 h-9 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all shrink-0"
             onClick={onClose}
+            onKeyDown={handleKeyDown(onClose)}
             role="button"
             tabIndex={0}
+            aria-label="Cerrar"
           >
             <X size={18} weight="bold" color="#1E1E1E" />
           </div>
@@ -188,7 +190,10 @@ const AddressForm = ({ onClose, initialData }) => {
                   : 'bg-[#F3F4F6] text-[#8E8E93] cursor-not-allowed opacity-70'
               }`}
               onClick={handleSave}
+              onKeyDown={handleKeyDown(handleSave)}
               role="button"
+              tabIndex={0}
+              aria-disabled={!(label.trim() && street.trim())}
             >
               Guardar Dirección
             </div>
@@ -196,7 +201,9 @@ const AddressForm = ({ onClose, initialData }) => {
                <div 
                  className="w-full py-3 flex items-center justify-center font-bold text-[#FF441F] cursor-pointer hover:bg-[#F3F4F6] rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all"
                  onClick={() => { removeAddress(initialData.id); onClose(); }}
+                 onKeyDown={handleKeyDown(() => { removeAddress(initialData.id); onClose(); })}
                  role="button"
+                 tabIndex={0}
                >
                  Eliminar Dirección
                </div>
