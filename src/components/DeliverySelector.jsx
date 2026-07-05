@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CaretDown, Check, X, PencilSimple, MapPin, Storefront, Moped } from '@phosphor-icons/react';
+import { CaretDown, Check, X, PencilSimple, MapPin, Storefront } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import AddressForm from './AddressForm';
 
@@ -118,6 +118,13 @@ const DeliverySelector = () => {
   const [activeModal, setActiveModal] = useState(null); // 'mode' | 'location' | 'add-address' | 'edit-address' | null
   const [editingItem, setEditingItem] = useState(null);
 
+  const modes = [
+    { id: 'delivery', label: 'A Domicilio' },
+    { id: 'pickup', label: 'Recoger' },
+  ];
+
+  const currentModeLabel = deliveryMode === 'delivery' ? 'A Domicilio' : 'Recoger';
+
   const currentLocationLabel = deliveryMode === 'delivery' 
     ? deliveryAddress?.label || 'Dirección' 
     : pickupBranch?.label || 'Sucursal';
@@ -148,9 +155,22 @@ const DeliverySelector = () => {
           </div>
         </div>
         
-        <div className="flex items-center bg-[#F3F4F6] rounded-full p-1 shrink-0">
+        {/* Selector Desplegable para Móviles/Tablets pequeñas */}
+        <div
+          className="md:hidden flex items-center gap-1 px-4 py-2 rounded-full text-[14px] font-bold cursor-pointer transition-colors bg-[#F3F4F6] text-[#1E1E1E] outline-none hover:bg-[#ECECEE] focus-visible:ring-2 focus-visible:ring-[#FF441F] shrink-0"
+          onClick={() => setActiveModal('mode')}
+          onKeyDown={handleKeyDown(() => setActiveModal('mode'))}
+          role="button"
+          tabIndex={0}
+        >
+          <span>{currentModeLabel}</span>
+          <CaretDown size={14} weight="bold" />
+        </div>
+
+        {/* Interruptor (Switch) para Escritorio */}
+        <div className="hidden md:flex items-center bg-[#F3F4F6] rounded-full p-1 shrink-0">
           <button
-            className={`flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all cursor-pointer ${
+            className={`flex items-center justify-center px-4 py-1.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all cursor-pointer ${
               deliveryMode === 'delivery'
                 ? 'bg-[#1E1E1E] text-white'
                 : 'text-[#8E8E93] hover:text-[#1E1E1E]'
@@ -158,12 +178,10 @@ const DeliverySelector = () => {
             onClick={() => setDeliveryMode('delivery')}
             type="button"
           >
-            <Moped size={16} weight="fill" />
-            <span className="text-[13px] font-bold hidden sm:inline">Domicilio</span>
-            <span className="text-[13px] font-bold sm:hidden">Dom.</span>
+            <span className="text-[13px] font-bold">A Domicilio</span>
           </button>
           <button
-            className={`flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all cursor-pointer ${
+            className={`flex items-center justify-center px-4 py-1.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all cursor-pointer ${
               deliveryMode === 'pickup'
                 ? 'bg-[#1E1E1E] text-white'
                 : 'text-[#8E8E93] hover:text-[#1E1E1E]'
@@ -171,11 +189,19 @@ const DeliverySelector = () => {
             onClick={() => setDeliveryMode('pickup')}
             type="button"
           >
-            <Storefront size={16} weight="fill" />
             <span className="text-[13px] font-bold">Recoger</span>
           </button>
         </div>
       </div>
+
+      <ModalDropdown
+        isOpen={activeModal === 'mode'}
+        onClose={() => setActiveModal(null)}
+        title="Tipo de Entrega"
+        items={modes}
+        selectedId={deliveryMode}
+        onSelect={(item) => setDeliveryMode(item.id)}
+      />
 
       <ModalDropdown
         isOpen={activeModal === 'location'}
