@@ -61,11 +61,12 @@ export const ModalDropdown = ({ isOpen, onClose, title, items, selectedId, onSel
                   {item.icon && <span className="shrink-0">{item.icon}</span>}
                   <div className="flex flex-col">
                     <span className="font-bold">{item.label}</span>
-                  {item.detail && (
-                    <span className={`text-[13px] ${isSelected ? 'text-gray-300' : 'text-[#8E8E93]'}`}>
-                      {item.detail}
-                    </span>
-                  )}
+                    {item.detail && (
+                      <span className={`text-[13px] ${isSelected ? 'text-gray-300' : 'text-[#8E8E93]'}`}>
+                        {item.detail}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="flex items-center gap-3">
                   {onEditAction && (
