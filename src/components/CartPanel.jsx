@@ -2,6 +2,7 @@ import React from 'react';
 import { X, Trash, Plus, Minus, CheckCircle, Package, Truck, MapPin, Storefront } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import DeliverySelector from './DeliverySelector';
+import { playSound } from '../utils/sounds';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -112,8 +113,8 @@ const CartPanel = ({ onClose }) => {
         <div className="flex items-center px-6 pb-4 pt-[max(1rem,env(safe-area-inset-top,1rem))] shrink-0">
           <div
             className="w-10 h-10 bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all"
-            onClick={onClose}
-            onKeyDown={handleKeyDown(onClose)}
+            onClick={() => { playSound('close'); onClose(); }}
+            onKeyDown={handleKeyDown(() => { playSound('close'); onClose(); })}
             role="button"
             tabIndex={0}
             aria-label="Cerrar carrito"
@@ -247,8 +248,8 @@ const CartPanel = ({ onClose }) => {
             </div>
             <div
               className="w-full bg-[#FF441F] text-white py-4 rounded-full flex justify-center font-bold cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-[#1E1E1E] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-              onClick={placeOrder}
-              onKeyDown={handleKeyDown(placeOrder)}
+              onClick={() => { playSound('confirm'); placeOrder(); }}
+              onKeyDown={handleKeyDown(() => { playSound('confirm'); placeOrder(); })}
               role="button"
               tabIndex={0}
               aria-label={`Confirmar pedido, total ${(getCartTotal() + (deliveryMode === 'delivery' ? 25 : 0)).toFixed(2)} MXN`}

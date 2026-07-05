@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Minus, Plus, ShareNetwork, Check } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
+import { playSound } from '../utils/sounds';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -18,11 +19,11 @@ const ProductModal = ({ product, onClose }) => {
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') handleClose();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  }, []);
 
   if (!product) return null;
 
@@ -51,6 +52,12 @@ const ProductModal = ({ product, onClose }) => {
 
   const handleAdd = () => {
     addToCart(product, quantity, removedIngredients, specialInstructions.trim());
+    playSound('addToCart');
+    onClose();
+  };
+
+  const handleClose = () => {
+    playSound('close');
     onClose();
   };
 
@@ -80,8 +87,8 @@ const ProductModal = ({ product, onClose }) => {
             {/* Close Button (Left on mobile, Right on desktop) */}
             <div
               className="w-10 h-10 bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all pointer-events-auto md:order-2"
-              onClick={onClose}
-              onKeyDown={handleKeyDown(onClose)}
+              onClick={handleClose}
+              onKeyDown={handleKeyDown(handleClose)}
               role="button"
               tabIndex={0}
               aria-label="Cerrar"
