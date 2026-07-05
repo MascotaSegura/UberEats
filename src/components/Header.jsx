@@ -1,5 +1,7 @@
+import React from 'react';
 import { MagnifyingGlass, ShoppingCart, X } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
+import { DeliveryLocation, DeliveryModeDesktop, DeliveryModeMobile, DeliveryModals, useDeliveryModalState } from './DeliverySelector';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -8,51 +10,64 @@ const handleKeyDown = (fn) => (e) => {
   }
 };
 
-import DeliverySelector from './DeliverySelector';
+const CartButton = ({ onOpenCart, cartCount }) => (
+  <button
+    type="button"
+    onClick={onOpenCart}
+    aria-label={`Carrito${cartCount > 0 ? `, ${cartCount} artículos` : ''}`}
+    className="relative w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-[#F3F4F6] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] rounded-full transition-all shrink-0"
+  >
+    <ShoppingCart size={24} weight="bold" color="#1E1E1E" />
+    {cartCount > 0 && (
+      <div className="absolute top-0 right-0 bg-[#FF441F] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
+        {cartCount}
+      </div>
+    )}
+  </button>
+);
 
 const Header = ({ onOpenCart, searchQuery, onSearchChange }) => {
   const { cartItems } = useCart();
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const hasText = searchQuery.trim().length > 0;
+  
+  const { activeModal, setActiveModal, modes } = useDeliveryModalState();
 
   return (
     <div className="bg-white">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3">
+      <div className="max-w-7xl mx-auto px-4 py-2 md:py-3 flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
         
-        {/* Top row: Logo, Toggle (hidden on mobile), Cart */}
-        <div className="flex items-center justify-between w-full">
-          <div className="text-xl font-bold tracking-tight text-[#FF441F] whitespace-nowrap">
+        {/* MOBILE ROW 1: Logo & Cart | DESKTOP: Logo & ModeDesktop */}
+        <div className="flex items-center justify-between md:justify-start gap-4 w-full md:w-auto shrink-0">
+          <div className="text-[22px] md:text-[24px] font-bold tracking-tight text-[#FF441F] whitespace-nowrap leading-none">
             DidiBurger
           </div>
 
-          <div className="hidden md:flex flex-1 justify-center">
+          <div className="hidden md:block shrink-0">
+            <DeliveryModeDesktop />
           </div>
 
-          <button
-            type="button"
-            onClick={onOpenCart}
-            aria-label={`Carrito${cartCount > 0 ? `, ${cartCount} artículos` : ''}`}
-            className="relative p-2 cursor-pointer hover:bg-[#F3F4F6] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] rounded-full transition-all shrink-0"
-          >
-            <ShoppingCart size={28} weight="regular" color="#1E1E1E" />
-            {cartCount > 0 && (
-              <div className="absolute top-0 right-0 bg-[#FF441F] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
-                {cartCount}
-              </div>
-            )}
-          </button>
+          <div className="md:hidden flex shrink-0">
+            <CartButton onOpenCart={onOpenCart} cartCount={cartCount} />
+          </div>
         </div>
 
-        {/* Middle row: Delivery Selector */}
-        <div className="w-full mt-1">
-          <DeliverySelector />
+        {/* MOBILE ROW 2: Location & ModeMobile | DESKTOP: Location */}
+        <div className="flex items-center justify-between md:justify-start gap-3 w-full md:w-auto shrink-0">
+          <div className="shrink-0 min-w-0 md:max-w-[220px]">
+            <DeliveryLocation setActiveModal={setActiveModal} />
+          </div>
+
+          <div className="md:hidden flex-shrink-0">
+            <DeliveryModeMobile setActiveModal={setActiveModal} />
+          </div>
         </div>
 
-        {/* Bottom row: Search */}
-        <div className="flex flex-col md:flex-row items-center gap-3 w-full">
+        {/* MOBILE ROW 3: Search | DESKTOP: Search & Cart */}
+        <div className="flex items-center gap-3 w-full md:flex-1 min-w-0">
           
-          <div className="flex-1 w-full">
-            <div className="flex items-center bg-[#F3F4F6] rounded-full px-3 py-2 focus-within:ring-2 focus-within:ring-[#FF441F] transition-shadow">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center bg-[#F3F4F6] rounded-full h-10 px-4 focus-within:ring-2 focus-within:ring-[#FF441F] transition-shadow">
               <MagnifyingGlass size={20} weight="bold" color="#8E8E93" className="shrink-0" />
               <input
                 type="text"
@@ -74,9 +89,16 @@ const Header = ({ onOpenCart, searchQuery, onSearchChange }) => {
               )}
             </div>
           </div>
-        </div>
+          
+          {/* Cart Desktop */}
+          <div className="hidden md:flex shrink-0">
+            <CartButton onOpenCart={onOpenCart} cartCount={cartCount} />
+          </div>
 
+        </div>
       </div>
+
+      <DeliveryModals activeModal={activeModal} setActiveModal={setActiveModal} modes={modes} />
     </div>
   );
 };

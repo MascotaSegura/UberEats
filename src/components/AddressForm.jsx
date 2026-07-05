@@ -90,7 +90,7 @@ const AddressForm = ({ onClose, initialData }) => {
             <div>
               <label className="text-[14px] font-bold text-[#1E1E1E] mb-2 block">Buscar dirección</label>
               <div className="bg-[#F3F4F6] rounded-full px-4 py-3 flex items-center focus-within:ring-2 focus-within:ring-[#FF441F] transition-shadow">
-                <MapPin size={20} color="#8E8E93" className="shrink-0" />
+                <MapPin size={20} weight="fill" color="#8E8E93" className="shrink-0" />
                 <input
                   type="text"
                   value={query}

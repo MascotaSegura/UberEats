@@ -129,7 +129,7 @@ const CartPanel = ({ onClose }) => {
           {cartItems.length > 0 && (
             <div className="px-6 pb-2 pt-2 shrink-0 flex flex-col gap-4">
               <div className="bg-[#F3F4F6] rounded-2xl p-4 mb-4 w-full">
-                <DeliverySelector />
+                <DeliverySelector variant="cart" />
               </div>
             </div>
           )}
@@ -178,7 +178,7 @@ const CartPanel = ({ onClose }) => {
                         tabIndex={0}
                         aria-label={`Eliminar ${item.name}`}
                       >
-                        <Trash size={20} />
+                        <Trash size={20} weight="bold" />
                       </div>
                     </div>
                     <div className="flex items-center justify-between mt-2">

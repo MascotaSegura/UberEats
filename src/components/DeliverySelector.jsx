@@ -105,7 +105,93 @@ export const ModalDropdown = ({ isOpen, onClose, title, items, selectedId, onSel
   );
 };
 
-const DeliverySelector = () => {
+export const DeliveryLocation = ({ setActiveModal, variant = 'header' }) => {
+  const { deliveryMode, deliveryAddress, pickupBranch } = useCart();
+  const currentLocationLabel = deliveryMode === 'delivery' 
+    ? deliveryAddress?.label || 'Dirección' 
+    : pickupBranch?.label || 'Sucursal';
+
+  return (
+    <div
+      className="flex flex-row items-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] rounded-xl hover:opacity-80 transition-opacity flex-1 min-w-0 h-10"
+      onClick={() => setActiveModal('location')}
+      onKeyDown={handleKeyDown(() => setActiveModal('location'))}
+      role="button"
+      tabIndex={0}
+    >
+      <div className="flex items-center gap-1.5 w-full">
+        {deliveryMode === 'delivery' ? (
+          <MapPin size={20} weight="fill" color="#1E1E1E" className="shrink-0" />
+        ) : (
+          <Storefront size={20} weight="fill" color="#1E1E1E" className="shrink-0" />
+        )}
+        <div className="flex flex-col min-w-0 flex-1">
+          <span className={`text-[12px] font-semibold text-[#8E8E93] leading-none mb-0.5 ${variant === 'header' ? 'md:hidden' : ''}`}>
+            {deliveryMode === 'delivery' ? 'Entregar ahora' : 'Recoger ahora'}
+          </span>
+          <span className="text-[14px] font-bold text-[#1E1E1E] truncate leading-none">
+            {currentLocationLabel}
+          </span>
+        </div>
+        <CaretDown size={16} weight="bold" color="#1E1E1E" className="shrink-0 ml-0.5" />
+      </div>
+    </div>
+  );
+};
+
+export const DeliveryModeMobile = ({ setActiveModal, variant = 'header' }) => {
+  const { deliveryMode } = useCart();
+  const currentModeLabel = deliveryMode === 'delivery' ? 'A Domicilio' : 'Recoger';
+  const bgClass = variant === 'header' ? 'bg-[#F3F4F6] hover:bg-[#ECECEE]' : 'bg-white hover:bg-gray-50';
+
+  return (
+    <div
+      className={`flex items-center gap-1.5 px-4 h-10 rounded-full text-[14px] font-bold cursor-pointer transition-colors text-[#1E1E1E] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] shrink-0 ${bgClass}`}
+      onClick={() => setActiveModal('mode')}
+      onKeyDown={handleKeyDown(() => setActiveModal('mode'))}
+      role="button"
+      tabIndex={0}
+    >
+      <span>{currentModeLabel}</span>
+      <CaretDown size={14} weight="bold" />
+    </div>
+  );
+};
+
+export const DeliveryModeDesktop = ({ variant = 'header' }) => {
+  const { deliveryMode, setDeliveryMode } = useCart();
+  const containerBg = variant === 'header' ? 'bg-[#F3F4F6]' : 'bg-white';
+  const inactiveHover = variant === 'header' ? 'hover:text-[#1E1E1E]' : 'hover:text-[#1E1E1E] hover:bg-gray-50';
+
+  return (
+    <div className={`flex items-center rounded-full p-1 shrink-0 h-10 ${containerBg}`}>
+      <button
+        className={`flex items-center justify-center px-4 h-full rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all cursor-pointer ${
+          deliveryMode === 'delivery'
+            ? 'bg-[#1E1E1E] text-white'
+            : `text-[#8E8E93] ${inactiveHover}`
+        }`}
+        onClick={() => setDeliveryMode('delivery')}
+        type="button"
+      >
+        <span className="text-[13px] font-bold">A Domicilio</span>
+      </button>
+      <button
+        className={`flex items-center justify-center px-4 h-full rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all cursor-pointer ${
+          deliveryMode === 'pickup'
+            ? 'bg-[#1E1E1E] text-white'
+            : `text-[#8E8E93] ${inactiveHover}`
+        }`}
+        onClick={() => setDeliveryMode('pickup')}
+        type="button"
+      >
+        <span className="text-[13px] font-bold">Recoger</span>
+      </button>
+    </div>
+  );
+};
+
+export const DeliveryModals = ({ activeModal, setActiveModal, modes }) => {
   const {
     deliveryMode,
     setDeliveryMode,
@@ -115,88 +201,17 @@ const DeliverySelector = () => {
     setDeliveryAddress,
     pickupBranch,
     setPickupBranch,
-    removeAddress,
   } = useCart();
-
-  const [activeModal, setActiveModal] = useState(null); // 'mode' | 'location' | 'add-address' | 'edit-address' | null
+  
   const [editingItem, setEditingItem] = useState(null);
 
-  const modes = [
-    { id: 'delivery', label: 'A Domicilio', icon: <Moped size={20} weight="fill" /> },
-    { id: 'pickup', label: 'Recoger', icon: <Storefront size={20} weight="fill" /> },
-  ];
-
-  const currentModeLabel = deliveryMode === 'delivery' ? 'A Domicilio' : 'Recoger';
-
-  const currentLocationLabel = deliveryMode === 'delivery' 
-    ? deliveryAddress?.label || 'Dirección' 
-    : pickupBranch?.label || 'Sucursal';
+  const handleSetEditing = (item) => {
+    setEditingItem(item);
+    setActiveModal('edit-address');
+  };
 
   return (
     <>
-      <div className="flex items-center shrink-0 gap-4 w-full justify-between">
-        <div
-          className="flex flex-col cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] rounded-xl px-1 -ml-1 hover:opacity-80 transition-opacity flex-1 min-w-0 mr-2"
-          onClick={() => setActiveModal('location')}
-          onKeyDown={handleKeyDown(() => setActiveModal('location'))}
-          role="button"
-          tabIndex={0}
-        >
-          <span className="text-[12px] font-semibold text-[#1E1E1E] leading-tight mb-0.5">
-            {deliveryMode === 'delivery' ? 'Entregar ahora' : 'Recoger ahora'}
-          </span>
-          <div className="flex items-center gap-1.5 w-full">
-            {deliveryMode === 'delivery' ? (
-              <MapPin size={18} weight="fill" color="#1E1E1E" className="shrink-0" />
-            ) : (
-              <Storefront size={18} weight="fill" color="#1E1E1E" className="shrink-0" />
-            )}
-            <span className="text-[15px] font-bold text-[#1E1E1E] truncate leading-tight">
-              {currentLocationLabel}
-            </span>
-            <CaretDown size={16} weight="bold" color="#1E1E1E" className="shrink-0" />
-          </div>
-        </div>
-        
-        {/* Selector Desplegable para Móviles/Tablets pequeñas */}
-        <div
-          className="md:hidden flex items-center gap-1 px-4 py-2 rounded-full text-[14px] font-bold cursor-pointer transition-colors bg-[#F3F4F6] text-[#1E1E1E] outline-none hover:bg-[#ECECEE] focus-visible:ring-2 focus-visible:ring-[#FF441F] shrink-0"
-          onClick={() => setActiveModal('mode')}
-          onKeyDown={handleKeyDown(() => setActiveModal('mode'))}
-          role="button"
-          tabIndex={0}
-        >
-          <span>{currentModeLabel}</span>
-          <CaretDown size={14} weight="bold" />
-        </div>
-
-        {/* Interruptor (Switch) para Escritorio */}
-        <div className="hidden md:flex items-center bg-[#F3F4F6] rounded-full p-1 shrink-0">
-          <button
-            className={`flex items-center justify-center px-4 py-1.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all cursor-pointer ${
-              deliveryMode === 'delivery'
-                ? 'bg-[#1E1E1E] text-white'
-                : 'text-[#8E8E93] hover:text-[#1E1E1E]'
-            }`}
-            onClick={() => setDeliveryMode('delivery')}
-            type="button"
-          >
-            <span className="text-[13px] font-bold">A Domicilio</span>
-          </button>
-          <button
-            className={`flex items-center justify-center px-4 py-1.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all cursor-pointer ${
-              deliveryMode === 'pickup'
-                ? 'bg-[#1E1E1E] text-white'
-                : 'text-[#8E8E93] hover:text-[#1E1E1E]'
-            }`}
-            onClick={() => setDeliveryMode('pickup')}
-            type="button"
-          >
-            <span className="text-[13px] font-bold">Recoger</span>
-          </button>
-        </div>
-      </div>
-
       <ModalDropdown
         isOpen={activeModal === 'mode'}
         onClose={() => setActiveModal(null)}
@@ -218,7 +233,7 @@ const DeliverySelector = () => {
         }}
         showAddAction={deliveryMode === 'delivery'}
         onAddAction={() => setActiveModal('add-address')}
-        onEditAction={deliveryMode === 'delivery' ? (item) => { setEditingItem(item); setActiveModal('edit-address'); } : undefined}
+        onEditAction={deliveryMode === 'delivery' ? handleSetEditing : undefined}
       />
       {(activeModal === 'add-address' || activeModal === 'edit-address') && (
         <AddressForm 
@@ -230,4 +245,38 @@ const DeliverySelector = () => {
   );
 };
 
+export const useDeliveryModalState = () => {
+  const [activeModal, setActiveModal] = useState(null);
+  const modes = [
+    { id: 'delivery', label: 'A Domicilio', icon: <Moped size={20} weight="fill" /> },
+    { id: 'pickup', label: 'Recoger', icon: <Storefront size={20} weight="fill" /> },
+  ];
+  return { activeModal, setActiveModal, modes };
+};
+
+const DeliverySelector = ({ variant = 'cart' }) => {
+  const { activeModal, setActiveModal, modes } = useDeliveryModalState();
+
+  return (
+    <>
+      <div className="flex items-center shrink-0 gap-4 w-full justify-between">
+        <div className="flex-1 min-w-0 mr-2">
+          <DeliveryLocation setActiveModal={setActiveModal} variant={variant} />
+        </div>
+        
+        <div className="md:hidden flex-shrink-0">
+          <DeliveryModeMobile setActiveModal={setActiveModal} variant={variant} />
+        </div>
+
+        <div className="hidden md:flex flex-shrink-0">
+          <DeliveryModeDesktop variant={variant} />
+        </div>
+      </div>
+
+      <DeliveryModals activeModal={activeModal} setActiveModal={setActiveModal} modes={modes} />
+    </>
+  );
+};
+
 export default DeliverySelector;
+
