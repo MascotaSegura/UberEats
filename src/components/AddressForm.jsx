@@ -2,6 +2,13 @@ import React, { useState, useRef } from 'react';
 import { X, MapPin } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 
+const handleKeyDown = (fn) => (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    fn();
+  }
+};
+
 const AddressForm = ({ onClose, initialData }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
