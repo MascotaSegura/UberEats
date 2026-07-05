@@ -64,7 +64,7 @@ const AddressForm = ({ onClose, initialData }) => {
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end md:items-center justify-center bg-[#1E1E1E]/40 md:p-4">
-      <div className="bg-white w-full h-[95vh] md:h-auto max-h-[95vh] md:max-w-[480px] flex flex-col rounded-t-2xl md:rounded-2xl overflow-hidden relative animate-slide-up md:animate-fade-in">
+      <div className="bg-white w-full h-auto max-h-[90dvh] md:max-h-[85vh] md:max-w-[480px] flex flex-col rounded-t-2xl md:rounded-2xl overflow-hidden relative animate-slide-up md:animate-fade-in">
         <div className="flex items-center px-4 py-3 bg-[#F3F4F6] shrink-0">
           <div
             className="w-9 h-9 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] transition-colors shrink-0"
