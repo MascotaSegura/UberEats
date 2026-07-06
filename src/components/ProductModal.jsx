@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Minus, Plus, ShareNetwork, Check } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
-import { playSound } from '../utils/sounds';
+
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -52,12 +52,10 @@ const ProductModal = ({ product, onClose }) => {
 
   const handleAdd = () => {
     addToCart(product, quantity, removedIngredients, specialInstructions.trim());
-    playSound('addToCart');
     onClose();
   };
 
   const handleClose = () => {
-    playSound('close');
     onClose();
   };
 

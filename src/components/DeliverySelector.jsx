@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CaretDown, Check, X, PencilSimple, MapPin, Storefront, Moped } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import AddressForm from './AddressForm';
-import { playSound } from '../utils/sounds';
+
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -48,12 +48,10 @@ export const ModalDropdown = ({ isOpen, onClose, title, items, selectedId, onSel
                   isSelected ? 'bg-[#1E1E1E] text-white' : 'bg-[#F3F4F6] text-[#1E1E1E] hover:bg-[#ECECEE]'
                 }`}
                 onClick={() => {
-                  playSound('select');
                   onSelect(item);
                   onClose();
                 }}
                 onKeyDown={handleKeyDown(() => {
-                  playSound('select');
                   onSelect(item);
                   onClose();
                 })}
@@ -174,7 +172,7 @@ export const DeliveryModeDesktop = ({ variant = 'header' }) => {
             ? 'bg-[#1E1E1E] text-white'
             : `text-[#8E8E93] ${inactiveHover}`
         }`}
-        onClick={() => { playSound('toggle'); setDeliveryMode('delivery'); }}
+        onClick={() => { setDeliveryMode('delivery'); }}
         type="button"
       >
         <span className="text-[13px] font-bold">A Domicilio</span>
@@ -185,7 +183,7 @@ export const DeliveryModeDesktop = ({ variant = 'header' }) => {
             ? 'bg-[#1E1E1E] text-white'
             : `text-[#8E8E93] ${inactiveHover}`
         }`}
-        onClick={() => { playSound('toggle'); setDeliveryMode('pickup'); }}
+        onClick={() => { setDeliveryMode('pickup'); }}
         type="button"
       >
         <span className="text-[13px] font-bold">Recoger</span>

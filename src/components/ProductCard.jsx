@@ -1,4 +1,4 @@
-import { playSound } from '../utils/sounds';
+
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -11,8 +11,8 @@ const ProductCard = ({ product, onClick }) => {
   return (
     <div
       className="bg-white p-4 flex flex-col cursor-pointer hover:-translate-y-1 hover:bg-[#FAFAFA] active:scale-[0.98] transition-all outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] rounded-2xl"
-      onClick={() => { playSound('open'); onClick(product); }}
-      onKeyDown={handleKeyDown(() => { playSound('open'); onClick(product); })}
+      onClick={() => { onClick(product); }}
+      onKeyDown={handleKeyDown(() => { onClick(product); })}
       role="button"
       tabIndex={0}
       aria-label={`Ver ${product.name}, ${product.price.toFixed(2)} MXN`}
