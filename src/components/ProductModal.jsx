@@ -122,7 +122,9 @@ const ProductModal = ({ product, onClose }) => {
 
             {/* Contenido */}
             <div className="px-6 pb-6 pt-4">
-              <h1 className="text-2xl md:text-3xl font-bold text-[#1E1E1E] mb-3 leading-tight">{product.name}</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-[#1E1E1E] mb-2 leading-tight">{product.name}</h1>
+              {/* Diseño: Mostramos el precio unitario del producto aquí para mayor claridad. */}
+              <div className="text-[20px] font-bold text-[#1E1E1E] mb-4">${product.price?.toFixed(2)} MXN</div>
               <p className="text-[#8E8E93] text-[15px] md:text-[16px] leading-relaxed mb-8">
                 {product.description}
               </p>
@@ -178,49 +180,51 @@ const ProductModal = ({ product, onClose }) => {
               />
             </div>
 
-            <div className="flex items-center gap-6">
-              <span className="text-[#1E1E1E] font-semibold">Cantidad</span>
-              <div className="flex items-center justify-center gap-4">
-                <div
-                  className={`w-10 h-10 flex items-center justify-center bg-[#F3F4F6] rounded-full text-[#1E1E1E] transition-all outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] ${quantity <= 1 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95]'}`}
-                  onClick={() => { if (quantity > 1) setQuantity(quantity - 1); }}
-                  onKeyDown={handleKeyDown(() => { if (quantity > 1) setQuantity(quantity - 1); })}
-                  role="button"
-                  tabIndex={quantity <= 1 ? -1 : 0}
-                  aria-disabled={quantity <= 1}
-                  aria-label="Quitar uno"
-                >
-                  <Minus size={18} weight="bold" />
-                </div>
-                <span className="text-lg font-bold w-6 text-center text-[#1E1E1E]">
-                  {quantity}
-                </span>
-                <div
-                  className="w-10 h-10 flex items-center justify-center bg-[#F3F4F6] rounded-full cursor-pointer text-[#1E1E1E] hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all"
-                  onClick={() => setQuantity(quantity + 1)}
-                  onKeyDown={handleKeyDown(() => setQuantity(quantity + 1))}
-                  role="button"
-                  tabIndex={0}
-                  aria-label="Agregar uno"
-                >
-                  <Plus size={18} weight="bold" />
-                </div>
-              </div>
-            </div>
+
           </div>
           </div>
 
-          {/* Botón inferior */}
-          <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:p-6 md:pb-[max(1.5rem,env(safe-area-inset-bottom))] bg-white shrink-0">
+          {/* Botón inferior y controles de cantidad unificados */}
+          {/* Diseño: Se elimina la fila separada de "Cantidad" y se integra aquí para consolidar la acción en un solo lugar visible y accesible tanto en móvil como en escritorio. */}
+          <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:p-6 md:pb-[max(1.5rem,env(safe-area-inset-bottom))] bg-white shrink-0 flex items-center gap-3 md:gap-4">
+            {/* Controles de cantidad (Píldora) */}
+            <div className="flex items-center justify-center gap-2 md:gap-3 bg-[#F3F4F6] rounded-full p-1 md:p-1.5 shrink-0">
+              <div
+                className={`w-10 h-10 md:w-11 md:h-11 flex items-center justify-center bg-white rounded-full text-[#1E1E1E] transition-all outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] ${quantity <= 1 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95]'}`}
+                onClick={() => { if (quantity > 1) setQuantity(quantity - 1); }}
+                onKeyDown={handleKeyDown(() => { if (quantity > 1) setQuantity(quantity - 1); })}
+                role="button"
+                tabIndex={quantity <= 1 ? -1 : 0}
+                aria-disabled={quantity <= 1}
+                aria-label="Quitar uno"
+              >
+                <Minus size={18} weight="bold" />
+              </div>
+              <span className="text-[16px] md:text-lg font-bold w-4 md:w-5 text-center text-[#1E1E1E]">
+                {quantity}
+              </span>
+              <div
+                className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center bg-white rounded-full cursor-pointer text-[#1E1E1E] hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all"
+                onClick={() => setQuantity(quantity + 1)}
+                onKeyDown={handleKeyDown(() => setQuantity(quantity + 1))}
+                role="button"
+                tabIndex={0}
+                aria-label="Agregar uno"
+              >
+                <Plus size={18} weight="bold" />
+              </div>
+            </div>
+
+            {/* Botón de agregar */}
             <div
-              className="w-full bg-[#1E1E1E] text-white py-4 rounded-full flex items-center justify-between px-6 font-bold cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+              className="flex-1 bg-[#1E1E1E] text-white h-[48px] md:h-[56px] rounded-full flex items-center justify-between px-5 md:px-6 font-bold cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] focus-visible:ring-offset-2 focus-visible:ring-offset-white text-[15px] md:text-[16px]"
               onClick={handleAdd}
               onKeyDown={handleKeyDown(handleAdd)}
               role="button"
               tabIndex={0}
-              aria-label={`Agregar ${quantity} al carrito, ${(product.price * quantity).toFixed(2)} MXN`}
+              aria-label={`Agregar al carrito, ${(product.price * quantity).toFixed(2)} MXN`}
             >
-              <span>Agregar {quantity}</span>
+              <span>Agregar</span>
               <span>${(product.price * quantity).toFixed(2)} MXN</span>
             </div>
           </div>
