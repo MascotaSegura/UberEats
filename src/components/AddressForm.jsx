@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { X, MapPin } from '@phosphor-icons/react';
+import { X, MapPin, NavigationArrow } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 
 const handleKeyDown = (fn) => (e) => {
@@ -12,12 +12,23 @@ const handleKeyDown = (fn) => (e) => {
 const AddressForm = ({ onClose, initialData }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
+  const [isLocating, setIsLocating] = useState(false);
   
   // Backward compatibility for old addresses that only have "detail"
   const defaultStreet = initialData?.street || initialData?.detail || '';
   const [selectedPlace, setSelectedPlace] = useState(initialData ? { place_name: defaultStreet } : null);
   
-  const [label, setLabel] = useState(initialData?.label || '');
+  const tags = ['Casa', 'Trabajo', 'Escuela', 'Otro'];
+  const [selectedTag, setSelectedTag] = useState(() => {
+    if (!initialData?.label) return 'Casa';
+    if (tags.includes(initialData.label)) return initialData.label;
+    return 'Otro';
+  });
+  const [customLabel, setCustomLabel] = useState(() => {
+    if (initialData?.label && !tags.includes(initialData.label)) return initialData.label;
+    return '';
+  });
+
   const [street, setStreet] = useState(defaultStreet);
   const [interior, setInterior] = useState(initialData?.interior || '');
   const [references, setReferences] = useState(initialData?.references || '');
@@ -26,6 +37,37 @@ const AddressForm = ({ onClose, initialData }) => {
   const { addAddress, updateAddress, removeAddress } = useCart();
 
   const debounceRef = useRef(null);
+
+  const handleGeolocation = () => {
+    if (!navigator.geolocation) return;
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const key = import.meta.env.VITE_MAPTILER_KEY;
+          if (!key) {
+             console.warn('MapTiler key not set in .env');
+          }
+          const res = await fetch(`https://api.maptiler.com/geocoding/${longitude},${latitude}.json?key=${key}`);
+          const data = await res.json();
+          if (data.features && data.features.length > 0) {
+            const feature = data.features[0];
+            setSelectedPlace(feature);
+            setStreet(feature.place_name);
+          }
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setIsLocating(false);
+        }
+      },
+      (error) => {
+        console.error(error);
+        setIsLocating(false);
+      }
+    );
+  };
 
   const handleSearch = (val) => {
     setQuery(val);
@@ -52,14 +94,15 @@ const AddressForm = ({ onClose, initialData }) => {
   };
 
   const handleSave = () => {
-    if (!label.trim() || !street.trim()) return;
+    const finalLabel = selectedTag === 'Otro' ? customLabel : selectedTag;
+    if (!finalLabel.trim() || !street.trim()) return;
     
     // Computed detail for UI backwards compatibility (CartPanel, DeliverySelector)
     let computedDetail = street.trim();
     if (interior.trim()) computedDetail += `, Int/Depto: ${interior.trim()}`;
     
     const addressData = {
-      label: label.trim(),
+      label: finalLabel.trim(),
       street: street.trim(),
       interior: interior.trim(),
       references: references.trim(),
@@ -75,12 +118,15 @@ const AddressForm = ({ onClose, initialData }) => {
     onClose();
   };
 
+  const finalLabelForValidation = selectedTag === 'Otro' ? customLabel : selectedTag;
+  const isSaveEnabled = finalLabelForValidation.trim() && street.trim();
+
   return (
     <div className="fixed inset-0 z-[70] flex items-end md:items-center justify-center bg-[#1E1E1E]/40 md:p-4">
       <div className="bg-white w-full h-auto max-h-[90dvh] md:max-h-[85vh] md:max-w-[480px] flex flex-col rounded-t-2xl md:rounded-2xl overflow-hidden relative animate-slide-up md:animate-fade-in">
         <div className="flex items-center px-4 py-3 bg-[#F3F4F6] shrink-0">
           <div
-            className="w-9 h-9 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all shrink-0"
+            className="w-9 h-9 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all shrink-0"
             onClick={onClose}
             onKeyDown={handleKeyDown(onClose)}
             role="button"
@@ -97,7 +143,23 @@ const AddressForm = ({ onClose, initialData }) => {
         <div className="flex-1 min-h-0 overflow-y-auto p-6 flex flex-col gap-6">
           {!selectedPlace ? (
             <div>
-              <label className="text-[14px] font-bold text-[#1E1E1E] mb-2 block">Buscar dirección</label>
+              <label className="text-[14px] font-bold text-[#1E1E1E] mb-2 block">Ubicación</label>
+              
+              <div 
+                className="w-full bg-[#1E1E1E] text-white rounded-full px-4 py-3 mb-4 flex items-center justify-center gap-2 cursor-pointer hover:bg-[#2C2C2E] active:scale-[0.98] transition-all font-bold text-[14px]"
+                onClick={handleGeolocation}
+                onKeyDown={handleKeyDown(handleGeolocation)}
+                role="button"
+                tabIndex={0}
+              >
+                <NavigationArrow size={18} weight="bold" className={isLocating ? 'animate-pulse' : ''} />
+                {isLocating ? 'Obteniendo ubicación...' : 'Usar mi ubicación actual'}
+              </div>
+
+              <div className="text-center mb-4 mt-2">
+                <span className="text-[#8E8E93] text-[12px] font-bold tracking-wider">O BUSCAR MANUALMENTE</span>
+              </div>
+
               {/* Diseño (Flat Design): Se usa focus-within:bg-[#ECECEE] en lugar de focus-within:ring para evitar contornos (líneas) y mantener el aspecto "flat". */}
               <div className="bg-[#F3F4F6] rounded-full px-4 py-3 flex items-center focus-within:bg-[#ECECEE] transition-colors">
                 <MapPin size={20} weight="fill" color="#8E8E93" className="shrink-0" />
@@ -115,7 +177,7 @@ const AddressForm = ({ onClose, initialData }) => {
                   {results.map((feature) => (
                     <div 
                       key={feature.id}
-                      className="p-4 bg-[#F3F4F6] hover:bg-[#ECECEE] cursor-pointer rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all"
+                      className="p-4 bg-[#F3F4F6] hover:bg-[#ECECEE] cursor-pointer rounded-2xl outline-none focus-visible:opacity-80 transition-all"
                       onClick={() => {
                         setSelectedPlace(feature);
                         setStreet(feature.place_name);
@@ -131,14 +193,34 @@ const AddressForm = ({ onClose, initialData }) => {
           ) : (
             <div className="flex flex-col gap-5 animate-fade-in">
               <div>
-                <label className="text-[14px] font-bold text-[#1E1E1E] mb-2 block">Nombre de la dirección</label>
-                <input
-                  type="text"
-                  value={label}
-                  onChange={(e) => setLabel(e.target.value)}
-                  placeholder="Ej. Mi Casa, Trabajo"
-                  className="w-full bg-[#F3F4F6] rounded-2xl px-4 py-3 text-[14px] outline-none text-[#1E1E1E] placeholder:text-[#8E8E93] focus:bg-[#ECECEE] transition-colors"
-                />
+                <label className="text-[14px] font-bold text-[#1E1E1E] mb-3 block">Etiqueta de la dirección</label>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {tags.map(tag => (
+                    <div
+                      key={tag}
+                      onClick={() => setSelectedTag(tag)}
+                      onKeyDown={handleKeyDown(() => setSelectedTag(tag))}
+                      role="button"
+                      tabIndex={0}
+                      className={`px-4 py-2.5 rounded-full text-[14px] font-semibold cursor-pointer outline-none focus-visible:opacity-80 transition-colors active:scale-[0.95] ${
+                        selectedTag === tag
+                          ? 'bg-[#1E1E1E] text-white'
+                          : 'bg-[#F3F4F6] text-[#1E1E1E] hover:bg-[#ECECEE]'
+                      }`}
+                    >
+                      {tag}
+                    </div>
+                  ))}
+                </div>
+                {selectedTag === 'Otro' && (
+                  <input
+                    type="text"
+                    value={customLabel}
+                    onChange={(e) => setCustomLabel(e.target.value)}
+                    placeholder="Ej. Gimnasio, Departamento..."
+                    className="w-full bg-[#F3F4F6] rounded-2xl px-4 py-3 text-[14px] outline-none text-[#1E1E1E] placeholder:text-[#8E8E93] focus:bg-[#ECECEE] transition-colors animate-fade-in"
+                  />
+                )}
               </div>
               
               <div className="flex flex-col gap-5 md:flex-row md:gap-4">
@@ -192,8 +274,8 @@ const AddressForm = ({ onClose, initialData }) => {
         {selectedPlace && (
           <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] bg-white shrink-0 flex flex-col gap-3">
             <div
-              className={`w-full py-4 rounded-full flex items-center justify-center font-bold transition-all outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
-                label.trim() && street.trim() 
+              className={`w-full py-4 rounded-full flex items-center justify-center font-bold transition-all outline-none focus-visible:opacity-90 ${
+                isSaveEnabled 
                   ? 'bg-[#1E1E1E] text-white cursor-pointer active:scale-[0.98]'
                   : 'bg-[#F3F4F6] text-[#8E8E93] cursor-not-allowed opacity-70'
               }`}
@@ -201,13 +283,13 @@ const AddressForm = ({ onClose, initialData }) => {
               onKeyDown={handleKeyDown(handleSave)}
               role="button"
               tabIndex={0}
-              aria-disabled={!(label.trim() && street.trim())}
+              aria-disabled={!isSaveEnabled}
             >
               Guardar Dirección
             </div>
             {initialData && (
                <div 
-                 className="w-full py-3 flex items-center justify-center font-bold text-[#FF441F] cursor-pointer hover:bg-[#F3F4F6] rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all"
+                 className="w-full py-3 flex items-center justify-center font-bold text-[#FF441F] cursor-pointer hover:bg-[#F3F4F6] rounded-full outline-none focus-visible:bg-[#F3F4F6] transition-all"
                  onClick={() => { removeAddress(initialData.id); onClose(); }}
                  onKeyDown={handleKeyDown(() => { removeAddress(initialData.id); onClose(); })}
                  role="button"

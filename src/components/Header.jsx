@@ -16,7 +16,7 @@ const CartButton = ({ onOpenCart, cartCount }) => (
     type="button"
     onClick={() => { onOpenCart(); }}
     aria-label={`Carrito${cartCount > 0 ? `, ${cartCount} artículos` : ''}`}
-    className="relative w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-[#F3F4F6] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] rounded-full transition-all shrink-0"
+    className="relative w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-[#F3F4F6] active:scale-[0.95] outline-none focus-visible:bg-[#F3F4F6] rounded-full transition-all shrink-0"
   >
     <ShoppingCart size={24} weight="bold" color="#1E1E1E" />
     {cartCount > 0 && (
@@ -84,7 +84,7 @@ const Header = ({ onOpenCart, searchQuery, onSearchChange }) => {
                   type="button"
                   aria-label="Limpiar búsqueda"
                   onClick={() => onSearchChange('')}
-                  className="shrink-0 ml-1 p-1 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] text-[#8E8E93] hover:text-[#1E1E1E] active:scale-[0.95] transition-all"
+                  className="shrink-0 ml-1 p-1 rounded-full outline-none focus-visible:bg-[#E5E5E7] text-[#8E8E93] hover:text-[#1E1E1E] active:scale-[0.95] transition-all"
                 >
                   <X size={16} weight="bold" />
                 </button>

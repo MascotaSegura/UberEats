@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Trash, Plus, Minus, CheckCircle, Package, Truck, MapPin, Storefront } from '@phosphor-icons/react';
+import { X, Trash, Plus, Minus, CheckCircle, Package, Truck, MapPin, Storefront, ShoppingCart } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import DeliverySelector from './DeliverySelector';
 
@@ -89,7 +89,7 @@ const CartPanel = ({ onClose }) => {
           </div>
 
           <div
-            className="bg-[#1E1E1E] text-white px-8 py-3 rounded-full font-bold cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] focus-visible:ring-offset-2"
+            className="bg-[#1E1E1E] text-white px-8 py-3 rounded-full font-bold cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:opacity-80"
             onClick={resetOrder}
             onKeyDown={handleKeyDown(resetOrder)}
             role="button"
@@ -112,7 +112,7 @@ const CartPanel = ({ onClose }) => {
       <div className="bg-white w-full h-full max-h-[100dvh] md:h-full max-w-[480px] flex flex-col md:rounded-none md:rounded-l-2xl overflow-hidden relative animate-slide-up md:animate-none isolate">
         <div className="flex items-center px-6 pb-4 pt-[max(1rem,env(safe-area-inset-top,1rem))] shrink-0">
           <div
-            className="w-10 h-10 bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:ring-2 focus-visible:ring-[#FF441F] transition-all"
+            className="w-10 h-10 bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all"
             onClick={() => { onClose(); }}
             onKeyDown={handleKeyDown(() => { onClose(); })}
             role="button"
@@ -137,8 +137,12 @@ const CartPanel = ({ onClose }) => {
 
           <div className="p-6">
           {cartItems.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-[#8E8E93] py-20">
-              <p>No tienes productos en tu carrito.</p>
+            <div className="h-full flex flex-col items-center justify-center py-20 px-4 text-center">
+              <div className="w-20 h-20 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-6">
+                <ShoppingCart size={40} weight="fill" color="#D1D1D6" />
+              </div>
+              <h3 className="text-xl font-bold text-[#1E1E1E] mb-2">Tu carrito está vacío</h3>
+              <p className="text-[15px] text-[#8E8E93] max-w-[250px]">¡Agrega algunas delicias para comenzar tu pedido!</p>
             </div>
           ) : (
             <div className="flex flex-col gap-6">
@@ -172,7 +176,7 @@ const CartPanel = ({ onClose }) => {
                         )}
                       </div>
                       <div
-                        className="text-[#8E8E93] hover:text-[#FF441F] cursor-pointer shrink-0 transition-all active:scale-[0.95] outline-none rounded-md focus-visible:ring-2 focus-visible:ring-[#FF441F]"
+                        className="text-[#8E8E93] hover:text-[#FF441F] cursor-pointer shrink-0 transition-all active:scale-[0.95] outline-none rounded-md focus-visible:opacity-80"
                         onClick={() => removeFromCart(item.id)}
                         onKeyDown={handleKeyDown(() => removeFromCart(item.id))}
                         role="button"
@@ -188,7 +192,7 @@ const CartPanel = ({ onClose }) => {
                       </span>
                       <div className="flex items-center gap-3 bg-[#F3F4F6] px-2 py-1 rounded-full">
                         <div
-                          className="cursor-pointer p-1 hover:text-[#FF441F] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:ring-2 focus-visible:ring-[#FF441F]"
+                          className="cursor-pointer p-1 hover:text-[#FF441F] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:bg-[#E5E5E7]"
                           onClick={() =>
                             updateQuantity(item.id, item.quantity - 1)
                           }
@@ -205,7 +209,7 @@ const CartPanel = ({ onClose }) => {
                           {item.quantity}
                         </span>
                         <div
-                          className="cursor-pointer p-1 hover:text-[#FF441F] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:ring-2 focus-visible:ring-[#FF441F]"
+                          className="cursor-pointer p-1 hover:text-[#FF441F] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:bg-[#E5E5E7]"
                           onClick={() =>
                             updateQuantity(item.id, item.quantity + 1)
                           }
@@ -247,7 +251,7 @@ const CartPanel = ({ onClose }) => {
               <span className="font-bold text-2xl">${(getCartTotal() + (deliveryMode === 'delivery' ? 25 : 0)).toFixed(2)} <span className="text-[14px] font-semibold text-[#8E8E93]">MXN</span></span>
             </div>
             <div
-              className="w-full bg-[#FF441F] text-white py-4 rounded-full flex justify-center font-bold cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-[#1E1E1E] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+              className="w-full bg-[#FF441F] text-white py-4 rounded-full flex justify-center font-bold cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:opacity-90"
               onClick={() => { placeOrder(); }}
               onKeyDown={handleKeyDown(() => { placeOrder(); })}
               role="button"

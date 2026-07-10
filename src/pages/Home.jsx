@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { MagnifyingGlass, Storefront } from '@phosphor-icons/react';
 import Header from '../components/Header';
 import CategoryNav from '../components/CategoryNav';
 import ProductCard from '../components/ProductCard';
@@ -54,10 +55,22 @@ const Home = () => {
             ))}
           </div>
         ) : (
-          <div className="p-8 text-center text-[#8E8E93]">
-            {trimmedQuery !== ''
-              ? `Sin resultados para "${searchQuery}".`
-              : 'No hay productos en esta categoría.'}
+          <div className="max-w-md mx-auto mt-12 p-10 bg-white rounded-3xl flex flex-col items-center justify-center text-center shadow-none">
+            <div className="w-20 h-20 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-6">
+              {trimmedQuery !== '' ? (
+                <MagnifyingGlass size={40} weight="bold" color="#D1D1D6" />
+              ) : (
+                <Storefront size={40} weight="fill" color="#D1D1D6" />
+              )}
+            </div>
+            <h3 className="text-xl font-bold text-[#1E1E1E] mb-2">
+              {trimmedQuery !== '' ? 'Sin resultados' : 'Categoría vacía'}
+            </h3>
+            <p className="text-[15px] text-[#8E8E93] leading-snug">
+              {trimmedQuery !== ''
+                ? `No encontramos ningún platillo que coincida con "${searchQuery}". Prueba con otras palabras.`
+                : 'En este momento no hay productos disponibles en esta categoría.'}
+            </p>
           </div>
         )}
       </div>

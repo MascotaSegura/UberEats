@@ -1,22 +1,68 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useEffect } from 'react';
 
 export const CartContext = createContext();
 
-export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
-  const [orderStatus, setOrderStatus] = useState(null);
-  const [deliveryMode, setDeliveryMode] = useState('delivery'); // 'delivery' | 'pickup'
+const loadSaved = (key, defaultVal) => {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : defaultVal;
+  } catch (e) {
+    return defaultVal;
+  }
+};
 
-  const [addresses, setAddresses] = useState([
-    { id: 'addr-1', label: 'Casa', detail: 'Calle Principal 123' },
-    { id: 'addr-2', label: 'Oficina', detail: 'Av. Reforma 456' },
-  ]);
+export const CartProvider = ({ children }) => {
+  const [cartItems, setCartItems] = useState(() => loadSaved('didi_cart', []));
+  const [orderStatus, setOrderStatus] = useState(null);
+  const [deliveryMode, setDeliveryMode] = useState(() => loadSaved('didi_mode', 'delivery')); // 'delivery' | 'pickup'
+
+  const [addresses, setAddresses] = useState(() => loadSaved('didi_addresses', []));
+  
   const [branches] = useState([
     { id: 'br-1', label: 'Sucursal Centro', detail: '15-20 min' },
     { id: 'br-2', label: 'Sucursal Norte', detail: '20-30 min' },
   ]);
-  const [deliveryAddress, setDeliveryAddress] = useState(addresses[0]);
-  const [pickupBranch, setPickupBranch] = useState(branches[0]);
+  
+  const [deliveryAddress, setDeliveryAddress] = useState(() => {
+    const loadedAddresses = loadSaved('didi_addresses', []);
+    const activeId = loadSaved('didi_active_addr', null);
+    if (activeId) {
+       const found = loadedAddresses.find(a => a.id === activeId);
+       if (found) return found;
+    }
+    return loadedAddresses.length > 0 ? loadedAddresses[0] : null;
+  });
+
+  const [pickupBranch, setPickupBranch] = useState(() => {
+    const activeId = loadSaved('didi_active_branch', null);
+    return branches.find(b => b.id === activeId) || branches[0];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('didi_cart', JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  useEffect(() => {
+    localStorage.setItem('didi_addresses', JSON.stringify(addresses));
+  }, [addresses]);
+
+  useEffect(() => {
+    localStorage.setItem('didi_mode', JSON.stringify(deliveryMode));
+  }, [deliveryMode]);
+
+  useEffect(() => {
+    if (deliveryAddress) {
+      localStorage.setItem('didi_active_addr', JSON.stringify(deliveryAddress.id));
+    } else {
+      localStorage.removeItem('didi_active_addr');
+    }
+  }, [deliveryAddress]);
+
+  useEffect(() => {
+    if (pickupBranch) {
+      localStorage.setItem('didi_active_branch', JSON.stringify(pickupBranch.id));
+    }
+  }, [pickupBranch]);
 
   const addToCart = (product, quantity, customizations = [], specialInstructions = '') => {
     setCartItems((prev) => {
