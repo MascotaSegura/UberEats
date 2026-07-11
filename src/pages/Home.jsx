@@ -6,6 +6,11 @@ import ProductCard from '../components/ProductCard';
 import ProductModal from '../components/ProductModal';
 import CartPanel from '../components/CartPanel';
 import Sidebar from '../components/Sidebar';
+import OrdersPanel from '../components/OrdersPanel';
+import WalletPanel from '../components/WalletPanel';
+import StoresPanel from '../components/StoresPanel';
+import PromosPanel from '../components/PromosPanel';
+import HelpPanel from '../components/HelpPanel';
 import { products } from '../data/products';
 import { useCart } from '../context/useCart';
 
@@ -16,6 +21,7 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activePanel, setActivePanel] = useState(null);
 
   const { orderStatus } = useCart();
 
@@ -60,7 +66,7 @@ const Home = () => {
             ))}
           </div>
         ) : (
-          <div className="max-w-md mx-auto mt-12 p-10 bg-white rounded-3xl flex flex-col items-center justify-center text-center">
+          <div className="max-w-md mx-auto mt-12 p-10 bg-white rounded-2xl flex flex-col items-center justify-center text-center">
             <div className="w-20 h-20 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-6">
               {trimmedQuery !== '' ? (
                 <MagnifyingGlass size={40} weight="bold" color="#D1D1D6" />
@@ -81,7 +87,14 @@ const Home = () => {
       </div>
 
       {/* Navigation Drawer */}
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <Sidebar 
+        isOpen={isSidebarOpen} 
+        onClose={() => setIsSidebarOpen(false)} 
+        onMenuSelect={(panelId) => {
+          setActivePanel(panelId);
+          setIsSidebarOpen(false);
+        }}
+      />
 
       {selectedProduct && (
         <ProductModal
@@ -91,6 +104,12 @@ const Home = () => {
       )}
 
       {showCart && <CartPanel onClose={() => setIsCartOpen(false)} />}
+      
+      {activePanel === 'orders' && <OrdersPanel onClose={() => setActivePanel(null)} />}
+      {activePanel === 'wallet' && <WalletPanel onClose={() => setActivePanel(null)} />}
+      {activePanel === 'stores' && <StoresPanel onClose={() => setActivePanel(null)} />}
+      {activePanel === 'promos' && <PromosPanel onClose={() => setActivePanel(null)} />}
+      {activePanel === 'help' && <HelpPanel onClose={() => setActivePanel(null)} />}
     </div>
   );
 };

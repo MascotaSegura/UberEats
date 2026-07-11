@@ -84,7 +84,7 @@ const ProductModal = ({ product, onClose }) => {
           <div className="absolute md:relative top-0 left-0 w-full flex justify-between md:justify-end gap-2 px-4 py-3 pt-[max(1rem,env(safe-area-inset-top,1rem))] z-20 md:bg-white shrink-0 pointer-events-none md:pointer-events-auto">
             {/* Close Button (Left on mobile, Right on desktop) */}
             <div
-              className="w-10 h-10 bg-white md:bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all pointer-events-auto md:order-2"
+              className="w-10 h-10 bg-white md:bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all pointer-events-auto md:order-2"
               onClick={handleClose}
               onKeyDown={handleKeyDown(handleClose)}
               role="button"
@@ -95,7 +95,7 @@ const ProductModal = ({ product, onClose }) => {
             </div>
             {/* Share Button (Right on mobile, Left on desktop) */}
             <div
-              className="w-10 h-10 bg-white md:bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all pointer-events-auto md:order-1"
+              className="w-10 h-10 bg-white md:bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all pointer-events-auto md:order-1"
               onClick={handleShare}
               onKeyDown={handleKeyDown(handleShare)}
               role="button"
@@ -157,8 +157,8 @@ const ProductModal = ({ product, onClose }) => {
                         aria-pressed={!isRemoved}
                         className={`px-4 py-2 rounded-full text-[14px] font-medium cursor-pointer active:scale-[0.95] outline-none focus-visible:opacity-80 transition-all select-none ${
                           isRemoved 
-                            ? 'bg-[#ECECEE] text-[#8E8E93] line-through hover:bg-[#E5E5E7]' 
-                            : 'bg-[#F3F4F6] text-[#1E1E1E] hover:bg-[#ECECEE]'
+                            ? 'bg-[#ECECEE] text-[#8E8E93] line-through hover:bg-[#E5E5E7] active:bg-[#E5E5E7]' 
+                            : 'bg-[#F3F4F6] text-[#1E1E1E] hover:bg-[#ECECEE] active:bg-[#ECECEE]'
                         }`}
                       >
                         {ing}
@@ -190,7 +190,7 @@ const ProductModal = ({ product, onClose }) => {
             {/* Controles de cantidad (Píldora) */}
             <div className="flex items-center justify-center gap-2 md:gap-3 bg-[#F3F4F6] rounded-full p-1 md:p-1.5 shrink-0">
               <div
-                className={`w-10 h-10 md:w-11 md:h-11 flex items-center justify-center bg-white rounded-full text-[#1E1E1E] transition-all outline-none focus-visible:bg-[#ECECEE] ${quantity <= 1 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95]'}`}
+                className={`w-10 h-10 md:w-11 md:h-11 flex items-center justify-center bg-white rounded-full text-[#1E1E1E] transition-all outline-none focus-visible:bg-[#ECECEE] ${quantity <= 1 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95]'}`}
                 onClick={() => { if (quantity > 1) setQuantity(quantity - 1); }}
                 onKeyDown={handleKeyDown(() => { if (quantity > 1) setQuantity(quantity - 1); })}
                 role="button"
@@ -204,7 +204,7 @@ const ProductModal = ({ product, onClose }) => {
                 {quantity}
               </span>
               <div
-                className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center bg-white rounded-full cursor-pointer text-[#1E1E1E] hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all"
+                className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center bg-white rounded-full cursor-pointer text-[#1E1E1E] hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all"
                 onClick={() => setQuantity(quantity + 1)}
                 onKeyDown={handleKeyDown(() => setQuantity(quantity + 1))}
                 role="button"

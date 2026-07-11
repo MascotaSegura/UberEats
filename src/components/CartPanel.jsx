@@ -1,7 +1,8 @@
 import React from 'react';
-import { X, Trash, Plus, Minus, CheckCircle, Package, Truck, MapPin, Storefront, ShoppingCart } from '@phosphor-icons/react';
+import { X, Trash, Plus, Minus, CheckCircle, Package, Truck, MapPin, Storefront, ShoppingCart, CreditCard } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import DeliverySelector from './DeliverySelector';
+import NotificationModal from './NotificationModal';
 
 
 const handleKeyDown = (fn) => (e) => {
@@ -37,7 +38,29 @@ const CartPanel = ({ onClose }) => {
     deliveryMode,
     deliveryAddress,
     pickupBranch,
+    activePromo,
+    removePromo,
+    selectedPaymentMethod,
   } = useCart();
+
+  const [errorMsg, setErrorMsg] = React.useState('');
+  const [showNotificationModal, setShowNotificationModal] = React.useState(false);
+
+  const handlePlaceOrder = () => {
+    if (deliveryMode === 'delivery' && !deliveryAddress) {
+      setErrorMsg('Por favor, selecciona o agrega una dirección de entrega antes de continuar.');
+      return;
+    }
+    setErrorMsg('');
+    placeOrder();
+    
+    const hasAsked = localStorage.getItem('didi_asked_notif_v2');
+    if (!hasAsked) {
+      setTimeout(() => {
+        setShowNotificationModal(true);
+      }, 500);
+    }
+  };
 
   if (orderStatus) {
     const currentIndex = STEPS.findIndex((s) => s.key === orderStatus);
@@ -98,6 +121,18 @@ const CartPanel = ({ onClose }) => {
             Volver al inicio
           </div>
         </div>
+        <NotificationModal 
+          isOpen={showNotificationModal} 
+          onClose={() => {
+            localStorage.setItem('didi_asked_notif_v2', 'true');
+            setShowNotificationModal(false);
+          }}
+          onAllow={() => {
+            localStorage.setItem('didi_asked_notif_v2', 'true');
+            // Here would be the actual push notification permission request
+            setShowNotificationModal(false);
+          }}
+        />
       </div>
     );
   }
@@ -112,7 +147,7 @@ const CartPanel = ({ onClose }) => {
       <div className="bg-white w-full h-full max-h-[100dvh] md:h-full max-w-[480px] flex flex-col md:rounded-none md:rounded-l-2xl overflow-hidden relative animate-slide-up md:animate-none isolate">
         <div className="flex items-center px-6 pb-4 pt-[max(1rem,env(safe-area-inset-top,1rem))] shrink-0">
           <div
-            className="w-10 h-10 bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all"
+            className="w-10 h-10 bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all"
             onClick={() => { onClose(); }}
             onKeyDown={handleKeyDown(() => { onClose(); })}
             role="button"
@@ -176,7 +211,7 @@ const CartPanel = ({ onClose }) => {
                         )}
                       </div>
                       <div
-                        className="text-[#8E8E93] hover:text-[#06C167] cursor-pointer shrink-0 transition-all active:scale-[0.95] outline-none rounded-md focus-visible:opacity-80"
+                        className="text-[#8E8E93] hover:text-[#06C167] active:text-[#06C167] cursor-pointer shrink-0 transition-all active:scale-[0.95] outline-none rounded-full focus-visible:opacity-80"
                         onClick={() => removeFromCart(item.id)}
                         onKeyDown={handleKeyDown(() => removeFromCart(item.id))}
                         role="button"
@@ -192,7 +227,7 @@ const CartPanel = ({ onClose }) => {
                       </span>
                       <div className="flex items-center gap-3 bg-[#F3F4F6] px-2 py-1 rounded-full">
                         <div
-                          className="cursor-pointer p-1 hover:text-[#06C167] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:bg-[#E5E5E7]"
+                          className="cursor-pointer p-1 hover:text-[#06C167] active:text-[#06C167] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:bg-[#E5E5E7]"
                           onClick={() =>
                             updateQuantity(item.id, item.quantity - 1)
                           }
@@ -209,7 +244,7 @@ const CartPanel = ({ onClose }) => {
                           {item.quantity}
                         </span>
                         <div
-                          className="cursor-pointer p-1 hover:text-[#06C167] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:bg-[#E5E5E7]"
+                          className="cursor-pointer p-1 hover:text-[#06C167] active:text-[#06C167] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:bg-[#E5E5E7]"
                           onClick={() =>
                             updateQuantity(item.id, item.quantity + 1)
                           }
@@ -232,36 +267,73 @@ const CartPanel = ({ onClose }) => {
           </div>
         </div>
 
-        {cartItems.length > 0 && (
+        {cartItems.length > 0 && (() => {
+          const subtotal = getCartTotal();
+          const deliveryFee = deliveryMode === 'delivery' ? 25 : 0;
+          let discountAmount = 0;
+          if (activePromo) {
+             if (activePromo.type === 'shipping') discountAmount = deliveryFee;
+             if (activePromo.type === 'percentage') discountAmount = subtotal * activePromo.discount;
+          }
+          const finalTotal = Math.max(0, subtotal + deliveryFee - discountAmount);
+
+          return (
           <div className="p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] bg-white shrink-0">
             <div className="flex flex-col gap-2 mb-4 text-[#8E8E93] text-[15px]">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span className="text-[#1E1E1E]">${getCartTotal().toFixed(2)}</span>
+                <span className="text-[#1E1E1E]">${subtotal.toFixed(2)}</span>
               </div>
               {deliveryMode === 'delivery' && (
                 <div className="flex justify-between">
                   <span>Envío</span>
-                  <span className="text-[#1E1E1E]">$25.00</span>
+                  <span className="text-[#1E1E1E]">${deliveryFee.toFixed(2)}</span>
+                </div>
+              )}
+              {discountAmount > 0 && (
+                <div className="flex justify-between text-[#06C167]">
+                  <span className="flex items-center gap-2">
+                    Cupón ({activePromo.code})
+                    <button onClick={removePromo} className="text-[#FF3B30] hover:underline text-[12px]">Quitar</button>
+                  </span>
+                  <span>-${discountAmount.toFixed(2)}</span>
                 </div>
               )}
             </div>
+            
+            {selectedPaymentMethod && (
+              <div className="flex items-center gap-3 bg-[#F3F4F6] p-3 rounded-xl mb-4">
+                 <div className="w-8 h-6 bg-white rounded-md flex items-center justify-center shrink-0">
+                    <CreditCard size={14} weight="fill" color="#1E1E1E" />
+                 </div>
+                 <div className="flex-1 min-w-0 flex justify-between items-center">
+                    <span className="text-[13px] font-medium text-[#1E1E1E] truncate">Pago con {selectedPaymentMethod.type}</span>
+                    <span className="text-[13px] text-[#8E8E93]">•••• {selectedPaymentMethod.last4}</span>
+                 </div>
+              </div>
+            )}
+            
             <div className="flex justify-between mb-6 text-[#1E1E1E] items-end">
               <span className="font-semibold text-lg">Total</span>
-              <span className="font-semibold text-2xl">${(getCartTotal() + (deliveryMode === 'delivery' ? 25 : 0)).toFixed(2)} <span className="text-[14px] font-semibold text-[#8E8E93]">MXN</span></span>
+              <span className="font-semibold text-2xl">${finalTotal.toFixed(2)} <span className="text-[14px] font-semibold text-[#8E8E93]">MXN</span></span>
             </div>
+            {errorMsg && (
+              <div className="bg-[#FFF0F0] text-[#FF3B30] p-3 rounded-2xl mb-4 text-[14px] font-medium text-center">
+                {errorMsg}
+              </div>
+            )}
             <div
               className="w-full bg-[#06C167] text-white py-4 rounded-full flex justify-center font-medium cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:opacity-90"
-              onClick={() => { placeOrder(); }}
-              onKeyDown={handleKeyDown(() => { placeOrder(); })}
+              onClick={() => { handlePlaceOrder(); }}
+              onKeyDown={handleKeyDown(() => { handlePlaceOrder(); })}
               role="button"
               tabIndex={0}
-              aria-label={`Confirmar pedido, total ${(getCartTotal() + (deliveryMode === 'delivery' ? 25 : 0)).toFixed(2)} MXN`}
+              aria-label={`Confirmar pedido, total ${finalTotal.toFixed(2)} MXN`}
             >
               Confirmar Pedido
             </div>
           </div>
-        )}
+        )})()}
       </div>
     </div>
   );

@@ -39,7 +39,7 @@ const QuickAddControl = ({ product }) => {
   if (quantity === 0) {
     return (
       <button 
-        className="w-8 h-8 rounded-full bg-[#F3F4F6] flex items-center justify-center hover:bg-[#1E1E1E] hover:text-white transition-colors active:scale-[0.90] outline-none focus-visible:bg-[#E5E5E7]"
+        className="w-8 h-8 rounded-full bg-[#F3F4F6] flex items-center justify-center hover:bg-[#1E1E1E] active:bg-[#1E1E1E] hover:text-white active:text-white transition-colors active:scale-[0.90] outline-none focus-visible:bg-[#E5E5E7]"
         onClick={handleIncrement}
         aria-label={`Añadir ${product.name} al carrito`}
         type="button"
@@ -55,7 +55,7 @@ const QuickAddControl = ({ product }) => {
       onClick={e => e.stopPropagation()}
     >
       <button
-        className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1E1E1E] hover:text-[#06C167] transition-colors active:scale-[0.90] outline-none focus-visible:bg-[#ECECEE]"
+        className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1E1E1E] hover:text-[#06C167] active:text-[#06C167] transition-colors active:scale-[0.90] outline-none focus-visible:bg-[#ECECEE]"
         onClick={handleDecrement}
         aria-label="Disminuir cantidad"
         type="button"
@@ -66,7 +66,7 @@ const QuickAddControl = ({ product }) => {
         {quantity}
       </span>
       <button
-        className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1E1E1E] hover:text-[#06C167] transition-colors active:scale-[0.90] outline-none focus-visible:bg-[#ECECEE]"
+        className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1E1E1E] hover:text-[#06C167] active:text-[#06C167] transition-colors active:scale-[0.90] outline-none focus-visible:bg-[#ECECEE]"
         onClick={handleIncrement}
         aria-label="Aumentar cantidad"
         type="button"
@@ -80,7 +80,7 @@ const QuickAddControl = ({ product }) => {
 const ProductCard = ({ product, onClick }) => {
   return (
     <div
-      className="bg-white p-4 flex flex-col cursor-pointer hover:-translate-y-1 hover:bg-[#FAFAFA] active:scale-[0.98] transition-all outline-none focus-visible:bg-[#F9F9F9] rounded-2xl"
+      className="bg-white p-4 flex flex-col cursor-pointer hover:-translate-y-1 hover:bg-[#FAFAFA] active:bg-[#FAFAFA] active:scale-[0.98] transition-all outline-none focus-visible:bg-[#F9F9F9] rounded-2xl"
       onClick={() => { onClick(product); }}
       onKeyDown={handleKeyDown(() => { onClick(product); })}
       role="button"

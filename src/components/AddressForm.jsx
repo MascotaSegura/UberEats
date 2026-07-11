@@ -124,9 +124,12 @@ const AddressForm = ({ onClose, initialData }) => {
   return (
     <div className="fixed inset-0 z-[70] flex items-end md:items-center justify-center bg-[#1E1E1E]/40 md:p-4">
       <div className="bg-white w-full h-auto max-h-[90dvh] md:max-h-[85vh] md:max-w-[480px] flex flex-col rounded-t-2xl md:rounded-2xl overflow-hidden relative animate-slide-up md:animate-fade-in">
-        <div className="flex items-center px-4 py-3 bg-[#F3F4F6] shrink-0">
+        <div className="flex items-center px-4 py-4 bg-white shrink-0 relative">
+          <h2 className="flex-1 text-center font-semibold text-lg text-[#1E1E1E]">
+            {initialData ? 'Editar Dirección' : 'Nueva Dirección'}
+          </h2>
           <div
-            className="w-9 h-9 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all shrink-0"
+            className="absolute right-4 w-9 h-9 bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all shrink-0"
             onClick={onClose}
             onKeyDown={handleKeyDown(onClose)}
             role="button"
@@ -135,9 +138,6 @@ const AddressForm = ({ onClose, initialData }) => {
           >
             <X size={18} weight="bold" color="#1E1E1E" />
           </div>
-          <h2 className="flex-1 text-center font-semibold text-[#1E1E1E] pr-9">
-            {initialData ? 'Editar Dirección' : 'Nueva Dirección'}
-          </h2>
         </div>
         
         <div className="flex-1 min-h-0 overflow-y-auto p-6 flex flex-col gap-6">
@@ -146,7 +146,7 @@ const AddressForm = ({ onClose, initialData }) => {
               <label className="text-[14px] font-medium text-[#1E1E1E] mb-2 block">Ubicación</label>
               
               <div 
-                className="w-full bg-[#1E1E1E] text-white rounded-full px-4 py-3 mb-4 flex items-center justify-center gap-2 cursor-pointer hover:bg-[#2C2C2E] active:scale-[0.98] transition-all font-medium text-[14px]"
+                className="w-full bg-[#1E1E1E] text-white rounded-full px-4 py-3 mb-4 flex items-center justify-center gap-2 cursor-pointer hover:bg-[#2C2C2E] active:bg-[#2C2C2E] active:scale-[0.98] transition-all font-medium text-[14px]"
                 onClick={handleGeolocation}
                 onKeyDown={handleKeyDown(handleGeolocation)}
                 role="button"
@@ -177,7 +177,7 @@ const AddressForm = ({ onClose, initialData }) => {
                   {results.map((feature) => (
                     <div 
                       key={feature.id}
-                      className="p-4 bg-[#F3F4F6] hover:bg-[#ECECEE] cursor-pointer rounded-2xl outline-none focus-visible:opacity-80 transition-all"
+                      className="p-4 bg-[#F3F4F6] hover:bg-[#ECECEE] active:bg-[#ECECEE] cursor-pointer rounded-2xl outline-none focus-visible:opacity-80 transition-all"
                       onClick={() => {
                         setSelectedPlace(feature);
                         setStreet(feature.place_name);
@@ -205,7 +205,7 @@ const AddressForm = ({ onClose, initialData }) => {
                       className={`px-4 py-2.5 rounded-full text-[14px] font-medium cursor-pointer outline-none focus-visible:opacity-80 transition-colors active:scale-[0.95] ${
                         selectedTag === tag
                           ? 'bg-[#1E1E1E] text-white'
-                          : 'bg-[#F3F4F6] text-[#1E1E1E] hover:bg-[#ECECEE]'
+                          : 'bg-[#F3F4F6] text-[#1E1E1E] hover:bg-[#ECECEE] active:bg-[#ECECEE]'
                       }`}
                     >
                       {tag}
@@ -289,7 +289,7 @@ const AddressForm = ({ onClose, initialData }) => {
             </div>
             {initialData && (
                <div 
-                 className="w-full py-3 flex items-center justify-center font-medium text-[#EF4444] cursor-pointer hover:bg-[#F3F4F6] rounded-full outline-none focus-visible:bg-[#F3F4F6] transition-all"
+                 className="w-full py-3 flex items-center justify-center font-medium text-[#EF4444] cursor-pointer hover:bg-[#F3F4F6] active:bg-[#F3F4F6] rounded-full outline-none focus-visible:bg-[#F3F4F6] transition-all"
                  onClick={() => { removeAddress(initialData.id); onClose(); }}
                  onKeyDown={handleKeyDown(() => { removeAddress(initialData.id); onClose(); })}
                  role="button"

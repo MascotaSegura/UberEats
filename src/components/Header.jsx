@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { MagnifyingGlass, ShoppingCart, X, List, User } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import { DeliveryLocation, DeliveryModeDesktop, DeliveryModeMobile, DeliveryModals, useDeliveryModalState } from './DeliverySelector';
+import { AuthContext } from '../context/AuthContext';
+import AuthModal from './AuthModal';
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
     e.preventDefault();
@@ -14,7 +16,7 @@ const CartButton = ({ onOpenCart, cartCount }) => (
     type="button"
     onClick={() => { onOpenCart(); }}
     aria-label={`Carrito${cartCount > 0 ? `, ${cartCount} artículos` : ''}`}
-    className="relative w-9 h-9 flex items-center justify-center cursor-pointer hover:bg-[#F3F4F6] active:scale-[0.95] outline-none focus-visible:bg-[#F3F4F6] rounded-full transition-all shrink-0"
+    className="relative w-9 h-9 flex items-center justify-center cursor-pointer hover:bg-[#F3F4F6] active:bg-[#F3F4F6] active:scale-[0.95] outline-none focus-visible:bg-[#F3F4F6] rounded-full transition-all shrink-0"
   >
     <ShoppingCart size={22} weight="bold" color="#1E1E1E" />
     {cartCount > 0 && (
@@ -32,6 +34,18 @@ const Header = ({ onOpenCart, searchQuery, onSearchChange, onMenuToggle }) => {
   
   const { activeModal, setActiveModal, modes } = useDeliveryModalState();
 
+  const { user } = React.useContext(AuthContext);
+  const [authModalConfig, setAuthModalConfig] = useState({ isOpen: false, view: 'login' });
+
+  const openAuth = (view) => {
+    console.log('openAuth called with view:', view);
+    setAuthModalConfig({ isOpen: true, view });
+  };
+  const closeAuth = () => {
+    console.log('closeAuth called');
+    setAuthModalConfig({ ...authModalConfig, isOpen: false });
+  };
+
   return (
     <div className="bg-white">
       {/* MOBILE LAYOUT (3 Rows: Logo, Location/Switch, Search) */}
@@ -40,7 +54,7 @@ const Header = ({ onOpenCart, searchQuery, onSearchChange, onMenuToggle }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button 
-              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#F3F4F6] active:scale-95 transition-all outline-none"
+              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#F3F4F6] active:bg-[#F3F4F6] active:scale-95 transition-all outline-none"
               onClick={onMenuToggle}
             >
               <List size={24} weight="bold" color="#1E1E1E" />
@@ -51,8 +65,17 @@ const Header = ({ onOpenCart, searchQuery, onSearchChange, onMenuToggle }) => {
           </div>
           
           <div className="flex items-center gap-1">
-            <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#F3F4F6] active:scale-95 transition-all outline-none">
-              <User size={22} weight="bold" color="#1E1E1E" />
+            <button 
+              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#F3F4F6] active:bg-[#F3F4F6] active:scale-95 transition-all outline-none"
+              onClick={() => openAuth(user ? 'profile' : 'login')}
+            >
+              {user ? (
+                <div className="w-8 h-8 rounded-full bg-[#1E1E1E] text-white flex items-center justify-center text-[12px] font-bold">
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+              ) : (
+                <User size={22} weight="bold" color="#1E1E1E" />
+              )}
             </button>
             <CartButton onOpenCart={onOpenCart} cartCount={cartCount} />
           </div>
@@ -85,7 +108,7 @@ const Header = ({ onOpenCart, searchQuery, onSearchChange, onMenuToggle }) => {
                 type="button"
                 aria-label="Limpiar búsqueda"
                 onClick={() => onSearchChange('')}
-                className="shrink-0 ml-1 p-1 rounded-full outline-none focus-visible:bg-[#E5E5E7] text-[#8E8E93] hover:text-[#1E1E1E] active:scale-[0.95] transition-all"
+                className="shrink-0 ml-1 p-1 rounded-full outline-none focus-visible:bg-[#E5E5E7] text-[#8E8E93] hover:text-[#1E1E1E] active:text-[#1E1E1E] active:scale-[0.95] transition-all"
               >
                 <X size={16} weight="bold" />
               </button>
@@ -100,7 +123,7 @@ const Header = ({ onOpenCart, searchQuery, onSearchChange, onMenuToggle }) => {
         {/* Hamburger + Logo */}
         <div className="flex items-center gap-3 shrink-0">
           <button 
-            className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#F3F4F6] active:scale-95 transition-all outline-none"
+            className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#F3F4F6] active:bg-[#F3F4F6] active:scale-95 transition-all outline-none"
             onClick={onMenuToggle}
           >
             <List size={22} weight="bold" color="#1E1E1E" />
@@ -137,7 +160,7 @@ const Header = ({ onOpenCart, searchQuery, onSearchChange, onMenuToggle }) => {
                 type="button"
                 aria-label="Limpiar búsqueda"
                 onClick={() => onSearchChange('')}
-                className="shrink-0 ml-1 p-1 rounded-full outline-none focus-visible:bg-[#E5E5E7] text-[#8E8E93] hover:text-[#1E1E1E] active:scale-[0.95] transition-all"
+                className="shrink-0 ml-1 p-1 rounded-full outline-none focus-visible:bg-[#E5E5E7] text-[#8E8E93] hover:text-[#1E1E1E] active:text-[#1E1E1E] active:scale-[0.95] transition-all"
               >
                 <X size={16} weight="bold" />
               </button>
@@ -147,15 +170,44 @@ const Header = ({ onOpenCart, searchQuery, onSearchChange, onMenuToggle }) => {
         
         {/* 4. Auth Buttons & Cart */}
         <div className="flex items-center shrink-0 gap-1 lg:gap-2 ml-auto">
-          <button className="hidden lg:flex px-4 h-9 items-center justify-center rounded-full bg-white hover:bg-[#F3F4F6] text-[#1E1E1E] font-medium text-[14px] transition-all outline-none">
-            Iniciar sesión
-          </button>
-          <button className="hidden lg:flex px-4 h-9 items-center justify-center rounded-full bg-[#1E1E1E] hover:bg-[#2C2C2E] text-white font-medium text-[14px] transition-all outline-none">
-            Registrarte
-          </button>
+          {user ? (
+            <button 
+              className="hidden lg:flex px-4 h-9 items-center justify-center rounded-full bg-[#F3F4F6] hover:bg-[#ECECEE] active:bg-[#ECECEE] text-[#1E1E1E] font-medium text-[14px] transition-all outline-none gap-2"
+              onClick={() => openAuth('profile')}
+            >
+              <div className="w-6 h-6 rounded-full bg-[#1E1E1E] text-white flex items-center justify-center text-[11px] font-bold">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+              Perfil
+            </button>
+          ) : (
+            <>
+              <button 
+                className="hidden lg:flex px-4 h-9 items-center justify-center rounded-full bg-white hover:bg-[#F3F4F6] active:bg-[#F3F4F6] text-[#1E1E1E] font-medium text-[14px] transition-all outline-none"
+                onClick={() => openAuth('login')}
+              >
+                Iniciar sesión
+              </button>
+              <button 
+                className="hidden lg:flex px-4 h-9 items-center justify-center rounded-full bg-[#1E1E1E] hover:bg-[#2C2C2E] active:bg-[#2C2C2E] text-white font-medium text-[14px] transition-all outline-none"
+                onClick={() => openAuth('signup')}
+              >
+                Registrarte
+              </button>
+            </>
+          )}
           {/* Tablet (md) fallback User Icon */}
-          <button className="lg:hidden w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-[#F3F4F6] text-[#1E1E1E] transition-all outline-none">
-            <User size={22} weight="bold" />
+          <button 
+            className="lg:hidden w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-[#F3F4F6] active:bg-[#F3F4F6] text-[#1E1E1E] transition-all outline-none"
+            onClick={() => openAuth(user ? 'profile' : 'login')}
+          >
+            {user ? (
+              <div className="w-8 h-8 rounded-full bg-[#1E1E1E] text-white flex items-center justify-center text-[12px] font-bold">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+            ) : (
+              <User size={22} weight="bold" />
+            )}
           </button>
           <CartButton onOpenCart={onOpenCart} cartCount={cartCount} />
         </div>
@@ -163,6 +215,7 @@ const Header = ({ onOpenCart, searchQuery, onSearchChange, onMenuToggle }) => {
       </div>
 
       <DeliveryModals activeModal={activeModal} setActiveModal={setActiveModal} modes={modes} />
+      <AuthModal isOpen={authModalConfig.isOpen} onClose={closeAuth} initialView={authModalConfig.view} />
     </div>
   );
 };

@@ -17,6 +17,20 @@ export const CartProvider = ({ children }) => {
   const [deliveryMode, setDeliveryMode] = useState(() => loadSaved('didi_mode', 'delivery')); // 'delivery' | 'pickup'
 
   const [addresses, setAddresses] = useState(() => loadSaved('didi_addresses', []));
+  const [activePromo, setActivePromo] = useState(() => loadSaved('didi_promo', null));
+  const [savedCards, setSavedCards] = useState(() => loadSaved('didi_cards', [
+    { id: '1', type: 'Visa', last4: '1234' },
+    { id: '2', type: 'Mastercard', last4: '5678' },
+  ]));
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(() => {
+    const active = loadSaved('didi_active_card', null);
+    if (active) return active;
+    const cards = loadSaved('didi_cards', [
+      { id: '1', type: 'Visa', last4: '1234' },
+      { id: '2', type: 'Mastercard', last4: '5678' }
+    ]);
+    return cards.length > 0 ? cards[0] : null;
+  });
   
   const [branches] = useState([
     { id: 'br-1', label: 'Sucursal Centro', detail: '15-20 min' },
@@ -49,6 +63,18 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('didi_mode', JSON.stringify(deliveryMode));
   }, [deliveryMode]);
+
+  useEffect(() => {
+    localStorage.setItem('didi_promo', JSON.stringify(activePromo));
+  }, [activePromo]);
+
+  useEffect(() => {
+    localStorage.setItem('didi_cards', JSON.stringify(savedCards));
+  }, [savedCards]);
+
+  useEffect(() => {
+    localStorage.setItem('didi_active_card', JSON.stringify(selectedPaymentMethod));
+  }, [selectedPaymentMethod]);
 
   useEffect(() => {
     if (deliveryAddress) {
@@ -152,6 +178,27 @@ export const CartProvider = ({ children }) => {
     });
   };
 
+  const applyPromo = (code) => {
+    const validPromos = {
+      'FREESHIP': { code: 'FREESHIP', discount: 25.00, type: 'shipping' },
+      'BURGER20': { code: 'BURGER20', discount: 0.20, type: 'percentage' }
+    };
+    const promo = validPromos[code.toUpperCase()];
+    if (promo) {
+      setActivePromo(promo);
+      return { success: true };
+    }
+    return { success: false, error: 'Código inválido o expirado.' };
+  };
+
+  const removePromo = () => setActivePromo(null);
+
+  const addCard = (card) => {
+    const newCard = { ...card, id: `card-${Date.now()}` };
+    setSavedCards((prev) => [...prev, newCard]);
+    setSelectedPaymentMethod((prev) => prev || newCard);
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -176,6 +223,13 @@ export const CartProvider = ({ children }) => {
         addAddress,
         removeAddress,
         updateAddress,
+        activePromo,
+        applyPromo,
+        removePromo,
+        savedCards,
+        addCard,
+        selectedPaymentMethod,
+        setSelectedPaymentMethod,
       }}
     >
       {children}

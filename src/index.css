@@ -34,6 +34,18 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overscroll-behavior-y: none;
+  /* Disable tap highlight on mobile devices */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Make interactive elements feel native by preventing text selection */
+button,
+a,
+img,
+svg,
+[role="button"] {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .no-scrollbar::-webkit-scrollbar {
