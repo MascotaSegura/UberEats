@@ -44,11 +44,11 @@ const CartPanel = ({ onClose }) => {
     return (
       <div className="fixed inset-0 h-[100dvh] w-screen z-50 flex items-center md:items-stretch justify-center md:justify-end bg-[#1E1E1E]/40 p-4 md:p-0 overflow-hidden">
         <div className="bg-white w-full max-h-[100dvh] max-w-[480px] flex flex-col items-center justify-center p-8 text-center rounded-2xl md:rounded-none md:rounded-l-2xl isolate overflow-y-auto">
-          <h2 className="text-3xl font-bold text-[#1E1E1E] mb-2">
+          <h2 className="text-3xl font-semibold text-[#1E1E1E] mb-2">
             {statusTitle[orderStatus]}
           </h2>
           <p className="text-[#8E8E93] text-[15px] mb-10">
-            Gracias por elegir DidiBurger.
+            Gracias por elegir Uber Eats.
           </p>
 
           <div className="flex items-center justify-center gap-2 mb-12 w-full max-w-[320px]">
@@ -62,14 +62,14 @@ const CartPanel = ({ onClose }) => {
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
                         done || active
-                          ? 'bg-[#FF441F] text-white'
+                          ? 'bg-[#06C167] text-white'
                           : 'bg-[#F3F4F6] text-[#8E8E93]'
                       }`}
                     >
                       <Icon size={20} weight="fill" />
                     </div>
                     <span
-                      className={`text-xs font-semibold ${
+                      className={`text-xs font-medium ${
                         done || active ? 'text-[#1E1E1E]' : 'text-[#8E8E93]'
                       }`}
                     >
@@ -79,7 +79,7 @@ const CartPanel = ({ onClose }) => {
                   {i < STEPS.length - 1 && (
                     <div
                       className={`flex-1 h-[2px] -translate-y-3 transition-colors ${
-                        i < currentIndex ? 'bg-[#FF441F]' : 'bg-[#F3F4F6]'
+                        i < currentIndex ? 'bg-[#06C167]' : 'bg-[#F3F4F6]'
                       }`}
                     />
                   )}
@@ -89,7 +89,7 @@ const CartPanel = ({ onClose }) => {
           </div>
 
           <div
-            className="bg-[#1E1E1E] text-white px-8 py-3 rounded-full font-bold cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:opacity-80"
+            className="bg-[#1E1E1E] text-white px-8 py-3 rounded-full font-medium cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:opacity-80"
             onClick={resetOrder}
             onKeyDown={handleKeyDown(resetOrder)}
             role="button"
@@ -121,7 +121,7 @@ const CartPanel = ({ onClose }) => {
           >
             <X size={20} weight="bold" color="#1E1E1E" />
           </div>
-          <h2 className="flex-1 text-center text-lg font-bold text-[#1E1E1E] pr-10">
+          <h2 className="flex-1 text-center text-lg font-semibold text-[#1E1E1E] pr-10">
             Tu Carrito
           </h2>
         </div>
@@ -141,7 +141,7 @@ const CartPanel = ({ onClose }) => {
               <div className="w-20 h-20 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-6">
                 <ShoppingCart size={40} weight="fill" color="#D1D1D6" />
               </div>
-              <h3 className="text-xl font-bold text-[#1E1E1E] mb-2">Tu carrito está vacío</h3>
+              <h3 className="text-xl font-semibold text-[#1E1E1E] mb-2">Tu carrito está vacío</h3>
               <p className="text-[15px] text-[#8E8E93] max-w-[250px]">¡Agrega algunas delicias para comenzar tu pedido!</p>
             </div>
           ) : (
@@ -161,7 +161,7 @@ const CartPanel = ({ onClose }) => {
                   <div className="flex-1 flex flex-col justify-between">
                     <div className="flex justify-between items-start gap-2">
                       <div className="flex flex-col">
-                        <h3 className="font-semibold text-[#1E1E1E] text-[15px] leading-tight">
+                        <h3 className="font-medium text-[#1E1E1E] text-[15px] leading-tight">
                           {item.name}
                         </h3>
                         {item.customizations && item.customizations.length > 0 && (
@@ -176,7 +176,7 @@ const CartPanel = ({ onClose }) => {
                         )}
                       </div>
                       <div
-                        className="text-[#8E8E93] hover:text-[#FF441F] cursor-pointer shrink-0 transition-all active:scale-[0.95] outline-none rounded-md focus-visible:opacity-80"
+                        className="text-[#8E8E93] hover:text-[#06C167] cursor-pointer shrink-0 transition-all active:scale-[0.95] outline-none rounded-md focus-visible:opacity-80"
                         onClick={() => removeFromCart(item.id)}
                         onKeyDown={handleKeyDown(() => removeFromCart(item.id))}
                         role="button"
@@ -187,12 +187,12 @@ const CartPanel = ({ onClose }) => {
                       </div>
                     </div>
                     <div className="flex items-center justify-between mt-2">
-                      <span className="font-bold text-[#1E1E1E]">
+                      <span className="font-semibold text-[#1E1E1E]">
                         ${(item.price * item.quantity).toFixed(2)} <span className="text-[11px] font-semibold text-[#8E8E93]">MXN</span>
                       </span>
                       <div className="flex items-center gap-3 bg-[#F3F4F6] px-2 py-1 rounded-full">
                         <div
-                          className="cursor-pointer p-1 hover:text-[#FF441F] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:bg-[#E5E5E7]"
+                          className="cursor-pointer p-1 hover:text-[#06C167] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:bg-[#E5E5E7]"
                           onClick={() =>
                             updateQuantity(item.id, item.quantity - 1)
                           }
@@ -209,7 +209,7 @@ const CartPanel = ({ onClose }) => {
                           {item.quantity}
                         </span>
                         <div
-                          className="cursor-pointer p-1 hover:text-[#FF441F] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:bg-[#E5E5E7]"
+                          className="cursor-pointer p-1 hover:text-[#06C167] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:bg-[#E5E5E7]"
                           onClick={() =>
                             updateQuantity(item.id, item.quantity + 1)
                           }
@@ -248,10 +248,10 @@ const CartPanel = ({ onClose }) => {
             </div>
             <div className="flex justify-between mb-6 text-[#1E1E1E] items-end">
               <span className="font-semibold text-lg">Total</span>
-              <span className="font-bold text-2xl">${(getCartTotal() + (deliveryMode === 'delivery' ? 25 : 0)).toFixed(2)} <span className="text-[14px] font-semibold text-[#8E8E93]">MXN</span></span>
+              <span className="font-semibold text-2xl">${(getCartTotal() + (deliveryMode === 'delivery' ? 25 : 0)).toFixed(2)} <span className="text-[14px] font-semibold text-[#8E8E93]">MXN</span></span>
             </div>
             <div
-              className="w-full bg-[#FF441F] text-white py-4 rounded-full flex justify-center font-bold cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:opacity-90"
+              className="w-full bg-[#06C167] text-white py-4 rounded-full flex justify-center font-medium cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:opacity-90"
               onClick={() => { placeOrder(); }}
               onKeyDown={handleKeyDown(() => { placeOrder(); })}
               role="button"

@@ -29,8 +29,8 @@ const ProductModal = ({ product, onClose }) => {
 
   const handleShare = async () => {
     const shareData = {
-      title: 'DidiBurger',
-      text: `¡Mira ${product.name} en DidiBurger!`,
+      title: 'Uber Eats',
+      text: `¡Mira ${product.name} en Uber Eats!`,
       url: window.location.href,
     };
     if (navigator.share) {
@@ -103,7 +103,7 @@ const ProductModal = ({ product, onClose }) => {
               aria-label={copied ? 'Enlace copiado' : 'Compartir'}
             >
               {copied
-                ? <Check size={20} weight="bold" color="#FF441F" />
+                ? <Check size={20} weight="bold" color="#06C167" />
                 : <ShareNetwork size={20} weight="bold" color="#1E1E1E" />}
             </div>
           </div>
@@ -124,14 +124,14 @@ const ProductModal = ({ product, onClose }) => {
             <div className="px-6 pb-6 pt-4">
               <h1 className="text-2xl md:text-3xl font-bold text-[#1E1E1E] mb-2 leading-tight">{product.name}</h1>
               {/* Diseño: Mostramos el precio unitario del producto aquí para mayor claridad. */}
-              <div className="text-[20px] font-bold text-[#1E1E1E] mb-4">${product.price?.toFixed(2)} MXN</div>
+              <div className="text-[20px] font-semibold text-[#1E1E1E] mb-4">${product.price?.toFixed(2)} MXN</div>
               <p className="text-[#8E8E93] text-[15px] md:text-[16px] leading-relaxed mb-8">
                 {product.description}
               </p>
 
             {product.ingredients && product.ingredients.length > 0 && (
               <div className="mb-8">
-                <span className="text-[#1E1E1E] font-semibold block mb-3">Ingredientes</span>
+                <span className="text-[#1E1E1E] font-medium block mb-3">Ingredientes</span>
                 <div className="flex flex-wrap gap-2">
                   {product.ingredients.map(ing => {
                     const isRemoved = removedIngredients.includes(ing);
@@ -155,7 +155,7 @@ const ProductModal = ({ product, onClose }) => {
                         role="button"
                         tabIndex={0}
                         aria-pressed={!isRemoved}
-                        className={`px-4 py-2 rounded-full text-[14px] font-semibold cursor-pointer active:scale-[0.95] outline-none focus-visible:opacity-80 transition-all select-none ${
+                        className={`px-4 py-2 rounded-full text-[14px] font-medium cursor-pointer active:scale-[0.95] outline-none focus-visible:opacity-80 transition-all select-none ${
                           isRemoved 
                             ? 'bg-[#ECECEE] text-[#8E8E93] line-through hover:bg-[#E5E5E7]' 
                             : 'bg-[#F3F4F6] text-[#1E1E1E] hover:bg-[#ECECEE]'
@@ -170,7 +170,7 @@ const ProductModal = ({ product, onClose }) => {
             )}
 
             <div className="flex flex-col gap-2 mb-6">
-              <span className="text-[14px] font-bold text-[#1E1E1E]">Instrucciones especiales (Opcional)</span>
+              <span className="text-[14px] font-medium text-[#1E1E1E]">Instrucciones especiales (Opcional)</span>
               <textarea
                 value={specialInstructions}
                 onChange={(e) => setSpecialInstructions(e.target.value)}
@@ -200,7 +200,7 @@ const ProductModal = ({ product, onClose }) => {
               >
                 <Minus size={18} weight="bold" />
               </div>
-              <span className="text-[16px] md:text-lg font-bold w-4 md:w-5 text-center text-[#1E1E1E]">
+              <span className="text-[16px] md:text-lg font-medium w-4 md:w-5 text-center text-[#1E1E1E]">
                 {quantity}
               </span>
               <div
@@ -217,7 +217,7 @@ const ProductModal = ({ product, onClose }) => {
 
             {/* Botón de agregar */}
             <div
-              className="flex-1 bg-[#1E1E1E] text-white h-[48px] md:h-[56px] rounded-full flex items-center justify-between px-5 md:px-6 font-bold cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:bg-[#2C2C2E] text-[15px] md:text-[16px]"
+              className="flex-1 bg-[#06C167] text-white h-[48px] md:h-[56px] rounded-full flex items-center justify-between px-5 md:px-6 font-medium cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:bg-[#05a055] text-[15px] md:text-[16px]"
               onClick={handleAdd}
               onKeyDown={handleKeyDown(handleAdd)}
               role="button"

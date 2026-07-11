@@ -27,7 +27,7 @@ const CategoryNav = ({ selectedCategory, onSelectCategory }) => {
               role="button"
               tabIndex={0}
               aria-pressed={isSelected}
-              className={`whitespace-nowrap px-5 h-9 flex items-center justify-center rounded-full text-[14px] font-semibold cursor-pointer transition-colors outline-none focus-visible:opacity-80 ${
+              className={`whitespace-nowrap px-5 h-9 flex items-center justify-center rounded-full text-[14px] font-medium cursor-pointer transition-colors outline-none focus-visible:opacity-80 ${
                 isSelected
                   ? 'bg-[#1E1E1E] text-white'
                   : 'bg-[#F3F4F6] text-[#1E1E1E] hover:bg-[#ECECEE]'

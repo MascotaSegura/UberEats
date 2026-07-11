@@ -55,18 +55,18 @@ const QuickAddControl = ({ product }) => {
       onClick={e => e.stopPropagation()}
     >
       <button
-        className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1E1E1E] hover:text-[#FF441F] transition-colors active:scale-[0.90] outline-none focus-visible:bg-[#ECECEE]"
+        className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1E1E1E] hover:text-[#06C167] transition-colors active:scale-[0.90] outline-none focus-visible:bg-[#ECECEE]"
         onClick={handleDecrement}
         aria-label="Disminuir cantidad"
         type="button"
       >
         {quantity === 1 ? <Trash size={14} weight="bold" /> : <Minus size={14} weight="bold" />}
       </button>
-      <span className="text-[13px] font-bold w-3 text-center select-none">
+      <span className="text-[13px] font-medium w-3 text-center select-none">
         {quantity}
       </span>
       <button
-        className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1E1E1E] hover:text-[#FF441F] transition-colors active:scale-[0.90] outline-none focus-visible:bg-[#ECECEE]"
+        className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1E1E1E] hover:text-[#06C167] transition-colors active:scale-[0.90] outline-none focus-visible:bg-[#ECECEE]"
         onClick={handleIncrement}
         aria-label="Aumentar cantidad"
         type="button"
@@ -104,7 +104,7 @@ const ProductCard = ({ product, onClick }) => {
       </p>
 
       <div className="flex items-center mt-auto justify-between">
-        <span className="text-[15px] font-bold text-[#1E1E1E]">
+        <span className="text-[15px] font-semibold text-[#1E1E1E]">
           ${product.price.toFixed(2)} <span className="text-[12px] font-semibold text-[#8E8E93]">MXN</span>
         </span>
         

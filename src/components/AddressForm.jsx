@@ -135,7 +135,7 @@ const AddressForm = ({ onClose, initialData }) => {
           >
             <X size={18} weight="bold" color="#1E1E1E" />
           </div>
-          <h2 className="flex-1 text-center font-bold text-[#1E1E1E] pr-9">
+          <h2 className="flex-1 text-center font-semibold text-[#1E1E1E] pr-9">
             {initialData ? 'Editar Dirección' : 'Nueva Dirección'}
           </h2>
         </div>
@@ -143,10 +143,10 @@ const AddressForm = ({ onClose, initialData }) => {
         <div className="flex-1 min-h-0 overflow-y-auto p-6 flex flex-col gap-6">
           {!selectedPlace ? (
             <div>
-              <label className="text-[14px] font-bold text-[#1E1E1E] mb-2 block">Ubicación</label>
+              <label className="text-[14px] font-medium text-[#1E1E1E] mb-2 block">Ubicación</label>
               
               <div 
-                className="w-full bg-[#1E1E1E] text-white rounded-full px-4 py-3 mb-4 flex items-center justify-center gap-2 cursor-pointer hover:bg-[#2C2C2E] active:scale-[0.98] transition-all font-bold text-[14px]"
+                className="w-full bg-[#1E1E1E] text-white rounded-full px-4 py-3 mb-4 flex items-center justify-center gap-2 cursor-pointer hover:bg-[#2C2C2E] active:scale-[0.98] transition-all font-medium text-[14px]"
                 onClick={handleGeolocation}
                 onKeyDown={handleKeyDown(handleGeolocation)}
                 role="button"
@@ -157,7 +157,7 @@ const AddressForm = ({ onClose, initialData }) => {
               </div>
 
               <div className="text-center mb-4 mt-2">
-                <span className="text-[#8E8E93] text-[12px] font-bold tracking-wider">O BUSCAR MANUALMENTE</span>
+                <span className="text-[#8E8E93] text-[12px] font-semibold tracking-wider">O BUSCAR MANUALMENTE</span>
               </div>
 
               {/* Diseño (Flat Design): Se usa focus-within:bg-[#ECECEE] en lugar de focus-within:ring para evitar contornos (líneas) y mantener el aspecto "flat". */}
@@ -183,7 +183,7 @@ const AddressForm = ({ onClose, initialData }) => {
                         setStreet(feature.place_name);
                       }}
                     >
-                      <span className="font-semibold text-[#1E1E1E] block text-[15px]">{feature.text}</span>
+                      <span className="font-medium text-[#1E1E1E] block text-[15px]">{feature.text}</span>
                       <span className="text-[#8E8E93] text-[13px]">{feature.place_name}</span>
                     </div>
                   ))}
@@ -193,7 +193,7 @@ const AddressForm = ({ onClose, initialData }) => {
           ) : (
             <div className="flex flex-col gap-5 animate-fade-in">
               <div>
-                <label className="text-[14px] font-bold text-[#1E1E1E] mb-3 block">Etiqueta de la dirección</label>
+                <label className="text-[14px] font-medium text-[#1E1E1E] mb-3 block">Etiqueta de la dirección</label>
                 <div className="flex flex-wrap gap-2 mb-3">
                   {tags.map(tag => (
                     <div
@@ -202,7 +202,7 @@ const AddressForm = ({ onClose, initialData }) => {
                       onKeyDown={handleKeyDown(() => setSelectedTag(tag))}
                       role="button"
                       tabIndex={0}
-                      className={`px-4 py-2.5 rounded-full text-[14px] font-semibold cursor-pointer outline-none focus-visible:opacity-80 transition-colors active:scale-[0.95] ${
+                      className={`px-4 py-2.5 rounded-full text-[14px] font-medium cursor-pointer outline-none focus-visible:opacity-80 transition-colors active:scale-[0.95] ${
                         selectedTag === tag
                           ? 'bg-[#1E1E1E] text-white'
                           : 'bg-[#F3F4F6] text-[#1E1E1E] hover:bg-[#ECECEE]'
@@ -225,7 +225,7 @@ const AddressForm = ({ onClose, initialData }) => {
               
               <div className="flex flex-col gap-5 md:flex-row md:gap-4">
                 <div className="flex-1">
-                  <label className="text-[14px] font-bold text-[#1E1E1E] mb-2 block">Calle y número exterior</label>
+                  <label className="text-[14px] font-medium text-[#1E1E1E] mb-2 block">Calle y número exterior</label>
                   <input
                     type="text"
                     value={street}
@@ -235,7 +235,7 @@ const AddressForm = ({ onClose, initialData }) => {
                   />
                 </div>
                 <div className="md:w-32">
-                  <label className="text-[14px] font-bold text-[#1E1E1E] mb-2 block">Int / Depto</label>
+                  <label className="text-[14px] font-medium text-[#1E1E1E] mb-2 block">Int / Depto</label>
                   <input
                     type="text"
                     value={interior}
@@ -247,7 +247,7 @@ const AddressForm = ({ onClose, initialData }) => {
               </div>
               
               <div>
-                <label className="text-[14px] font-bold text-[#1E1E1E] mb-2 block">Referencias visuales (Opcional)</label>
+                <label className="text-[14px] font-medium text-[#1E1E1E] mb-2 block">Referencias visuales (Opcional)</label>
                 <textarea
                   value={references}
                   onChange={(e) => setReferences(e.target.value)}
@@ -256,9 +256,9 @@ const AddressForm = ({ onClose, initialData }) => {
                   className="w-full bg-[#F3F4F6] rounded-2xl px-4 py-3 text-[14px] outline-none text-[#1E1E1E] placeholder:text-[#8E8E93] focus:bg-[#ECECEE] resize-none transition-colors"
                 />
               </div>
-
+              
               <div>
-                <label className="text-[14px] font-bold text-[#1E1E1E] mb-2 block">Instrucciones de entrega (Opcional)</label>
+                <label className="text-[14px] font-medium text-[#1E1E1E] mb-2 block">Instrucciones de entrega (Opcional)</label>
                 <textarea
                   value={instructions}
                   onChange={(e) => setInstructions(e.target.value)}
@@ -274,9 +274,9 @@ const AddressForm = ({ onClose, initialData }) => {
         {selectedPlace && (
           <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] bg-white shrink-0 flex flex-col gap-3">
             <div
-              className={`w-full py-4 rounded-full flex items-center justify-center font-bold transition-all outline-none focus-visible:opacity-90 ${
+              className={`w-full py-4 rounded-full flex items-center justify-center font-medium transition-all outline-none focus-visible:opacity-90 ${
                 isSaveEnabled 
-                  ? 'bg-[#1E1E1E] text-white cursor-pointer active:scale-[0.98]'
+                  ? 'bg-[#06C167] text-white cursor-pointer active:scale-[0.98]'
                   : 'bg-[#F3F4F6] text-[#8E8E93] cursor-not-allowed opacity-70'
               }`}
               onClick={handleSave}
@@ -289,7 +289,7 @@ const AddressForm = ({ onClose, initialData }) => {
             </div>
             {initialData && (
                <div 
-                 className="w-full py-3 flex items-center justify-center font-bold text-[#FF441F] cursor-pointer hover:bg-[#F3F4F6] rounded-full outline-none focus-visible:bg-[#F3F4F6] transition-all"
+                 className="w-full py-3 flex items-center justify-center font-medium text-[#EF4444] cursor-pointer hover:bg-[#F3F4F6] rounded-full outline-none focus-visible:bg-[#F3F4F6] transition-all"
                  onClick={() => { removeAddress(initialData.id); onClose(); }}
                  onKeyDown={handleKeyDown(() => { removeAddress(initialData.id); onClose(); })}
                  role="button"

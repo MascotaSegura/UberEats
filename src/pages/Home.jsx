@@ -5,6 +5,7 @@ import CategoryNav from '../components/CategoryNav';
 import ProductCard from '../components/ProductCard';
 import ProductModal from '../components/ProductModal';
 import CartPanel from '../components/CartPanel';
+import Sidebar from '../components/Sidebar';
 import { products } from '../data/products';
 import { useCart } from '../context/useCart';
 
@@ -13,6 +14,9 @@ const Home = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   const { orderStatus } = useCart();
 
   const trimmedQuery = searchQuery.trim().toLowerCase();
@@ -36,6 +40,7 @@ const Home = () => {
           onOpenCart={() => setIsCartOpen(true)}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
+          onMenuToggle={() => setIsSidebarOpen(true)}
         />
         <CategoryNav
           selectedCategory={selectedCategory}
@@ -55,7 +60,7 @@ const Home = () => {
             ))}
           </div>
         ) : (
-          <div className="max-w-md mx-auto mt-12 p-10 bg-white rounded-3xl flex flex-col items-center justify-center text-center shadow-none">
+          <div className="max-w-md mx-auto mt-12 p-10 bg-white rounded-3xl flex flex-col items-center justify-center text-center">
             <div className="w-20 h-20 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-6">
               {trimmedQuery !== '' ? (
                 <MagnifyingGlass size={40} weight="bold" color="#D1D1D6" />
@@ -63,7 +68,7 @@ const Home = () => {
                 <Storefront size={40} weight="fill" color="#D1D1D6" />
               )}
             </div>
-            <h3 className="text-xl font-bold text-[#1E1E1E] mb-2">
+            <h3 className="text-xl font-semibold text-[#1E1E1E] mb-2">
               {trimmedQuery !== '' ? 'Sin resultados' : 'Categoría vacía'}
             </h3>
             <p className="text-[15px] text-[#8E8E93] leading-snug">
@@ -74,6 +79,9 @@ const Home = () => {
           </div>
         )}
       </div>
+
+      {/* Navigation Drawer */}
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       {selectedProduct && (
         <ProductModal

@@ -34,20 +34,20 @@ export const ModalDropdown = ({ isOpen, onClose, title, items, selectedId, onSel
           >
             <X size={18} weight="bold" color="#1E1E1E" />
           </div>
-          <h2 className="flex-1 text-center font-bold text-[#1E1E1E] pr-9">
+          <h2 className="flex-1 text-center font-semibold text-[#1E1E1E] pr-9">
             {title}
           </h2>
         </div>
         <div className="flex-1 min-h-0 overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))] flex flex-col gap-2">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full min-h-[200px] p-6 text-center bg-[#F3F4F6] rounded-2xl">
-               <span className="text-[15px] font-bold text-[#1E1E1E] mb-2">Lista vacía</span>
+               <span className="text-[15px] font-semibold text-[#1E1E1E] mb-2">Lista vacía</span>
                <span className="text-[13px] text-[#8E8E93] mb-6">
                  {showAddAction ? 'Agrega tu primera dirección para poder recibir tu pedido.' : 'No hay sucursales disponibles en este momento.'}
                </span>
                {showAddAction && (
                  <button
-                   className="bg-[#1E1E1E] text-white px-6 py-3 rounded-full font-bold text-[14px] outline-none focus-visible:opacity-80 cursor-pointer hover:bg-[#2C2C2E] active:scale-[0.98] transition-all"
+                   className="bg-[#06C167] text-white px-6 py-3 rounded-full font-medium text-[14px] outline-none focus-visible:opacity-80 cursor-pointer hover:bg-[#05a055] active:scale-[0.98] transition-all"
                    onClick={(e) => { e.stopPropagation(); onClose(); onAddAction(); }}
                  >
                    Agregar Dirección
@@ -77,9 +77,9 @@ export const ModalDropdown = ({ isOpen, onClose, title, items, selectedId, onSel
                   <div className="flex items-center gap-3">
                     {item.icon && <span className="shrink-0">{item.icon}</span>}
                     <div className="flex flex-col">
-                      <span className="font-bold">{item.label}</span>
+                      <span className="font-medium">{item.label}</span>
                       {item.detail && (
-                        <span className={`text-[13px] ${isSelected ? 'text-gray-300' : 'text-[#8E8E93]'}`}>
+                        <span className={`text-[13px] ${isSelected ? 'text-[#ECECEE]' : 'text-[#8E8E93]'}`}>
                           {item.detail}
                         </span>
                       )}
@@ -88,7 +88,7 @@ export const ModalDropdown = ({ isOpen, onClose, title, items, selectedId, onSel
                   <div className="flex items-center gap-3">
                     {onEditAction && (
                       <div
-                        className={`p-2 rounded-full cursor-pointer outline-none focus-visible:bg-[#D9D9D9] active:scale-[0.95] transition-all ${isSelected ? 'hover:bg-white/20 text-white' : 'hover:bg-[#E5E5E7] text-[#1E1E1E]'}`}
+                        className={`p-2 rounded-full cursor-pointer outline-none focus-visible:bg-[#D9D9D9] active:scale-[0.95] transition-all ${isSelected ? 'hover:bg-[#2C2C2E] text-white' : 'hover:bg-[#E5E5E7] text-[#1E1E1E]'}`}
                         onClick={(e) => {
                           e.stopPropagation();
                           onEditAction(item);
@@ -109,7 +109,7 @@ export const ModalDropdown = ({ isOpen, onClose, title, items, selectedId, onSel
         {showAddAction && items.length > 0 && (
           <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] bg-white shrink-0">
             <div
-              className="w-full bg-[#1E1E1E] text-white py-3 rounded-full flex items-center justify-center font-bold cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:opacity-80"
+              className="w-full bg-[#06C167] text-white py-3 rounded-full flex items-center justify-center font-medium cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:opacity-80"
               onClick={() => { onClose(); onAddAction(); }}
               role="button"
               tabIndex={0}
@@ -151,11 +151,13 @@ export const DeliveryLocation = ({ setActiveModal, variant = 'header' }) => {
         ) : (
           <Storefront size={20} weight="fill" color="#1E1E1E" className="shrink-0" />
         )}
-        <div className="flex flex-col min-w-0 flex-1">
-          <span className={`text-[12px] font-semibold text-[#8E8E93] leading-none mb-0.5 ${variant === 'header' ? 'md:hidden' : ''}`}>
-            {deliveryMode === 'delivery' ? 'Entregar ahora' : 'Recoger ahora'}
-          </span>
-          <span className="text-[14px] font-bold text-[#1E1E1E] truncate leading-none">
+        <div className="flex flex-col min-w-0 flex-1 justify-center">
+          {variant !== 'compact' && (
+            <span className={`text-[11px] font-medium text-[#8E8E93] leading-none mb-0.5 ${variant === 'header' ? 'md:hidden' : ''}`}>
+              {deliveryMode === 'delivery' ? 'Entregar ahora' : 'Recoger ahora'}
+            </span>
+          )}
+          <span className="font-medium text-[14px] text-[#1E1E1E] truncate leading-none">
             {currentLocationLabel}
           </span>
         </div>
@@ -168,11 +170,11 @@ export const DeliveryLocation = ({ setActiveModal, variant = 'header' }) => {
 export const DeliveryModeMobile = ({ setActiveModal, variant = 'header' }) => {
   const { deliveryMode } = useCart();
   const currentModeLabel = deliveryMode === 'delivery' ? 'A Domicilio' : 'Recoger';
-  const bgClass = variant === 'header' ? 'bg-[#F3F4F6] hover:bg-[#ECECEE]' : 'bg-white hover:bg-gray-50';
+  const bgClass = variant === 'header' ? 'bg-[#F3F4F6] hover:bg-[#ECECEE]' : 'bg-white hover:bg-[#F3F4F6]';
 
   return (
     <div
-      className={`flex items-center gap-1.5 px-3 h-9 rounded-full text-[14px] font-bold cursor-pointer transition-colors text-[#1E1E1E] outline-none focus-visible:opacity-80 shrink-0 ${bgClass}`}
+      className={`flex items-center gap-1.5 px-2.5 h-9 rounded-full text-[13px] font-semibold cursor-pointer transition-colors text-[#1E1E1E] outline-none focus-visible:opacity-80 shrink-0 ${bgClass}`}
       onClick={() => setActiveModal('mode')}
       onKeyDown={handleKeyDown(() => setActiveModal('mode'))}
       role="button"
@@ -187,31 +189,31 @@ export const DeliveryModeMobile = ({ setActiveModal, variant = 'header' }) => {
 export const DeliveryModeDesktop = ({ variant = 'header' }) => {
   const { deliveryMode, setDeliveryMode } = useCart();
   const containerBg = variant === 'header' ? 'bg-[#F3F4F6]' : 'bg-white';
-  const inactiveHover = variant === 'header' ? 'hover:text-[#1E1E1E]' : 'hover:text-[#1E1E1E] hover:bg-gray-50';
+  const inactiveHover = variant === 'header' ? 'hover:bg-white text-[#1E1E1E]' : 'hover:bg-[#ECECEE] text-[#1E1E1E]';
 
   return (
-    <div className={`flex items-center rounded-full p-1 shrink-0 h-9 ${containerBg}`}>
+    <div className={`flex items-center gap-1 rounded-full p-1 shrink-0 h-8 ${containerBg}`}>
       <button
-        className={`flex items-center justify-center px-4 h-full rounded-full outline-none focus-visible:opacity-80 transition-all cursor-pointer ${
+        className={`flex items-center justify-center px-3 h-full rounded-full outline-none focus-visible:opacity-80 transition-all cursor-pointer ${
           deliveryMode === 'delivery'
             ? 'bg-[#1E1E1E] text-white'
-            : `text-[#8E8E93] ${inactiveHover}`
+            : `${inactiveHover}`
         }`}
         onClick={() => { setDeliveryMode('delivery'); }}
         type="button"
       >
-        <span className="text-[13px] font-bold">A Domicilio</span>
+        <span className="text-[14px] font-medium">A Domicilio</span>
       </button>
       <button
-        className={`flex items-center justify-center px-4 h-full rounded-full outline-none focus-visible:opacity-80 transition-all cursor-pointer ${
+        className={`flex items-center justify-center px-3 h-full rounded-full outline-none focus-visible:opacity-80 transition-all cursor-pointer ${
           deliveryMode === 'pickup'
             ? 'bg-[#1E1E1E] text-white'
-            : `text-[#8E8E93] ${inactiveHover}`
+            : `${inactiveHover}`
         }`}
         onClick={() => { setDeliveryMode('pickup'); }}
         type="button"
       >
-        <span className="text-[13px] font-bold">Recoger</span>
+        <span className="text-[14px] font-medium">Recoger</span>
       </button>
     </div>
   );
