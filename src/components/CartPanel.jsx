@@ -3,6 +3,8 @@ import { X, Trash, Plus, Minus, CheckCircle, Package, Truck, ShoppingCart, Credi
 import { useCart } from '../context/useCart';
 import DeliverySelector from './DeliverySelector';
 import NotificationModal from './NotificationModal';
+import { AuthContext } from '../context/AuthContext';
+import AuthModal from './AuthModal';
 
 
 const handleKeyDown = (fn) => (e) => {
@@ -44,6 +46,9 @@ const CartPanel = ({ onClose }) => {
     savedCards,
   } = useCart();
 
+  const { user } = React.useContext(AuthContext);
+  const [authModalConfig, setAuthModalConfig] = React.useState({ isOpen: false, view: 'login' });
+
   const [errorMsg, setErrorMsg] = React.useState('');
   const [showNotificationModal, setShowNotificationModal] = React.useState(false);
   const [promoInput, setPromoInput] = React.useState('');
@@ -63,6 +68,10 @@ const CartPanel = ({ onClose }) => {
   };
 
   const handlePlaceOrder = () => {
+    if (!user) {
+      setAuthModalConfig({ isOpen: true, view: 'login' });
+      return;
+    }
     if (deliveryMode === 'delivery' && !deliveryAddress) {
       setErrorMsg('Por favor, selecciona o agrega una dirección de entrega antes de continuar.');
       return;
@@ -245,23 +254,25 @@ const CartPanel = ({ onClose }) => {
                       <CaretRight size={16} color="#8E8E93" />
                     </div>
 
-                    <div
-                      className="flex items-center justify-between p-3 bg-[#F3F4F6] rounded-2xl cursor-pointer hover:bg-[#ECECEE] transition-colors active:scale-[0.98] outline-none focus-visible:bg-[#ECECEE]"
-                      onClick={() => setActiveView('payment')}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={handleKeyDown(() => setActiveView('payment'))}
-                    >
-                      <div className="flex items-center gap-3">
-                        <CreditCard size={18} color="#1E1E1E" weight="fill" />
-                        <span className="text-[14px] font-medium text-[#1E1E1E]">
-                          {selectedPaymentMethod
-                            ? `Pago con ${selectedPaymentMethod.type} •••• ${selectedPaymentMethod.last4}`
-                            : 'Seleccionar método de pago'}
-                        </span>
+                    {user && (
+                      <div
+                        className="flex items-center justify-between p-3 bg-[#F3F4F6] rounded-2xl cursor-pointer hover:bg-[#ECECEE] transition-colors active:scale-[0.98] outline-none focus-visible:bg-[#ECECEE]"
+                        onClick={() => setActiveView('payment')}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={handleKeyDown(() => setActiveView('payment'))}
+                      >
+                        <div className="flex items-center gap-3">
+                          <CreditCard size={18} color="#1E1E1E" weight="fill" />
+                          <span className="text-[14px] font-medium text-[#1E1E1E]">
+                            {selectedPaymentMethod
+                              ? `Pago con ${selectedPaymentMethod.type} •••• ${selectedPaymentMethod.last4}`
+                              : 'Seleccionar método de pago'}
+                          </span>
+                        </div>
+                        <CaretRight size={16} color="#8E8E93" />
                       </div>
-                      <CaretRight size={16} color="#8E8E93" />
-                    </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -407,6 +418,7 @@ const CartPanel = ({ onClose }) => {
         )}
 
       </div>
+      <AuthModal isOpen={authModalConfig.isOpen} onClose={() => setAuthModalConfig({ ...authModalConfig, isOpen: false })} initialView={authModalConfig.view} />
     </div>
   );
 };
