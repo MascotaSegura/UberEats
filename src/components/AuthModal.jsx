@@ -76,7 +76,7 @@ const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[60] flex items-end md:items-center justify-center bg-[#1E1E1E]/40 md:p-4"
+      className="fixed inset-0 z-[200] flex items-end md:items-center justify-center bg-[#1E1E1E]/40 md:p-4"
       onClick={onClose}
     >
       <div
