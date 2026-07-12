@@ -150,7 +150,7 @@ const ProductModal = ({ product, onClose }) => {
                 className="w-full h-full object-contain mix-blend-multiply"
               />
               {product.originalPrice && (
-                <div className="absolute top-4 left-4 bg-[#06C167] text-white text-[12px] font-bold px-3 py-1 rounded-full leading-none">
+                <div className="absolute bottom-4 left-4 bg-[#06C167] text-white text-[12px] font-bold px-3 py-1 rounded-full leading-none">
                   OFERTA
                 </div>
               )}
