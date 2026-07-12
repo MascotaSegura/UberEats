@@ -200,74 +200,94 @@ const OrderTrackingScreen = () => {
 
   // --- RENDER DELIVERY VIEW ---
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex flex-col bg-white overflow-hidden animate-fade-in isolate">
-      <div id="tracking-map" className="w-full flex-1 bg-[#F3F4F6] relative z-0" />
+    <div className="fixed inset-0 z-[100] flex flex-col md:flex-row bg-white overflow-hidden animate-fade-in isolate">
+      {/* Map (Right side on desktop, top on mobile) */}
+      <div id="tracking-map" className="w-full flex-1 md:w-auto bg-[#F3F4F6] relative z-0 md:order-2" />
 
+      {/* Mobile Close Button (Absolute over map) */}
       <div 
-        className="absolute top-[max(1rem,env(safe-area-inset-top,1rem))] left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform"
+        className="md:hidden absolute top-[max(1rem,env(safe-area-inset-top,1rem))] left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform"
         onClick={resetOrder}
       >
         <X size={24} weight="bold" color="#1E1E1E" />
       </div>
 
-      <div className="w-full bg-white rounded-t-3xl p-6 pb-[max(1.5rem,env(safe-area-inset-bottom,1.5rem))] z-10 relative mt-[-20px] flex flex-col items-center">
+      {/* Information Panel (Left side on desktop, bottom sheet on mobile) */}
+      <div className="w-full md:w-[400px] xl:w-[480px] bg-white rounded-t-3xl md:rounded-none p-6 pb-[max(1.5rem,env(safe-area-inset-bottom,1.5rem))] md:p-8 z-10 relative mt-[-20px] md:mt-0 flex flex-col md:h-full md:order-1 overflow-y-auto shrink-0">
         
-        <div className="w-12 h-1.5 bg-[#F3F4F6] rounded-full mb-6" />
-
-        <h2 className="text-2xl font-bold text-[#1E1E1E] mb-2 text-center">
-          {currentStep === 0 ? 'Preparando tu pedido...' : currentStep === 1 ? '¡Tu pedido va en camino!' : '¡Pedido entregado!'}
-        </h2>
-        
-        <p className="text-[#8E8E93] text-[15px] mb-8 text-center font-medium">
-          {currentStep === 2 ? '¡Disfruta tu comida!' : 'Llegada estimada: 15-20 min'}
-        </p>
-
-        <div className="flex items-center justify-center gap-2 mb-10 w-full max-w-[320px]">
-          {steps.map((step, i) => {
-            const { Icon } = step;
-            const done = i <= currentStep;
-            const active = i === currentStep;
-            return (
-              <React.Fragment key={step.key}>
-                <div className="flex flex-col items-center gap-2">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors duration-500 ${done ? 'bg-[#1E1E1E] text-white' : 'bg-[#F3F4F6] text-[#8E8E93]'}`}>
-                    <Icon size={24} weight={active ? 'fill' : 'bold'} className={active && i < 2 ? 'animate-pulse' : ''} />
-                  </div>
-                  <span className={`text-[12px] font-bold transition-colors ${done ? 'text-[#1E1E1E]' : 'text-[#8E8E93]'}`}>
-                    {step.label}
-                  </span>
-                </div>
-                {i < steps.length - 1 && (
-                  <div className={`flex-1 h-[3px] -translate-y-3 rounded-full transition-all duration-500 ${i < currentStep ? 'bg-[#1E1E1E]' : 'bg-[#F3F4F6]'}`} />
-                )}
-              </React.Fragment>
-            );
-          })}
+        {/* Top Header in Panel */}
+        <div className="w-full flex justify-center md:justify-between items-start mb-6 shrink-0">
+           {/* Mobile drag pill */}
+           <div className="w-12 h-1.5 bg-[#F3F4F6] rounded-full md:hidden" />
+           
+           {/* Desktop Logo & Close */}
+           <div className="hidden md:block text-[22px] tracking-tight text-[#1E1E1E] mt-1">
+              <span className="font-normal">Uber</span> <span className="font-medium">Eats</span>
+           </div>
+           <div 
+             className="hidden md:flex w-10 h-10 bg-[#F3F4F6] hover:bg-[#ECECEE] rounded-full items-center justify-center cursor-pointer active:scale-[0.95] transition-transform shrink-0"
+             onClick={resetOrder}
+           >
+             <X size={20} weight="bold" color="#1E1E1E" />
+           </div>
         </div>
 
-        {currentStep > 0 && (
-          <div className="w-full max-w-[400px] bg-[#F3F4F6] rounded-2xl p-4 flex items-center gap-4 mb-6 animate-fade-in">
-            <div className="w-12 h-12 bg-[#D1D1D6] rounded-full overflow-hidden shrink-0">
-               <img src={`${import.meta.env.BASE_URL}images/driver.jpg`} alt="Repartidor" className="w-full h-full object-cover mix-blend-multiply" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-bold text-[#1E1E1E] text-[16px]">Carlos M.</h4>
-              <p className="text-[14px] text-[#8E8E93]">Honda Moto • 98% Satisfacción</p>
-            </div>
-            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer active:scale-[0.95] transition-transform">
-              <Phone size={20} weight="fill" color="#1E1E1E" />
-            </div>
-          </div>
-        )}
+        <div className="flex flex-col items-center md:items-start w-full">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#1E1E1E] mb-2 text-center md:text-left leading-tight">
+            {currentStep === 0 ? 'Preparando tu pedido...' : currentStep === 1 ? '¡Tu pedido va en camino!' : '¡Pedido entregado!'}
+          </h2>
+          
+          <p className="text-[#8E8E93] text-[15px] md:text-[16px] mb-8 text-center md:text-left font-medium">
+            {currentStep === 2 ? '¡Disfruta tu comida!' : 'Llegada estimada: 15-20 min'}
+          </p>
 
-        {currentStep === 2 && (
-          <div
-            className="w-full max-w-[400px] bg-[#06C167] text-white py-4 rounded-full flex justify-center font-bold text-[16px] cursor-pointer transition-all active:scale-[0.98] outline-none animate-fade-in"
-            onClick={resetOrder}
-          >
-            Volver al inicio
+          <div className="flex items-center justify-center md:justify-start gap-2 mb-10 w-full max-w-[320px] md:max-w-none">
+            {steps.map((step, i) => {
+              const { Icon } = step;
+              const done = i <= currentStep;
+              const active = i === currentStep;
+              return (
+                <React.Fragment key={step.key}>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center transition-colors duration-500 ${done ? 'bg-[#1E1E1E] text-white' : 'bg-[#F3F4F6] text-[#8E8E93]'}`}>
+                      <Icon size={24} weight={active ? 'fill' : 'bold'} className={active && i < 2 ? 'animate-pulse' : ''} />
+                    </div>
+                    <span className={`text-[12px] font-bold transition-colors ${done ? 'text-[#1E1E1E]' : 'text-[#8E8E93]'}`}>
+                      {step.label}
+                    </span>
+                  </div>
+                  {i < steps.length - 1 && (
+                    <div className={`flex-1 h-[3px] -translate-y-3 rounded-full transition-all duration-500 ${i < currentStep ? 'bg-[#1E1E1E]' : 'bg-[#F3F4F6]'}`} />
+                  )}
+                </React.Fragment>
+              );
+            })}
           </div>
-        )}
+
+          {currentStep > 0 && (
+            <div className="w-full bg-[#F3F4F6] rounded-2xl p-4 flex items-center gap-4 mb-6 animate-fade-in">
+              <div className="w-12 h-12 bg-[#D1D1D6] rounded-full overflow-hidden shrink-0">
+                 <img src={`${import.meta.env.BASE_URL}images/driver.jpg`} alt="Repartidor" className="w-full h-full object-cover mix-blend-multiply" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-bold text-[#1E1E1E] text-[16px]">Carlos M.</h4>
+                <p className="text-[14px] text-[#8E8E93]">Honda Moto • 98% Satisfacción</p>
+              </div>
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer active:scale-[0.95] transition-transform">
+                <Phone size={20} weight="fill" color="#1E1E1E" />
+              </div>
+            </div>
+          )}
+
+          {currentStep === 2 && (
+            <div
+              className="w-full bg-[#06C167] text-white py-4 md:py-4 rounded-full flex justify-center font-bold text-[16px] cursor-pointer transition-all active:scale-[0.98] outline-none animate-fade-in mt-auto"
+              onClick={resetOrder}
+            >
+              Volver al inicio
+            </div>
+          )}
+        </div>
       </div>
     </div>,
     document.body
