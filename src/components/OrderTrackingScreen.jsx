@@ -11,7 +11,7 @@ const getIconHtml = (color, type) => {
     user: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 256 256"><path d="M128,64a40,40,0,1,0,40,40A40,40,0,0,0,128,64Zm0,64a24,24,0,1,1,24-24A24,24,0,0,1,128,128Zm0-112a88.1,88.1,0,0,0-88,88c0,31.4,14.51,64.68,42,96.25a254.19,254.19,0,0,0,41.45,38.3,8,8,0,0,0,9.18,0A254.19,254.19,0,0,0,174,200.25c27.45-31.57,42-64.85,42-96.25A88.1,88.1,0,0,0,128,16Zm0,206c-16.53-13-72-60.75-72-134a72,72,0,0,1,144,0C200,161.21,144.53,209,128,222Z"></path></svg>`,
     driver: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 256 256"><path d="M232,120h-8V96a16,16,0,0,0-16-16H168L138.86,50.86A16,16,0,0,0,127.55,46H32A16,16,0,0,0,16,62V168a32,32,0,0,0,64,0h88a32,32,0,0,0,64,0h0a16,16,0,0,0,16-16V136A16,16,0,0,0,232,120ZM48,184a16,16,0,1,1,16-16A16,16,0,0,1,48,184ZM32,152V62H127.55l29.15,29.14A16,16,0,0,0,168,96v56H80a32,32,0,0,0-48,0Zm152,32a16,16,0,1,1,16-16A16,16,0,0,1,184,184Zm48-32H216a32,32,0,0,0-64,0H184V112h24v24Z"></path></svg>`
   };
-  return `<div style="background-color: ${color}; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; outline: 3px solid white;">${svgMap[type]}</div>`;
+  return `<div style="background-color: ${color}; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-sizing: border-box;">${svgMap[type]}</div>`;
 };
 
 const createMarkerIcon = (color, type) => {
