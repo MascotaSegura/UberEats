@@ -38,6 +38,12 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Reset Leaflet's default white-box divIcon so custom circular markers render correctly */
+.leaflet-custom-marker {
+  background: none !important;
+  border: none !important;
+}
+
 /* Make interactive elements feel native by preventing text selection */
 button,
 a,
