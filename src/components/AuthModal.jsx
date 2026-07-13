@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { X, User, Phone, CaretLeft } from '@phosphor-icons/react';
+import { X, User, Phone, CaretLeft, CaretDown, Check } from '@phosphor-icons/react';
 import { AuthContext } from '../context/AuthContext';
 
 const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
@@ -10,9 +10,20 @@ const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
   const [view, setView] = useState('phone_input');
   const [phone, setPhone] = useState('');
   const [countryCode, setCountryCode] = useState('+52');
+  const [countryFlag, setCountryFlag] = useState('🇲🇽');
+  const [countryOpen, setCountryOpen] = useState(false);
+  const countryRef = useRef(null);
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState('');
+
+  const countryCodes = [
+    { code: '+52', flag: '🇲🇽', label: 'México' },
+    { code: '+1',  flag: '🇺🇸', label: 'EE.UU.' },
+    { code: '+34', flag: '🇪🇸', label: 'España' },
+    { code: '+54', flag: '🇦🇷', label: 'Argentina' },
+    { code: '+57', flag: '🇨🇴', label: 'Colombia' },
+  ];
   
   const isSignup = initialView === 'signup';
   useEffect(() => {
@@ -26,10 +37,21 @@ const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
       setCode('');
       setName('');
       setError('');
+      setCountryOpen(false);
     }
   }, [isOpen, initialView, user]);
 
-  console.log('AuthModal render, isOpen:', isOpen);
+  // Close country dropdown when clicking outside
+  useEffect(() => {
+    if (!countryOpen) return;
+    const handleOutside = (e) => {
+      if (countryRef.current && !countryRef.current.contains(e.target)) {
+        setCountryOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, [countryOpen]);
 
   if (!isOpen) return null;
 
@@ -142,21 +164,45 @@ const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
                     : 'Ingresa tu número de celular para acceder a tu cuenta.'}
                 </p>
                 <div className="flex items-center bg-[#F3F4F6] rounded-2xl px-4 h-14 focus-within:bg-[#ECECEE] transition-colors relative">
-                  <select
-                    value={countryCode}
-                    onChange={(e) => setCountryCode(e.target.value)}
-                    className="absolute inset-y-0 left-0 w-20 opacity-0 cursor-pointer"
-                  >
-                    <option value="+52">🇲🇽 +52</option>
-                    <option value="+1">🇺🇸 +1</option>
-                    <option value="+34">🇪🇸 +34</option>
-                    <option value="+54">🇦🇷 +54</option>
-                    <option value="+57">🇨🇴 +57</option>
-                  </select>
-                  <div className="text-[15px] font-medium text-[#1E1E1E] pr-3 mr-3 flex items-center pointer-events-none">
-                    {countryCode}
+                  {/* Custom Country Code Picker */}
+                  <div ref={countryRef} className="relative shrink-0 mr-2">
+                    <button
+                      type="button"
+                      className="flex items-center gap-1 h-8 px-2 rounded-xl bg-[#ECECEE] hover:bg-[#E0E0E2] active:bg-[#E0E0E2] transition-colors outline-none focus-visible:opacity-80 text-[15px] font-medium text-[#1E1E1E]"
+                      onClick={() => setCountryOpen((v) => !v)}
+                      aria-label="Seleccionar código de país"
+                    >
+                      <span>{countryFlag}</span>
+                      <span>{countryCode}</span>
+                      <CaretDown size={12} weight="bold" className={`transition-transform duration-200 ${countryOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {countryOpen && (
+                      <div className="absolute top-full left-0 mt-2 z-[300] bg-white rounded-2xl overflow-hidden min-w-[170px] border border-[#ECECEE]">
+                        {countryCodes.map((c) => (
+                          <button
+                            key={c.code}
+                            type="button"
+                            className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-[14px] font-medium transition-colors outline-none hover:bg-[#F3F4F6] active:bg-[#F3F4F6] ${
+                              countryCode === c.code ? 'text-[#1E1E1E] bg-[#F3F4F6]' : 'text-[#1E1E1E]'
+                            }`}
+                            onClick={() => {
+                              setCountryCode(c.code);
+                              setCountryFlag(c.flag);
+                              setCountryOpen(false);
+                            }}
+                          >
+                            <span className="flex items-center gap-2">
+                              <span>{c.flag}</span>
+                              <span>{c.label}</span>
+                            </span>
+                            <span className="text-[#8E8E93]">{c.code}</span>
+                            {countryCode === c.code && <Check size={15} weight="bold" color="#1E1E1E" />}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <Phone size={20} color="#8E8E93" className="mr-2 shrink-0 pointer-events-none" />
+                  <Phone size={20} color="#8E8E93" className="mr-2 shrink-0" />
                   <input
                     type="tel"
                     autoComplete="tel"
