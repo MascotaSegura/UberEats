@@ -232,7 +232,7 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
 
           {currentStep === 2 && (
             <div
-              className="w-full bg-[#06C167] text-white py-4 rounded-full flex justify-center font-bold text-[16px] cursor-pointer transition-all active:scale-[0.98] outline-none animate-fade-in"
+              className="w-full bg-[#06C167] text-white py-4 rounded-full flex justify-center font-bold text-[16px] cursor-pointer transition-all hover:bg-[#05a055] active:bg-[#05a055] active:scale-[0.98] outline-none animate-fade-in"
               onClick={resetOrder}
             >
               Volver al inicio
@@ -335,7 +335,7 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
 
           {currentStep === 2 && (
             <div
-              className="w-full bg-[#06C167] text-white py-4 md:py-4 rounded-full flex justify-center font-bold text-[16px] cursor-pointer transition-all active:scale-[0.98] outline-none animate-fade-in mt-auto"
+              className="w-full bg-[#06C167] text-white py-4 md:py-4 rounded-full flex justify-center font-bold text-[16px] cursor-pointer transition-all hover:bg-[#05a055] active:bg-[#05a055] active:scale-[0.98] outline-none animate-fade-in mt-auto"
               onClick={resetOrder}
             >
               Volver al inicio

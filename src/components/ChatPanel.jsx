@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, PaperPlaneRight, Headset, User } from '@phosphor-icons/react';
+import { X, PaperPlaneRight, Headset } from '@phosphor-icons/react';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -79,9 +79,19 @@ const ChatPanel = ({ isOpen, onClose, recipient }) => {
             <X size={20} weight="bold" color="#1E1E1E" />
           </div>
           <div className="flex-1 flex flex-col items-center justify-center pr-10">
-            <div className="w-8 h-8 rounded-full bg-[#1E1E1E] text-white flex items-center justify-center mb-1">
-              {recipient === 'driver' ? <User size={16} weight="bold" /> : <Headset size={16} weight="bold" />}
-            </div>
+            {recipient === 'driver' ? (
+              <div className="w-10 h-10 rounded-full bg-[#D1D1D6] overflow-hidden mb-1 shrink-0">
+                <img
+                  src={`${import.meta.env.BASE_URL}images/driver.jpg`}
+                  alt="Carlos M."
+                  className="w-full h-full object-cover mix-blend-multiply"
+                />
+              </div>
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-[#1E1E1E] text-white flex items-center justify-center mb-1">
+                <Headset size={18} weight="bold" />
+              </div>
+            )}
             <h2 className="text-[15px] font-semibold text-[#1E1E1E] leading-tight">
               {recipient === 'driver' ? 'Carlos M.' : 'Soporte Técnico'}
             </h2>
@@ -106,7 +116,7 @@ const ChatPanel = ({ isOpen, onClose, recipient }) => {
                   className={`px-4 py-2.5 text-[15px] ${
                     isUser 
                       ? 'bg-[#1E1E1E] text-white rounded-2xl rounded-tr-sm' 
-                      : 'bg-white text-[#1E1E1E] rounded-2xl rounded-tl-sm border border-[#ECECEE]'
+                      : 'bg-white text-[#1E1E1E] rounded-2xl rounded-tl-sm'
                   }`}
                 >
                   {msg.text}
@@ -133,7 +143,7 @@ const ChatPanel = ({ isOpen, onClose, recipient }) => {
             <button
               type="submit"
               disabled={!inputValue.trim()}
-              className="w-10 h-10 bg-[#1E1E1E] text-white rounded-full flex items-center justify-center outline-none focus-visible:opacity-80 active:scale-[0.95] transition-all disabled:opacity-50 disabled:active:scale-100"
+              className="w-10 h-10 bg-[#1E1E1E] text-white rounded-full flex items-center justify-center outline-none focus-visible:opacity-80 hover:bg-[#2C2C2E] active:bg-[#2C2C2E] active:scale-[0.95] transition-all disabled:opacity-50 disabled:active:scale-100"
             >
               <PaperPlaneRight size={18} weight="fill" />
             </button>

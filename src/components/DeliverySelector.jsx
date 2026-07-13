@@ -110,7 +110,7 @@ export const ModalDropdown = ({ isOpen, onClose, title, items, selectedId, onSel
         {showAddAction && items.length > 0 && (
           <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] bg-white shrink-0">
             <div
-              className="w-full bg-[#06C167] text-white py-3 rounded-full flex items-center justify-center font-medium cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:opacity-80"
+              className="w-full bg-[#06C167] text-white py-3 rounded-full flex items-center justify-center font-medium cursor-pointer transition-all hover:bg-[#05a055] active:bg-[#05a055] active:scale-[0.98] outline-none focus-visible:opacity-80"
               onClick={() => { onClose(); onAddAction(); }}
               role="button"
               tabIndex={0}

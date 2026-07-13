@@ -279,7 +279,7 @@ const AddressForm = ({ onClose, initialData }) => {
             <div
               className={`w-full py-4 rounded-full flex items-center justify-center font-medium transition-all outline-none focus-visible:opacity-90 ${
                 isSaveEnabled 
-                  ? 'bg-[#06C167] text-white cursor-pointer active:scale-[0.98]'
+                  ? 'bg-[#06C167] text-white cursor-pointer hover:bg-[#05a055] active:bg-[#05a055] active:scale-[0.98]'
                   : 'bg-[#F3F4F6] text-[#8E8E93] cursor-not-allowed opacity-70'
               }`}
               onClick={handleSave}

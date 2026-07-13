@@ -283,7 +283,7 @@ const ProductModal = ({ product, onClose }) => {
 
             {/* Botón de agregar */}
             <div
-              className="flex-1 bg-[#06C167] text-white h-[48px] md:h-[56px] rounded-full flex items-center justify-between px-5 md:px-6 font-medium cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:bg-[#05a055] text-[15px] md:text-[16px]"
+              className="flex-1 bg-[#06C167] text-white h-[48px] md:h-[56px] rounded-full flex items-center justify-between px-5 md:px-6 font-medium cursor-pointer transition-all hover:bg-[#05a055] active:bg-[#05a055] active:scale-[0.98] outline-none focus-visible:bg-[#05a055] text-[15px] md:text-[16px]"
               onClick={handleAdd}
               onKeyDown={handleKeyDown(handleAdd)}
               role="button"

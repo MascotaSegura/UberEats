@@ -80,7 +80,7 @@ const Sidebar = ({ isOpen, onClose, onMenuSelect }) => {
         ) : (
           <>
             <button 
-              className="w-full py-3 bg-[#1E1E1E] text-white rounded-full font-medium text-[14px] active:scale-[0.98] transition-transform outline-none focus-visible:opacity-80"
+              className="w-full py-3 bg-[#1E1E1E] text-white rounded-full font-medium text-[14px] hover:bg-[#2C2C2E] active:bg-[#2C2C2E] active:scale-[0.98] transition-all outline-none focus-visible:opacity-80"
               onClick={() => { openAuth('signup'); }}
             >
               Registrarte

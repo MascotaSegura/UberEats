@@ -168,7 +168,7 @@ const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
                   <div ref={countryRef} className="relative shrink-0 mr-2">
                     <button
                       type="button"
-                      className="flex items-center gap-1 h-8 px-2 rounded-xl bg-[#ECECEE] hover:bg-[#E0E0E2] active:bg-[#E0E0E2] transition-colors outline-none focus-visible:opacity-80 text-[15px] font-medium text-[#1E1E1E]"
+                      className="flex items-center gap-1 h-8 px-2 rounded-full bg-[#ECECEE] hover:bg-[#E0E0E2] active:bg-[#E0E0E2] transition-colors outline-none focus-visible:opacity-80 text-[15px] font-medium text-[#1E1E1E]"
                       onClick={() => setCountryOpen((v) => !v)}
                       aria-label="Seleccionar código de país"
                     >
@@ -177,7 +177,7 @@ const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
                       <CaretDown size={12} weight="bold" className={`transition-transform duration-200 ${countryOpen ? 'rotate-180' : ''}`} />
                     </button>
                     {countryOpen && (
-                      <div className="absolute top-full left-0 mt-2 z-[300] bg-white rounded-2xl overflow-hidden min-w-[170px] border border-[#ECECEE]">
+                      <div className="absolute top-full left-0 mt-2 z-[300] bg-white rounded-2xl overflow-hidden min-w-[170px]">
                         {countryCodes.map((c) => (
                           <button
                             key={c.code}

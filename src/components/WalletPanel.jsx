@@ -136,7 +136,7 @@ const WalletPanel = ({ onClose }) => {
                   selectedPaymentMethod?.id === card.id ? 'bg-[#1E1E1E] text-white' : 'bg-[#F3F4F6] text-[#1E1E1E] hover:bg-[#ECECEE]'
                 }`}
               >
-                <div className={`w-12 h-8 rounded-xl flex items-center justify-center ${selectedPaymentMethod?.id === card.id ? 'bg-[#2C2C2E]' : 'bg-white'}`}>
+                <div className={`w-12 h-8 rounded-2xl flex items-center justify-center ${selectedPaymentMethod?.id === card.id ? 'bg-[#2C2C2E]' : 'bg-white'}`}>
                    <CreditCard size={20} weight="fill" color={selectedPaymentMethod?.id === card.id ? '#FFFFFF' : '#1E1E1E'} />
                 </div>
                 <div className="flex-1 flex flex-col">

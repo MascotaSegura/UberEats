@@ -283,7 +283,7 @@ const CartPanel = ({ onClose }) => {
                 )}
 
                 <div
-                  className="w-full bg-[#06C167] text-white py-4 rounded-full flex justify-center font-medium cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:opacity-90"
+                  className="w-full bg-[#06C167] text-white py-4 rounded-full flex justify-center font-medium cursor-pointer transition-all hover:bg-[#05a055] active:bg-[#05a055] active:scale-[0.98] outline-none focus-visible:opacity-90"
                   onClick={() => { handlePlaceOrder(); }}
                   onKeyDown={handleKeyDown(() => { handlePlaceOrder(); })}
                   role="button"
@@ -350,7 +350,7 @@ const CartPanel = ({ onClose }) => {
                   </div>
                   <button
                     onClick={() => setActiveView('cart')}
-                    className="w-full bg-[#1E1E1E] text-white py-4 rounded-full flex justify-center font-medium cursor-pointer transition-all active:scale-[0.98] outline-none focus-visible:opacity-90 mt-4"
+                    className="w-full bg-[#1E1E1E] text-white py-4 rounded-full flex justify-center font-medium cursor-pointer transition-all hover:bg-[#2C2C2E] active:bg-[#2C2C2E] active:scale-[0.98] outline-none focus-visible:opacity-90 mt-4"
                   >
                     Volver al carrito
                   </button>
@@ -390,7 +390,7 @@ const CartPanel = ({ onClose }) => {
                   role="button"
                   tabIndex={0}
                 >
-                  <div className="w-10 h-8 bg-white rounded-xl flex items-center justify-center shrink-0">
+                  <div className="w-10 h-8 bg-white rounded-2xl flex items-center justify-center shrink-0">
                     <CreditCard size={20} weight="fill" color="#1E1E1E" />
                   </div>
                   <div className="flex-1 min-w-0 flex flex-col">
