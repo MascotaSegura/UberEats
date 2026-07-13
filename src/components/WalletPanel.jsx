@@ -157,7 +157,7 @@ const WalletPanel = ({ onClose }) => {
                  <span className="font-medium text-[#1E1E1E] text-[15px]">Agregar método de pago</span>
               </div>
             ) : (
-              <div className="bg-[#F3F4F6] p-5 rounded-2xl flex flex-col gap-3 animate-fade-in mt-2 border-none">
+              <div className="bg-[#F3F4F6] p-5 rounded-2xl flex flex-col gap-3 animate-fade-in mt-2">
                 <div className="flex justify-between items-center mb-1">
                   <span className="font-medium text-[#1E1E1E] text-[15px]">Nueva Tarjeta</span>
                   {cardNumber.replace(/\D/g, '').length > 0 && (

@@ -37,8 +37,8 @@ const PWAInstallModal = ({ isOpen, onClose }) => {
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 flex flex-col items-center text-center gap-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-          <div className="w-16 h-16 bg-[#F3F4F6] rounded-2xl flex items-center justify-center mb-2">
-            <img src="/burger.png" alt="App Icon" className="w-10 h-10 object-contain" />
+          <div className="w-[64px] h-[64px] shrink-0 bg-[#06C167] rounded-2xl flex items-center justify-center mb-2 overflow-hidden">
+            <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="App Icon" className="w-full h-full object-cover" />
           </div>
           
           <div className="flex flex-col gap-2">

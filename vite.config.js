@@ -9,14 +9,14 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'burger.png'],
+      registerType: 'prompt',
+      includeAssets: ['favicon.svg'],
       manifest: {
         name: 'Uber Eats',
         short_name: 'Uber Eats',
         description: 'La mejor comida a tu puerta',
-        theme_color: '#F3F4F6',
-        background_color: '#F3F4F6',
+        theme_color: '#06C167',
+        background_color: '#06C167',
         display: 'standalone',
         icons: [
           {
@@ -26,14 +26,16 @@ export default defineConfig({
             purpose: 'any maskable'
           },
           {
-            src: 'burger.png',
+            src: 'favicon.svg',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
           },
           {
-            src: 'burger.png',
+            src: 'favicon.svg',
             sizes: '512x512',
-            type: 'image/png'
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
           }
         ]
       }

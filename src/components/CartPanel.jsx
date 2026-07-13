@@ -323,7 +323,7 @@ const CartPanel = ({ onClose }) => {
                       onChange={(e) => setPromoInput(e.target.value)}
                       onKeyDown={(e) => { if (e.key === 'Enter') handleApplyPromo(); }}
                       placeholder="Ingresa tu código"
-                      className="flex-1 bg-[#F3F4F6] border-none rounded-2xl px-4 py-3 text-[15px] outline-none focus:bg-[#ECECEE] text-[#1E1E1E] transition-colors"
+                      className="flex-1 bg-[#F3F4F6] rounded-2xl px-4 py-3 text-[15px] outline-none focus:bg-[#ECECEE] text-[#1E1E1E] transition-colors"
                     />
                     <button
                       onClick={handleApplyPromo}

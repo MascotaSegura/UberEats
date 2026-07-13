@@ -141,7 +141,8 @@ const Sidebar = ({ isOpen, onClose, onMenuSelect }) => {
         {/* Header */}
         <div className="p-4 flex items-center justify-between pb-6">
           <div className="text-[22px] tracking-tight text-[#1E1E1E]">
-            <span className="font-normal">Uber</span> <span className="font-medium">Eats</span>
+            {/* <span className="font-normal">Uber</span> <span className="font-medium">Eats</span> */}
+            <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Uber Eats" className="h-10 w-auto object-contain shrink-0" />
           </div>
           <button 
             onClick={onClose}

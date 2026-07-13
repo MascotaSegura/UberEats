@@ -14,7 +14,7 @@ const getIconHtml = (color, type) => {
   if (type === 'driver') IconComponent = <Moped size={22} weight="fill" color="white" style={{ display: 'block' }} />;
 
   const svgString = renderToStaticMarkup(IconComponent);
-  return `<div style="background-color: ${color}; width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-sizing: border-box; overflow: hidden;">${svgString}</div>`;
+  return `<div style="background-color: ${color}; width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden;">${svgString}</div>`;
 };
 
 const createMarkerIcon = (color, type) => {
@@ -39,7 +39,7 @@ const STEPS_PICKUP = [
 ];
 
 const OrderTrackingScreen = ({ onOpenChat }) => {
-  const { orderStatus, resetOrder, completeOrder, activeOrder, deliveryMode, deliveryAddress, pickupBranch } = useCart();
+  const { orderStatus, setOrderStatus, resetOrder, completeOrder, activeOrder, deliveryMode, deliveryAddress, pickupBranch } = useCart();
   const [currentStep, setCurrentStep] = useState(0); 
   const [lastNotifiedStep, setLastNotifiedStep] = useState(-1);
   const mapRef = useRef(null);
@@ -93,7 +93,7 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
         new Notification(title, { body });
       } else {
         const div = document.createElement('div');
-        div.className = 'fixed top-4 right-4 bg-white shadow-xl rounded-xl p-4 z-[9999] flex flex-col gap-1 border-l-4 border-[#06C167] transition-all duration-300 transform translate-y-0 opacity-100';
+        div.className = 'fixed top-4 right-4 bg-white rounded-2xl p-4 z-[9999] flex flex-col gap-1 transition-all duration-300 transform translate-y-0 opacity-100';
         div.style.animation = 'slide-up 0.3s ease-out';
         div.innerHTML = `<h4 class="font-bold text-[#1E1E1E] text-[16px] m-0">${title}</h4><p class="text-[14px] text-[#8E8E93] m-0">${body}</p>`;
         document.body.appendChild(div);
@@ -268,7 +268,7 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
             <X size={24} weight="bold" color="#1E1E1E" />
           </div>
           {pipSupported && (
-            <div className="absolute top-[max(1rem,env(safe-area-inset-top,1rem))] right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform shadow-sm" onClick={togglePip} title="Picture in Picture">
+            <div className="absolute top-[max(1rem,env(safe-area-inset-top,1rem))] right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform" onClick={togglePip} title="Picture in Picture">
               <Browsers size={24} weight="bold" color="#1E1E1E" />
             </div>
           )}
@@ -321,11 +321,11 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
       <div className="fixed inset-0 z-[100] flex flex-col md:flex-row bg-white overflow-hidden animate-fade-in isolate">
         <div id="tracking-map" className="w-full flex-1 md:w-auto bg-[#F3F4F6] relative z-0 md:order-2" />
         
-        <div className="md:hidden absolute top-[max(1rem,env(safe-area-inset-top,1rem))] left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform shadow-sm" onClick={resetOrder}>
+        <div className="md:hidden absolute top-[max(1rem,env(safe-area-inset-top,1rem))] left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform" onClick={resetOrder}>
           <X size={24} weight="bold" color="#1E1E1E" />
         </div>
         {pipSupported && (
-          <div className="md:hidden absolute top-[max(1rem,env(safe-area-inset-top,1rem))] right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform shadow-sm" onClick={togglePip} title="Picture in Picture">
+          <div className="md:hidden absolute top-[max(1rem,env(safe-area-inset-top,1rem))] right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform" onClick={togglePip} title="Picture in Picture">
             <Browsers size={24} weight="bold" color="#1E1E1E" />
           </div>
         )}
@@ -334,7 +334,8 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
           <div className="w-full flex justify-center md:justify-between items-start mb-6 shrink-0">
              <div className="w-12 h-1.5 bg-[#F3F4F6] rounded-full md:hidden" />
              <div className="hidden md:block text-[22px] tracking-tight text-[#1E1E1E] mt-1">
-                <span className="font-normal">Uber</span> <span className="font-medium">Eats</span>
+                {/* <span className="font-normal">Uber</span> <span className="font-medium">Eats</span> */}
+                <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Uber Eats" className="h-10 w-auto object-contain shrink-0" />
              </div>
              <div className="hidden md:flex gap-2">
                {pipSupported && (
@@ -449,6 +450,19 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
             );
           })}
         </div>
+
+        <button 
+          className="mt-8 bg-[#1E1E1E] text-white py-3 px-6 rounded-full font-medium text-[15px] hover:bg-[#2C2C2E] active:scale-[0.98] outline-none transition-all w-full max-w-[240px]"
+          onClick={() => {
+            if (pipWindow) {
+              setOrderStatus('tracking');
+              pipWindow.close();
+              setPipWindow(null);
+            }
+          }}
+        >
+          Expandir a la app
+        </button>
       </div>,
       pipWindow.document.body
     );

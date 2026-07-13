@@ -138,7 +138,7 @@ const ChatPanel = ({ isOpen, onClose, recipient }) => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Escribe un mensaje..."
-              className="flex-1 bg-transparent border-none outline-none px-4 text-[15px] text-[#1E1E1E] placeholder:text-[#8E8E93]"
+              className="flex-1 bg-transparent outline-none px-4 text-[15px] text-[#1E1E1E] placeholder:text-[#8E8E93]"
             />
             <button
               type="submit"
