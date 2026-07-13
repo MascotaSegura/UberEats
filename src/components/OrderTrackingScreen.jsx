@@ -335,7 +335,7 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
              <div className="w-12 h-1.5 bg-[#F3F4F6] rounded-full md:hidden" />
              <div className="hidden md:block text-[22px] tracking-tight text-[#1E1E1E] mt-1">
                 {/* <span className="font-normal">Uber</span> <span className="font-medium">Eats</span> */}
-                <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Uber Eats" className="h-10 w-auto object-contain shrink-0" />
+                 <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Uber Eats" className="h-6 w-auto object-contain shrink-0" />
              </div>
              <div className="hidden md:flex gap-2">
                {pipSupported && (

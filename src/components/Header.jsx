@@ -61,7 +61,7 @@ const Header = ({ onOpenCart, searchQuery, onSearchChange, onMenuToggle }) => {
             </button>
             <div className="text-[22px] tracking-tight text-[#1E1E1E] leading-none">
               {/* <span className="font-normal">Uber</span> <span className="font-medium">Eats</span> */}
-              <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Uber Eats" className="h-10 w-auto object-contain shrink-0" />
+              <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Uber Eats" className="h-6 w-auto object-contain shrink-0" />
             </div>
           </div>
           
@@ -131,7 +131,7 @@ const Header = ({ onOpenCart, searchQuery, onSearchChange, onMenuToggle }) => {
           </button>
           <div className="text-[22px] tracking-tight text-[#1E1E1E] whitespace-nowrap">
             {/* <span className="font-normal">Uber</span> <span className="font-medium">Eats</span> */}
-            <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Uber Eats" className="h-10 w-auto object-contain shrink-0" />
+            <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Uber Eats" className="h-6 w-auto object-contain shrink-0" />
           </div>
         </div>
 
