@@ -13,7 +13,14 @@ const loadSaved = (key, defaultVal) => {
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(() => loadSaved('ubereats_cart', []));
-  const [orderStatus, setOrderStatus] = useState(null);
+  const [activeOrder, setActiveOrder] = useState(() => loadSaved('ubereats_active_order', null));
+  const [isTrackingOpen, setIsTrackingOpen] = useState(false);
+  
+  const orderStatus = isTrackingOpen ? 'tracking' : (activeOrder ? 'active' : null);
+  const setOrderStatus = (status) => {
+    if (status === 'tracking') setIsTrackingOpen(true);
+    else if (status === null) setIsTrackingOpen(false);
+  };
   const [deliveryMode, setDeliveryMode] = useState(() => loadSaved('ubereats_mode', 'delivery')); // 'delivery' | 'pickup'
 
   const [addresses, setAddresses] = useState(() => loadSaved('ubereats_addresses', []));
@@ -55,6 +62,14 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('ubereats_cart', JSON.stringify(cartItems));
   }, [cartItems]);
+
+  useEffect(() => {
+    if (activeOrder) {
+      localStorage.setItem('ubereats_active_order', JSON.stringify(activeOrder));
+    } else {
+      localStorage.removeItem('ubereats_active_order');
+    }
+  }, [activeOrder]);
 
   useEffect(() => {
     localStorage.setItem('ubereats_addresses', JSON.stringify(addresses));
@@ -158,11 +173,20 @@ export const CartProvider = ({ children }) => {
   };
 
   const placeOrder = () => {
-    setOrderStatus('tracking');
+    setActiveOrder({
+      id: Date.now().toString(),
+      createdAt: Date.now(),
+      status: 'active'
+    });
+    setIsTrackingOpen(true);
     clearCart();
   };
 
-  const resetOrder = () => setOrderStatus(null);
+  const resetOrder = () => setIsTrackingOpen(false);
+  const completeOrder = () => {
+    setActiveOrder(null);
+    setIsTrackingOpen(false);
+  };
 
   const addAddress = (address) => {
     const newAddress = { ...address, id: `addr-${Date.now()}` };
@@ -224,6 +248,8 @@ export const CartProvider = ({ children }) => {
         resetOrder,
         orderStatus,
         setOrderStatus,
+        activeOrder,
+        completeOrder,
         deliveryMode,
         setDeliveryMode,
         addresses,

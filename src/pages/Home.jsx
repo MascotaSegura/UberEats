@@ -40,7 +40,7 @@ const Home = () => {
     return matchesCategory && matchesSearch;
   });
 
-  const showCart = isCartOpen || orderStatus;
+  const showCart = isCartOpen;
 
   return (
     <div className="bg-[#F3F4F6] min-h-screen">

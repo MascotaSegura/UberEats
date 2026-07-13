@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useCart } from '../context/useCart';
 import { createPortal } from 'react-dom';
-import { Phone, X, MapPin, Storefront, Moped, CheckCircle, Package, Truck, ChatTeardropText } from '@phosphor-icons/react';
+import { Phone, X, MapPin, Storefront, Moped, CheckCircle, Package, Truck, ChatTeardropText, Browsers } from '@phosphor-icons/react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -39,24 +39,111 @@ const STEPS_PICKUP = [
 ];
 
 const OrderTrackingScreen = ({ onOpenChat }) => {
-  const { orderStatus, resetOrder, deliveryMode, deliveryAddress, pickupBranch } = useCart();
+  const { orderStatus, resetOrder, completeOrder, activeOrder, deliveryMode, deliveryAddress, pickupBranch } = useCart();
   const [currentStep, setCurrentStep] = useState(0); 
+  const [lastNotifiedStep, setLastNotifiedStep] = useState(-1);
   const mapRef = useRef(null);
   const driverMarkerRef = useRef(null);
+  
+  const pipSupported = 'documentPictureInPicture' in window;
+  const [pipWindow, setPipWindow] = useState(null);
+
+  const togglePip = async () => {
+    if (pipWindow) {
+      pipWindow.close();
+      return;
+    }
+
+    try {
+      const pip = await window.documentPictureInPicture.requestWindow({
+        width: 320,
+        height: 380,
+      });
+      
+      Array.from(document.styleSheets).forEach(styleSheet => {
+        try {
+          if (styleSheet.href) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = styleSheet.href;
+            pip.document.head.appendChild(link);
+          } else if (styleSheet.cssRules) {
+            const style = document.createElement('style');
+            Array.from(styleSheet.cssRules).forEach(rule => {
+              style.appendChild(document.createTextNode(rule.cssText));
+            });
+            pip.document.head.appendChild(style);
+          }
+        } catch (e) {}
+      });
+      
+      pip.addEventListener('pagehide', () => {
+        setPipWindow(null);
+      });
+      
+      setPipWindow(pip);
+      resetOrder(); // hide main tracking screen
+    } catch (err) {
+      console.error('Failed to open PiP window:', err);
+    }
+  };
 
   const isPickup = deliveryMode === 'pickup';
   const steps = isPickup ? STEPS_PICKUP : STEPS_DELIVERY;
 
   useEffect(() => {
-    if (orderStatus !== 'tracking') return;
+    if (currentStep > lastNotifiedStep && currentStep > 0 && lastNotifiedStep !== -1) {
+      // Fire notification on step change
+      const title = currentStep === 1 
+        ? (isPickup ? '¡Tu pedido está listo!' : '¡Tu pedido va en camino!') 
+        : '¡Pedido entregado!';
+      const body = currentStep === 1 
+        ? (isPickup ? 'Pasa a recogerlo a la sucursal' : 'El repartidor va hacia tu ubicación') 
+        : '¡Gracias por tu preferencia!';
+        
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, { body });
+      } else {
+        const div = document.createElement('div');
+        div.className = 'fixed top-4 right-4 bg-white shadow-xl rounded-xl p-4 z-[9999] flex flex-col gap-1 border-l-4 border-[#06C167] transition-all duration-300 transform translate-y-0 opacity-100';
+        div.style.animation = 'slide-up 0.3s ease-out';
+        div.innerHTML = `<h4 class="font-bold text-[#1E1E1E] text-[16px] m-0">${title}</h4><p class="text-[14px] text-[#8E8E93] m-0">${body}</p>`;
+        document.body.appendChild(div);
+        setTimeout(() => {
+          div.style.opacity = '0';
+          setTimeout(() => div.remove(), 300);
+        }, 4000);
+      }
+      setLastNotifiedStep(currentStep);
+    }
+  }, [currentStep, isPickup, lastNotifiedStep]);
+
+  useEffect(() => {
+    if ((orderStatus !== 'tracking' && !pipWindow) || !activeOrder) return;
+
+    const DURATION_PREP = 4000;
+    const DURATION_DRIVE = 12000;
+    
+    // Set initial step based on time elapsed to handle reloads
+    const initialElapsed = Date.now() - activeOrder.createdAt;
+    let initialStep = 0;
+    if (initialElapsed > DURATION_PREP + DURATION_DRIVE) initialStep = 2;
+    else if (initialElapsed > DURATION_PREP) initialStep = 1;
+    
+    setCurrentStep(initialStep);
+    setLastNotifiedStep(initialStep); // Don't notify on reload if already passed
 
     if (isPickup) {
-      // Simulate pickup timeline
-      const timeout1 = setTimeout(() => setCurrentStep(1), 4000);
-      const timeout2 = setTimeout(() => setCurrentStep(2), 8000);
+      let timeout1, timeout2;
+      const t1 = DURATION_PREP - initialElapsed;
+      const t2 = (DURATION_PREP + DURATION_DRIVE) - initialElapsed;
+      
+      if (t1 > 0) timeout1 = setTimeout(() => setCurrentStep(1), t1);
+      if (t2 > 0) timeout2 = setTimeout(() => setCurrentStep(2), t2);
+      
       return () => {
-        clearTimeout(timeout1);
-        clearTimeout(timeout2);
+        if (timeout1) clearTimeout(timeout1);
+        if (timeout2) clearTimeout(timeout2);
       };
     }
 
@@ -85,9 +172,6 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
     const map = mapRef.current;
     
     let animationFrame;
-    let startTime;
-    const DURATION_PREP = 3000;
-    const DURATION_DRIVE = 12000;
 
     // Fetch realistic route from OSRM
     fetch(`https://router.project-osrm.org/route/v1/driving/${restLng},${restLat};${userLng},${userLat}?overview=full&geometries=geojson`)
@@ -118,17 +202,16 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
            cumDist.push(totalDist);
         }
 
-        const animateDriver = (timestamp) => {
-          if (!startTime) startTime = timestamp;
-          const elapsed = timestamp - startTime;
+        const animateDriver = () => {
+          const elapsed = Date.now() - activeOrder.createdAt;
 
           if (elapsed < DURATION_PREP) {
-            setCurrentStep(0);
+            setCurrentStep(prev => prev !== 0 ? 0 : prev);
             if (!driverMarkerRef.current) {
               driverMarkerRef.current = L.marker([restLat, restLng], { icon: createMarkerIcon('#1E1E1E', 'driver') }).addTo(map);
             }
           } else if (elapsed < DURATION_PREP + DURATION_DRIVE) {
-            setCurrentStep(1);
+            setCurrentStep(prev => prev !== 1 ? 1 : prev);
             const driveElapsed = elapsed - DURATION_PREP;
             const progress = Math.min(driveElapsed / DURATION_DRIVE, 1);
             
@@ -157,7 +240,7 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
             map.setView([currentLat, currentLng], 15, { animate: false });
             
           } else {
-            setCurrentStep(2);
+            setCurrentStep(prev => prev !== 2 ? 2 : prev);
             if (driverMarkerRef.current) {
               driverMarkerRef.current.setLatLng([userLat, userLng]);
             }
@@ -179,172 +262,212 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
       }
       driverMarkerRef.current = null;
     };
-  }, [orderStatus, isPickup, deliveryAddress]);
+  }, [orderStatus, isPickup, deliveryAddress, activeOrder, pipWindow]);
 
-  if (orderStatus !== 'tracking') return null;
+  const isVisible = orderStatus === 'tracking' || pipWindow !== null;
+  if (!activeOrder || !isVisible) return null;
 
-  // --- RENDER PICKUP VIEW ---
-  if (isPickup) {
-    return createPortal(
-      <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#F3F4F6] overflow-hidden animate-fade-in isolate p-4">
-        <div 
-          className="absolute top-[max(1rem,env(safe-area-inset-top,1rem))] left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform"
-          onClick={resetOrder}
-        >
-          <X size={24} weight="bold" color="#1E1E1E" />
-        </div>
+  const renderMainView = () => {
+    if (orderStatus !== 'tracking') return null;
 
-        <div className="w-full max-w-[480px] bg-white rounded-2xl p-8 flex flex-col items-center">
-          <div className="w-20 h-20 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-6">
-            <Storefront size={40} weight="fill" color="#1E1E1E" />
+    if (isPickup) {
+      return createPortal(
+        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#F3F4F6] overflow-hidden animate-fade-in isolate p-4">
+          <div className="absolute top-[max(1rem,env(safe-area-inset-top,1rem))] left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform" onClick={resetOrder}>
+            <X size={24} weight="bold" color="#1E1E1E" />
           </div>
-
-          <h2 className="text-2xl font-bold text-[#1E1E1E] mb-2 text-center">
-            {currentStep === 0 ? 'Preparando tu pedido...' : currentStep === 1 ? '¡Tu pedido está listo!' : '¡Pedido entregado!'}
-          </h2>
-          
-          <p className="text-[#8E8E93] text-[15px] mb-8 text-center font-medium max-w-[280px]">
-            {currentStep === 2 ? '¡Gracias por tu preferencia!' : currentStep === 1 ? `Pasa a recogerlo a ${pickupBranch?.name || 'la sucursal'}` : 'Te avisaremos en cuanto esté listo para recoger.'}
-          </p>
-
-          <div className="flex items-center justify-center gap-2 mb-10 w-full">
-            {steps.map((step, i) => {
-              const { Icon } = step;
-              const done = i <= currentStep;
-              const active = i === currentStep;
-              return (
-                <React.Fragment key={step.key}>
-                  <div className="flex flex-col items-center gap-2">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors duration-500 ${done ? 'bg-[#1E1E1E] text-white' : 'bg-[#F3F4F6] text-[#8E8E93]'}`}>
-                      <Icon size={24} weight={active ? 'fill' : 'bold'} className={active && i < 2 ? 'animate-pulse' : ''} />
-                    </div>
-                    <span className={`text-[12px] font-bold transition-colors ${done ? 'text-[#1E1E1E]' : 'text-[#8E8E93]'}`}>
-                      {step.label}
-                    </span>
-                  </div>
-                  {i < steps.length - 1 && (
-                    <div className={`flex-1 h-[3px] -translate-y-3 rounded-full transition-all duration-500 ${i < currentStep ? 'bg-[#1E1E1E]' : 'bg-[#F3F4F6]'}`} />
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </div>
-
-          {currentStep === 2 && (
-            <div
-              className="w-full bg-[#06C167] text-white py-4 rounded-full flex justify-center font-bold text-[16px] cursor-pointer transition-all hover:bg-[#05a055] active:bg-[#05a055] active:scale-[0.98] outline-none animate-fade-in"
-              onClick={resetOrder}
-            >
-              Volver al inicio
+          {pipSupported && (
+            <div className="absolute top-[max(1rem,env(safe-area-inset-top,1rem))] right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform shadow-sm" onClick={togglePip} title="Picture in Picture">
+              <Browsers size={24} weight="bold" color="#1E1E1E" />
             </div>
           )}
+
+          <div className="w-full max-w-[480px] bg-white rounded-2xl p-8 flex flex-col items-center">
+            <div className="w-20 h-20 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-6">
+              <Storefront size={40} weight="fill" color="#1E1E1E" />
+            </div>
+            <h2 className="text-2xl font-bold text-[#1E1E1E] mb-2 text-center">
+              {currentStep === 0 ? 'Preparando tu pedido...' : currentStep === 1 ? '¡Tu pedido está listo!' : '¡Pedido entregado!'}
+            </h2>
+            <p className="text-[#8E8E93] text-[15px] mb-8 text-center font-medium max-w-[280px]">
+              {currentStep === 2 ? '¡Gracias por tu preferencia!' : currentStep === 1 ? `Pasa a recogerlo a ${pickupBranch?.name || 'la sucursal'}` : 'Te avisaremos en cuanto esté listo para recoger.'}
+            </p>
+
+            <div className="flex items-center justify-center gap-2 mb-10 w-full">
+              {steps.map((step, i) => {
+                const { Icon } = step;
+                const done = i <= currentStep;
+                const active = i === currentStep;
+                return (
+                  <React.Fragment key={step.key}>
+                    <div className="flex flex-col items-center gap-2">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors duration-500 ${done ? 'bg-[#1E1E1E] text-white' : 'bg-[#F3F4F6] text-[#8E8E93]'}`}>
+                        <Icon size={24} weight={active ? 'fill' : 'bold'} className={active && i < 2 ? 'animate-pulse' : ''} />
+                      </div>
+                      <span className={`text-[12px] font-bold transition-colors ${done ? 'text-[#1E1E1E]' : 'text-[#8E8E93]'}`}>
+                        {step.label}
+                      </span>
+                    </div>
+                    {i < steps.length - 1 && (
+                      <div className={`flex-1 h-[3px] -translate-y-3 rounded-full transition-all duration-500 ${i < currentStep ? 'bg-[#1E1E1E]' : 'bg-[#F3F4F6]'}`} />
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+            {currentStep === 2 && (
+              <div className="w-full bg-[#06C167] text-white py-4 rounded-full flex justify-center font-bold text-[16px] cursor-pointer transition-all hover:bg-[#05a055] active:bg-[#05a055] active:scale-[0.98] outline-none animate-fade-in" onClick={completeOrder}>
+                Volver al inicio
+              </div>
+            )}
+          </div>
+        </div>,
+        document.body
+      );
+    }
+
+    return createPortal(
+      <div className="fixed inset-0 z-[100] flex flex-col md:flex-row bg-white overflow-hidden animate-fade-in isolate">
+        <div id="tracking-map" className="w-full flex-1 md:w-auto bg-[#F3F4F6] relative z-0 md:order-2" />
+        
+        <div className="md:hidden absolute top-[max(1rem,env(safe-area-inset-top,1rem))] left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform shadow-sm" onClick={resetOrder}>
+          <X size={24} weight="bold" color="#1E1E1E" />
+        </div>
+        {pipSupported && (
+          <div className="md:hidden absolute top-[max(1rem,env(safe-area-inset-top,1rem))] right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform shadow-sm" onClick={togglePip} title="Picture in Picture">
+            <Browsers size={24} weight="bold" color="#1E1E1E" />
+          </div>
+        )}
+
+        <div className="w-full md:w-[400px] xl:w-[480px] bg-white rounded-t-2xl md:rounded-none p-6 pb-[max(1.5rem,env(safe-area-inset-bottom,1.5rem))] md:p-8 z-10 relative mt-[-20px] md:mt-0 flex flex-col md:h-full md:order-1 overflow-y-auto shrink-0">
+          <div className="w-full flex justify-center md:justify-between items-start mb-6 shrink-0">
+             <div className="w-12 h-1.5 bg-[#F3F4F6] rounded-full md:hidden" />
+             <div className="hidden md:block text-[22px] tracking-tight text-[#1E1E1E] mt-1">
+                <span className="font-normal">Uber</span> <span className="font-medium">Eats</span>
+             </div>
+             <div className="hidden md:flex gap-2">
+               {pipSupported && (
+                 <div className="w-10 h-10 bg-[#F3F4F6] hover:bg-[#ECECEE] rounded-full flex items-center justify-center cursor-pointer active:scale-[0.95] transition-transform shrink-0" onClick={togglePip} title="Picture in Picture">
+                   <Browsers size={20} weight="bold" color="#1E1E1E" />
+                 </div>
+               )}
+               <div className="w-10 h-10 bg-[#F3F4F6] hover:bg-[#ECECEE] rounded-full flex items-center justify-center cursor-pointer active:scale-[0.95] transition-transform shrink-0" onClick={resetOrder}>
+                 <X size={20} weight="bold" color="#1E1E1E" />
+               </div>
+             </div>
+          </div>
+
+          <div className="flex flex-col items-center md:items-start w-full">
+            <h2 className="text-2xl md:text-3xl font-bold text-[#1E1E1E] mb-2 text-center md:text-left leading-tight">
+              {currentStep === 0 ? 'Preparando tu pedido...' : currentStep === 1 ? '¡Tu pedido va en camino!' : '¡Pedido entregado!'}
+            </h2>
+            <p className="text-[#8E8E93] text-[15px] md:text-[16px] mb-8 text-center md:text-left font-medium">
+              {currentStep === 2 ? '¡Disfruta tu comida!' : 'Llegada estimada: 15-20 min'}
+            </p>
+
+            <div className="flex items-center justify-center md:justify-start gap-2 mb-10 w-full max-w-[320px] md:max-w-none">
+              {steps.map((step, i) => {
+                const { Icon } = step;
+                const done = i <= currentStep;
+                const active = i === currentStep;
+                return (
+                  <React.Fragment key={step.key}>
+                    <div className="flex flex-col items-center gap-2">
+                      <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center transition-colors duration-500 ${done ? 'bg-[#1E1E1E] text-white' : 'bg-[#F3F4F6] text-[#8E8E93]'}`}>
+                        <Icon size={24} weight={active ? 'fill' : 'bold'} className={active && i < 2 ? 'animate-pulse' : ''} />
+                      </div>
+                      <span className={`text-[12px] font-bold transition-colors ${done ? 'text-[#1E1E1E]' : 'text-[#8E8E93]'}`}>
+                        {step.label}
+                      </span>
+                    </div>
+                    {i < steps.length - 1 && (
+                      <div className={`flex-1 h-[3px] -translate-y-3 rounded-full transition-all duration-500 ${i < currentStep ? 'bg-[#1E1E1E]' : 'bg-[#F3F4F6]'}`} />
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+
+            {currentStep > 0 && (
+              <div className="w-full bg-[#F3F4F6] rounded-2xl p-4 flex items-center gap-4 mb-6 animate-fade-in">
+                <div className="w-12 h-12 bg-[#D1D1D6] rounded-full overflow-hidden shrink-0">
+                   <img src={`${import.meta.env.BASE_URL}images/driver.jpg`} alt="Repartidor" className="w-full h-full object-cover mix-blend-multiply" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-bold text-[#1E1E1E] text-[16px]">Carlos M.</h4>
+                  <p className="text-[14px] text-[#8E8E93]">Honda Moto • 98% Satisfacción</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] transition-all outline-none focus-visible:opacity-80" onClick={() => onOpenChat?.('driver')}>
+                    <ChatTeardropText size={20} weight="fill" color="#1E1E1E" />
+                  </div>
+                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] transition-all outline-none focus-visible:opacity-80">
+                    <Phone size={20} weight="fill" color="#1E1E1E" />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {currentStep === 2 && (
+              <div className="w-full bg-[#06C167] text-white py-4 md:py-4 rounded-full flex justify-center font-bold text-[16px] cursor-pointer transition-all hover:bg-[#05a055] active:bg-[#05a055] active:scale-[0.98] outline-none animate-fade-in mt-auto" onClick={completeOrder}>
+                Volver al inicio
+              </div>
+            )}
+          </div>
         </div>
       </div>,
       document.body
     );
-  }
+  };
 
-  // --- RENDER DELIVERY VIEW ---
-  return createPortal(
-    <div className="fixed inset-0 z-[100] flex flex-col md:flex-row bg-white overflow-hidden animate-fade-in isolate">
-      {/* Map (Right side on desktop, top on mobile) */}
-      <div id="tracking-map" className="w-full flex-1 md:w-auto bg-[#F3F4F6] relative z-0 md:order-2" />
-
-      {/* Mobile Close Button (Absolute over map) */}
-      <div 
-        className="md:hidden absolute top-[max(1rem,env(safe-area-inset-top,1rem))] left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform"
-        onClick={resetOrder}
-      >
-        <X size={24} weight="bold" color="#1E1E1E" />
-      </div>
-
-      {/* Information Panel (Left side on desktop, bottom sheet on mobile) */}
-      <div className="w-full md:w-[400px] xl:w-[480px] bg-white rounded-t-2xl md:rounded-none p-6 pb-[max(1.5rem,env(safe-area-inset-bottom,1.5rem))] md:p-8 z-10 relative mt-[-20px] md:mt-0 flex flex-col md:h-full md:order-1 overflow-y-auto shrink-0">
+  const renderPipView = () => {
+    if (!pipWindow) return null;
+    
+    return createPortal(
+      <div className="flex flex-col items-center justify-center p-6 bg-white w-full h-full text-center isolate font-sans">
+        <div className="w-16 h-16 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-6">
+          {currentStep === 0 && <Package size={32} weight="fill" color="#1E1E1E" />}
+          {currentStep === 1 && (isPickup ? <Storefront size={32} weight="fill" color="#1E1E1E" /> : <Truck size={32} weight="fill" color="#1E1E1E" />)}
+          {currentStep === 2 && <CheckCircle size={32} weight="fill" color="#06C167" />}
+        </div>
         
-        {/* Top Header in Panel */}
-        <div className="w-full flex justify-center md:justify-between items-start mb-6 shrink-0">
-           {/* Mobile drag pill */}
-           <div className="w-12 h-1.5 bg-[#F3F4F6] rounded-full md:hidden" />
-           
-           {/* Desktop Logo & Close */}
-           <div className="hidden md:block text-[22px] tracking-tight text-[#1E1E1E] mt-1">
-              <span className="font-normal">Uber</span> <span className="font-medium">Eats</span>
-           </div>
-           <div 
-             className="hidden md:flex w-10 h-10 bg-[#F3F4F6] hover:bg-[#ECECEE] rounded-full items-center justify-center cursor-pointer active:scale-[0.95] transition-transform shrink-0"
-             onClick={resetOrder}
-           >
-             <X size={20} weight="bold" color="#1E1E1E" />
-           </div>
-        </div>
-
-        <div className="flex flex-col items-center md:items-start w-full">
-          <h2 className="text-2xl md:text-3xl font-bold text-[#1E1E1E] mb-2 text-center md:text-left leading-tight">
-            {currentStep === 0 ? 'Preparando tu pedido...' : currentStep === 1 ? '¡Tu pedido va en camino!' : '¡Pedido entregado!'}
-          </h2>
-          
-          <p className="text-[#8E8E93] text-[15px] md:text-[16px] mb-8 text-center md:text-left font-medium">
-            {currentStep === 2 ? '¡Disfruta tu comida!' : 'Llegada estimada: 15-20 min'}
-          </p>
-
-          <div className="flex items-center justify-center md:justify-start gap-2 mb-10 w-full max-w-[320px] md:max-w-none">
-            {steps.map((step, i) => {
-              const { Icon } = step;
-              const done = i <= currentStep;
-              const active = i === currentStep;
-              return (
-                <React.Fragment key={step.key}>
-                  <div className="flex flex-col items-center gap-2">
-                    <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center transition-colors duration-500 ${done ? 'bg-[#1E1E1E] text-white' : 'bg-[#F3F4F6] text-[#8E8E93]'}`}>
-                      <Icon size={24} weight={active ? 'fill' : 'bold'} className={active && i < 2 ? 'animate-pulse' : ''} />
-                    </div>
-                    <span className={`text-[12px] font-bold transition-colors ${done ? 'text-[#1E1E1E]' : 'text-[#8E8E93]'}`}>
-                      {step.label}
-                    </span>
+        <h2 className="text-xl font-bold text-[#1E1E1E] mb-2 leading-tight">
+          {currentStep === 0 ? 'Preparando...' : currentStep === 1 ? (isPickup ? 'Listo' : 'En camino') : 'Entregado'}
+        </h2>
+        
+        <p className="text-[#8E8E93] text-[14px] mb-8 font-medium">
+          {currentStep === 2 ? '¡Disfruta tu comida!' : (isPickup ? 'Pasa a la sucursal' : 'Llegada estimada: 15-20 min')}
+        </p>
+        
+        <div className="flex items-center justify-center gap-3 w-full max-w-[240px]">
+          {steps.map((step, i) => {
+            const { Icon } = step;
+            const done = i <= currentStep;
+            const active = i === currentStep;
+            return (
+              <React.Fragment key={step.key}>
+                <div className="flex flex-col items-center gap-1">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-500 ${done ? 'bg-[#1E1E1E] text-white' : 'bg-[#F3F4F6] text-[#8E8E93]'}`}>
+                    <Icon size={20} weight={active ? 'fill' : 'bold'} className={active && i < 2 ? 'animate-pulse' : ''} />
                   </div>
-                  {i < steps.length - 1 && (
-                    <div className={`flex-1 h-[3px] -translate-y-3 rounded-full transition-all duration-500 ${i < currentStep ? 'bg-[#1E1E1E]' : 'bg-[#F3F4F6]'}`} />
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </div>
-
-          {currentStep > 0 && (
-            <div className="w-full bg-[#F3F4F6] rounded-2xl p-4 flex items-center gap-4 mb-6 animate-fade-in">
-              <div className="w-12 h-12 bg-[#D1D1D6] rounded-full overflow-hidden shrink-0">
-                 <img src={`${import.meta.env.BASE_URL}images/driver.jpg`} alt="Repartidor" className="w-full h-full object-cover mix-blend-multiply" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="font-bold text-[#1E1E1E] text-[16px]">Carlos M.</h4>
-                <p className="text-[14px] text-[#8E8E93]">Honda Moto • 98% Satisfacción</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <div 
-                  className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] transition-all outline-none focus-visible:opacity-80"
-                  onClick={() => onOpenChat?.('driver')}
-                >
-                  <ChatTeardropText size={20} weight="fill" color="#1E1E1E" />
                 </div>
-                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] transition-all outline-none focus-visible:opacity-80">
-                  <Phone size={20} weight="fill" color="#1E1E1E" />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {currentStep === 2 && (
-            <div
-              className="w-full bg-[#06C167] text-white py-4 md:py-4 rounded-full flex justify-center font-bold text-[16px] cursor-pointer transition-all hover:bg-[#05a055] active:bg-[#05a055] active:scale-[0.98] outline-none animate-fade-in mt-auto"
-              onClick={resetOrder}
-            >
-              Volver al inicio
-            </div>
-          )}
+                {i < steps.length - 1 && (
+                  <div className={`flex-1 h-[2px] -translate-y-1/2 rounded-full transition-all duration-500 ${i < currentStep ? 'bg-[#1E1E1E]' : 'bg-[#F3F4F6]'}`} />
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
-      </div>
-    </div>,
-    document.body
+      </div>,
+      pipWindow.document.body
+    );
+  };
+
+  return (
+    <>
+      {renderMainView()}
+      {renderPipView()}
+    </>
   );
 };
 
