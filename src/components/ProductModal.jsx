@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { X, Minus, Plus, ShareNetwork, Check } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 
@@ -83,13 +84,30 @@ const ProductModal = ({ product, onClose }) => {
 
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       className="fixed inset-0 h-[100dvh] w-screen z-50 flex items-end md:items-center justify-center bg-[#1E1E1E]/40 p-0 md:p-4 overflow-hidden"
       role="dialog"
       aria-modal="true"
       aria-label={product.name}
     >
-      <div className="bg-white w-full max-h-[100dvh] h-full md:h-[85vh] md:max-h-[650px] max-w-[480px] md:max-w-[900px] flex flex-col md:flex-row md:rounded-2xl overflow-hidden relative animate-slide-up md:animate-fade-in isolate">
+      <motion.div 
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "100%" }}
+        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={{ top: 0, bottom: 0.5 }}
+        onDragEnd={(e, info) => {
+          if (info.offset.y > 100 || info.velocity.y > 500) {
+            onClose();
+          }
+        }}
+        className="bg-white w-full max-h-[100dvh] h-full md:h-[85vh] md:max-h-[650px] max-w-[480px] md:max-w-[900px] flex flex-col md:flex-row md:rounded-2xl overflow-hidden relative isolate"
+      >
         
         {/* Imagen - Solo Desktop */}
         <div className="hidden md:flex relative w-[45%] shrink-0 h-full bg-[#F3F4F6] justify-center items-center p-8">
@@ -295,8 +313,8 @@ const ProductModal = ({ product, onClose }) => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

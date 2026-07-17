@@ -1,18 +1,109 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { X, Trash, Plus, Minus, CheckCircle, Package, Truck, ShoppingCart, CreditCard, CaretLeft, CaretRight, Ticket } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import DeliverySelector from './DeliverySelector';
+import { motion, useAnimation } from 'framer-motion';
 
 import { AuthContext } from '../context/AuthContext';
 import AuthModal from './AuthModal';
 import NotificationModal from './NotificationModal';
-
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
     e.preventDefault();
     fn();
   }
+};
+
+const CartItemComponent = ({ item, updateQuantity, removeFromCart }) => {
+  const controls = useAnimation();
+  
+  const handleDelete = () => {
+    removeFromCart(item.id);
+  };
+
+  return (
+    <div className="relative w-full overflow-hidden bg-[#FF3B30]">
+      <div className="absolute right-0 top-0 bottom-0 w-24 flex justify-center items-center text-white">
+        <Trash size={24} weight="fill" />
+      </div>
+      <motion.div
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={{ left: 1, right: 0 }}
+        onDragEnd={(e, info) => {
+          if (info.offset.x < -100 || info.velocity.x < -500) {
+            controls.start({ x: -window.innerWidth });
+            setTimeout(handleDelete, 200);
+          } else {
+            controls.start({ x: 0 });
+          }
+        }}
+        animate={controls}
+        className="flex gap-4 bg-white relative z-10 w-full"
+      >
+        <div className="w-20 h-20 bg-[#F3F4F6] flex justify-center items-center p-1 shrink-0 rounded-2xl">
+          <img src={item.image} alt={item.name} className="max-w-full max-h-full object-contain mix-blend-multiply" />
+        </div>
+        <div className="flex-1 flex flex-col justify-between">
+          <div className="flex justify-between items-start gap-2">
+            <div className="flex flex-col">
+              <h3 className="font-medium text-[#1E1E1E] text-[15px] leading-tight">{item.name}</h3>
+              {item.selectedVariants && Object.keys(item.selectedVariants).length > 0 && (
+                <p className="text-[12px] text-[#8E8E93] mt-1 leading-tight">
+                  {Object.values(item.selectedVariants).join(', ')}
+                </p>
+              )}
+              {item.customizations && item.customizations.length > 0 && (
+                <p className="text-[12px] text-[#8E8E93] mt-1 leading-tight">Sin {item.customizations.join(', ')}</p>
+              )}
+              {item.specialInstructions && (
+                <p className="text-[12px] text-[#8E8E93] mt-0.5 leading-tight italic">Nota: {item.specialInstructions}</p>
+              )}
+            </div>
+            <div
+              className="text-[#8E8E93] hover:text-[#06C167] active:text-[#06C167] cursor-pointer shrink-0 transition-all active:scale-[0.95] outline-none rounded-full focus-visible:opacity-80 md:block hidden"
+              onClick={() => removeFromCart(item.id)}
+              onKeyDown={handleKeyDown(() => removeFromCart(item.id))}
+              role="button"
+              tabIndex={0}
+              aria-label={`Eliminar ${item.name}`}
+            >
+              <Trash size={20} weight="bold" />
+            </div>
+          </div>
+          <div className="flex items-center justify-between mt-2">
+            <span className="font-semibold text-[#1E1E1E]">
+              ${(item.price * item.quantity).toFixed(2)} <span className="text-[11px] font-semibold text-[#8E8E93]">MXN</span>
+            </span>
+            <div className="flex items-center gap-3 bg-[#F3F4F6] px-2 py-1 rounded-full">
+              <div
+                className="cursor-pointer p-1 hover:text-[#06C167] active:text-[#06C167] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:bg-[#E5E5E7]"
+                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                onKeyDown={handleKeyDown(() => updateQuantity(item.id, item.quantity - 1))}
+                role="button"
+                tabIndex={0}
+                aria-label={`Quitar uno de ${item.name}`}
+              >
+                <Minus size={14} weight="bold" />
+              </div>
+              <span className="text-[14px] font-bold w-4 text-center">{item.quantity}</span>
+              <div
+                className="cursor-pointer p-1 hover:text-[#06C167] active:text-[#06C167] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:bg-[#E5E5E7]"
+                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                onKeyDown={handleKeyDown(() => updateQuantity(item.id, item.quantity + 1))}
+                role="button"
+                tabIndex={0}
+                aria-label={`Agregar uno de ${item.name}`}
+              >
+                <Plus size={14} weight="bold" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
 };
 
 
@@ -86,13 +177,30 @@ const CartPanel = ({ onClose }) => {
   const finalTotal = Math.max(0, subtotal + deliveryFee - discountAmount);
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       className="fixed inset-0 h-[100dvh] w-screen z-50 flex items-end md:items-stretch justify-center md:justify-end bg-[#1E1E1E]/40 md:p-0 overflow-hidden"
       role="dialog"
       aria-modal="true"
       aria-label="Tu carrito"
     >
-      <div className="bg-white w-full h-full max-h-[100dvh] md:h-full max-w-[480px] flex flex-col md:rounded-l-2xl rounded-t-2xl md:rounded-tr-none overflow-hidden relative animate-slide-up md:animate-slide-in-right isolate">
+      <motion.div
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "100%" }}
+        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={{ top: 0, bottom: 0.5 }}
+        onDragEnd={(e, info) => {
+          if (info.offset.y > 100 || info.velocity.y > 500) {
+            onClose();
+          }
+        }}
+        className="bg-white w-full h-full max-h-[100dvh] md:h-full max-w-[480px] flex flex-col md:rounded-l-2xl rounded-t-2xl md:rounded-tr-none overflow-hidden relative isolate"
+      >
 
         {/* ── VISTA: CARRITO ─────────────────────────────────────────────── */}
         {activeView === 'cart' && (
@@ -134,67 +242,7 @@ const CartPanel = ({ onClose }) => {
                 ) : (
                   <div className="flex flex-col gap-6">
                     {cartItems.map((item) => (
-                      <div key={item.id} className="flex gap-4">
-                        <div className="w-20 h-20 bg-[#F3F4F6] flex justify-center items-center p-1 shrink-0 rounded-2xl">
-                          <img src={item.image} alt={item.name} className="max-w-full max-h-full object-contain mix-blend-multiply" />
-                        </div>
-                        <div className="flex-1 flex flex-col justify-between">
-                          <div className="flex justify-between items-start gap-2">
-                            <div className="flex flex-col">
-                              <h3 className="font-medium text-[#1E1E1E] text-[15px] leading-tight">{item.name}</h3>
-                              {item.selectedVariants && Object.keys(item.selectedVariants).length > 0 && (
-                                <p className="text-[12px] text-[#8E8E93] mt-1 leading-tight">
-                                  {Object.values(item.selectedVariants).join(', ')}
-                                </p>
-                              )}
-                              {item.customizations && item.customizations.length > 0 && (
-                                <p className="text-[12px] text-[#8E8E93] mt-1 leading-tight">Sin {item.customizations.join(', ')}</p>
-                              )}
-                              {item.specialInstructions && (
-                                <p className="text-[12px] text-[#8E8E93] mt-0.5 leading-tight italic">Nota: {item.specialInstructions}</p>
-                              )}
-                            </div>
-                            <div
-                              className="text-[#8E8E93] hover:text-[#06C167] active:text-[#06C167] cursor-pointer shrink-0 transition-all active:scale-[0.95] outline-none rounded-full focus-visible:opacity-80"
-                              onClick={() => removeFromCart(item.id)}
-                              onKeyDown={handleKeyDown(() => removeFromCart(item.id))}
-                              role="button"
-                              tabIndex={0}
-                              aria-label={`Eliminar ${item.name}`}
-                            >
-                              <Trash size={20} weight="bold" />
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between mt-2">
-                            <span className="font-semibold text-[#1E1E1E]">
-                              ${(item.price * item.quantity).toFixed(2)} <span className="text-[11px] font-semibold text-[#8E8E93]">MXN</span>
-                            </span>
-                            <div className="flex items-center gap-3 bg-[#F3F4F6] px-2 py-1 rounded-full">
-                              <div
-                                className="cursor-pointer p-1 hover:text-[#06C167] active:text-[#06C167] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:bg-[#E5E5E7]"
-                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                onKeyDown={handleKeyDown(() => updateQuantity(item.id, item.quantity - 1))}
-                                role="button"
-                                tabIndex={0}
-                                aria-label={`Quitar uno de ${item.name}`}
-                              >
-                                <Minus size={14} weight="bold" />
-                              </div>
-                              <span className="text-[14px] font-bold w-4 text-center">{item.quantity}</span>
-                              <div
-                                className="cursor-pointer p-1 hover:text-[#06C167] active:text-[#06C167] transition-all active:scale-[0.95] outline-none rounded-full focus-visible:bg-[#E5E5E7]"
-                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                onKeyDown={handleKeyDown(() => updateQuantity(item.id, item.quantity + 1))}
-                                role="button"
-                                tabIndex={0}
-                                aria-label={`Agregar uno de ${item.name}`}
-                              >
-                                <Plus size={14} weight="bold" />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      <CartItemComponent key={item.id} item={item} updateQuantity={updateQuantity} removeFromCart={removeFromCart} />
                     ))}
                   </div>
                 )}
@@ -406,7 +454,7 @@ const CartPanel = ({ onClose }) => {
           </div>
         )}
 
-      </div>
+      </motion.div>
       <AuthModal isOpen={authModalConfig.isOpen} onClose={() => setAuthModalConfig({ ...authModalConfig, isOpen: false })} initialView={authModalConfig.view} />
       <NotificationModal 
         isOpen={showNotificationModal} 
@@ -415,7 +463,7 @@ const CartPanel = ({ onClose }) => {
           localStorage.setItem('ubereats_asked_notif_v2', 'true');
         }}
       />
-    </div>
+    </motion.div>
   );
 };
 

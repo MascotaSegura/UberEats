@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { motion } from 'framer-motion';
 import { Receipt, Wallet, Tag, Storefront, Question, X, DeviceMobile } from '@phosphor-icons/react';
 import { AuthContext } from '../context/AuthContext';
 import AuthModal from './AuthModal';
@@ -41,8 +42,7 @@ const Sidebar = ({ isOpen, onClose, onMenuSelect }) => {
     }
   };
 
-  if (!isOpen) return null;
-
+  // Removed if (!isOpen) return null to ensure exit animation works if conditionally rendered
   const menuItems = [
     { id: 'orders', icon: <Receipt size={24} weight="fill" />, label: 'Pedidos' },
     { id: 'wallet', icon: <Wallet size={24} weight="fill" />, label: 'Billetera' },
@@ -129,15 +129,34 @@ const Sidebar = ({ isOpen, onClose, onMenuSelect }) => {
   );
 
   return (
-    <div className="fixed inset-0 z-[100] flex">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] flex"
+    >
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-[#1E1E1E]/40 animate-fade-in"
+        className="absolute inset-0 bg-[#1E1E1E]/40"
         onClick={onClose}
       />
       
       {/* Sidebar Panel */}
-      <div className="relative w-[80%] max-w-[320px] h-full bg-white flex flex-col animate-slide-in-left">
+      <motion.div 
+        initial={{ x: "-100%" }}
+        animate={{ x: 0 }}
+        exit={{ x: "-100%" }}
+        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={{ left: 0.5, right: 0 }}
+        onDragEnd={(e, info) => {
+          if (info.offset.x < -70 || info.velocity.x < -500) {
+            onClose();
+          }
+        }}
+        className="relative w-[80%] max-w-[320px] h-full bg-white flex flex-col isolate"
+      >
         {/* Header */}
         <div className="p-4 flex items-center justify-between pb-6">
           <div className="text-[22px] tracking-tight text-[#1E1E1E]">
@@ -153,11 +172,11 @@ const Sidebar = ({ isOpen, onClose, onMenuSelect }) => {
         </div>
 
         {content}
-      </div>
+      </motion.div>
       
       <AuthModal isOpen={authModalConfig.isOpen} onClose={closeAuth} initialView={authModalConfig.view} />
       <PWAInstallModal isOpen={showInstallModal} onClose={() => setShowInstallModal(false)} />
-    </div>
+    </motion.div>
   );
 };
 
