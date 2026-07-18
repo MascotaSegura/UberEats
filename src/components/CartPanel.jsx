@@ -164,9 +164,6 @@ const CartPanel = ({ onClose }) => {
     }
   };
 
-  // ── Order tracking is now handled globally in Home/App via OrderTrackingScreen
-
-  // ── Compute totals ───────────────────────────────────────────────────────
   const subtotal = getCartTotal();
   const deliveryFee = deliveryMode === 'delivery' ? 25 : 0;
   let discountAmount = 0;
@@ -248,7 +245,6 @@ const CartPanel = ({ onClose }) => {
                 )}
               </div>
               
-              {/* Move breakdown and selectors here to scroll with the content */}
               {cartItems.length > 0 && (
                 <div className="px-6 pb-6 pt-4">
                   

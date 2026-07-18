@@ -333,7 +333,6 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
         <div className="w-full md:w-[400px] xl:w-[480px] bg-white rounded-t-2xl md:rounded-none p-6 pb-[max(1.5rem,env(safe-area-inset-bottom,1.5rem))] md:p-8 z-10 relative mt-[-20px] md:mt-0 flex flex-col md:h-full md:order-1 overflow-y-auto shrink-0">
           <div className="w-full flex justify-between items-start mb-6 shrink-0">
              <div className="hidden md:block text-[22px] tracking-tight text-[#1E1E1E] mt-1">
-                {/* <span className="font-normal">Uber</span> <span className="font-medium">Eats</span> */}
                  <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Uber Eats" className="h-6 w-auto object-contain shrink-0" />
              </div>
              <div className="hidden md:flex gap-2">
