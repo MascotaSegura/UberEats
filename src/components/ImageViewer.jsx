@@ -51,25 +51,26 @@ const ImageViewer = ({ src, alt, onClose }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-[#1E1E1E]/95 backdrop-blur-sm"
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-[#F3F4F6]"
       role="dialog"
       aria-modal="true"
     >
       <div 
-        className="absolute top-[max(1rem,env(safe-area-inset-top,1rem))] right-4 md:right-8 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center cursor-pointer transition-colors z-10 outline-none focus-visible:bg-white/20"
+        className="absolute top-[max(1rem,env(safe-area-inset-top,1rem))] right-4 md:right-8 w-12 h-12 bg-white hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] rounded-full flex items-center justify-center cursor-pointer transition-all z-10 outline-none focus-visible:bg-[#ECECEE]"
         onClick={onClose}
         onKeyDown={handleKeyDown(onClose)}
         role="button"
         tabIndex={0}
         aria-label="Cerrar imagen"
       >
-        <X size={24} weight="bold" color="white" />
+        <X size={24} weight="bold" color="#1E1E1E" />
       </div>
 
       <motion.div
         drag="y"
         dragConstraints={{ top: 0, bottom: 0 }}
-        dragElastic={0.8}
+        dragElastic={{ top: 0.5, bottom: 0.5 }}
+        transition={{ type: "spring", damping: 25, stiffness: 200 }}
         onDragEnd={(e, info) => {
           if (Math.abs(info.offset.y) > 100 || Math.abs(info.velocity.y) > 500) {
             onClose();

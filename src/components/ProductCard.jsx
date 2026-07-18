@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Minus, Trash } from '@phosphor-icons/react';
+import { Plus, Minus, Trash, Heart } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 
 const handleKeyDown = (fn) => (e) => {
@@ -39,7 +39,7 @@ const QuickAddControl = ({ product }) => {
   if (quantity === 0) {
     return (
       <button 
-        className="w-8 h-8 rounded-full bg-[#F3F4F6] flex items-center justify-center hover:bg-[#1E1E1E] active:bg-[#1E1E1E] hover:text-white active:text-white transition-colors active:scale-[0.90] outline-none focus-visible:bg-[#E5E5E7]"
+        className="w-8 h-8 rounded-full bg-[#F3F4F6] flex items-center justify-center hover:bg-[#1E1E1E] active:bg-[#1E1E1E] hover:text-white active:text-white transition-colors active:scale-[0.95] outline-none focus-visible:bg-[#E5E5E7]"
         onClick={handleIncrement}
         aria-label={`Añadir ${product.name} al carrito`}
         type="button"
@@ -55,7 +55,7 @@ const QuickAddControl = ({ product }) => {
       onClick={e => e.stopPropagation()}
     >
       <button
-        className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1E1E1E] hover:text-[#06C167] active:text-[#06C167] transition-colors active:scale-[0.90] outline-none focus-visible:bg-[#ECECEE]"
+        className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1E1E1E] hover:text-[#06C167] active:text-[#06C167] transition-colors active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE]"
         onClick={handleDecrement}
         aria-label="Disminuir cantidad"
         type="button"
@@ -66,7 +66,7 @@ const QuickAddControl = ({ product }) => {
         {quantity}
       </span>
       <button
-        className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1E1E1E] hover:text-[#06C167] active:text-[#06C167] transition-colors active:scale-[0.90] outline-none focus-visible:bg-[#ECECEE]"
+        className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1E1E1E] hover:text-[#06C167] active:text-[#06C167] transition-colors active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE]"
         onClick={handleIncrement}
         aria-label="Aumentar cantidad"
         type="button"
@@ -78,6 +78,14 @@ const QuickAddControl = ({ product }) => {
 };
 
 const ProductCard = ({ product, onClick }) => {
+  const { favorites = [], toggleFavorite = () => {} } = useCart();
+  const isFavorite = favorites.includes(product.id);
+
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation();
+    toggleFavorite(product.id);
+  };
+
   return (
     <div
       className="bg-white p-4 flex flex-col cursor-pointer hover:-translate-y-1 hover:bg-[#FAFAFA] active:bg-[#FAFAFA] active:scale-[0.98] transition-all outline-none focus-visible:bg-[#F9F9F9] rounded-2xl"
@@ -98,6 +106,13 @@ const ProductCard = ({ product, onClick }) => {
             OFERTA
           </div>
         )}
+        <button
+          className="absolute top-0 right-0 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-[#1E1E1E] hover:bg-white active:scale-[0.95] transition-all outline-none focus-visible:bg-white"
+          onClick={handleFavoriteClick}
+          aria-label={isFavorite ? "Quitar de favoritos" : "Agregar a favoritos"}
+        >
+          <Heart size={16} weight={isFavorite ? "fill" : "bold"} color={isFavorite ? "#FF3B30" : "currentColor"} />
+        </button>
       </div>
 
       <h3 className="text-[15px] font-semibold text-[#1E1E1E] leading-tight mb-1 line-clamp-2">

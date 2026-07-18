@@ -13,8 +13,10 @@ import WalletPanel from '../components/WalletPanel';
 import StoresPanel from '../components/StoresPanel';
 import PromosPanel from '../components/PromosPanel';
 import HelpPanel from '../components/HelpPanel';
+import FavoritesPanel from '../components/FavoritesPanel';
 import OrderTrackingScreen from '../components/OrderTrackingScreen';
 import ChatPanel from '../components/ChatPanel';
+import ProfileScreen from '../components/ProfileScreen';
 import { products } from '../data/products';
 
 const Home = () => {
@@ -26,7 +28,7 @@ const Home = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activePanel, setActivePanel] = useState(null);
   const [activeChat, setActiveChat] = useState(null);
-
+  const [showProfile, setShowProfile] = useState(false);
 
   const trimmedQuery = searchQuery.trim().toLowerCase();
 
@@ -39,8 +41,6 @@ const Home = () => {
       p.description.toLowerCase().includes(trimmedQuery);
     return matchesCategory && matchesSearch;
   });
-
-  const showCart = isCartOpen;
 
   const handleRefresh = async () => {
     // Simulate network delay
@@ -56,6 +56,7 @@ const Home = () => {
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           onMenuToggle={() => setIsSidebarOpen(true)}
+          onOpenProfile={() => setShowProfile(true)}
         />
         <CategoryNav
           selectedCategory={selectedCategory}
@@ -107,6 +108,7 @@ const Home = () => {
               setActivePanel(panelId);
               setIsSidebarOpen(false);
             }}
+            onOpenProfile={() => setShowProfile(true)}
           />
         )}
       </AnimatePresence>
@@ -121,7 +123,7 @@ const Home = () => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {showCart && <CartPanel onClose={() => setIsCartOpen(false)} />}
+        {isCartOpen && <CartPanel onClose={() => setIsCartOpen(false)} />}
       </AnimatePresence>
       
       <AnimatePresence>
@@ -139,11 +141,18 @@ const Home = () => {
       <AnimatePresence>
         {activePanel === 'help' && <HelpPanel onClose={() => setActivePanel(null)} onOpenChat={() => setActiveChat('support')} />}
       </AnimatePresence>
+      <AnimatePresence>
+        {activePanel === 'favorites' && <FavoritesPanel onClose={() => setActivePanel(null)} onProductClick={setSelectedProduct} />}
+      </AnimatePresence>
 
       <OrderTrackingScreen onOpenChat={(type) => setActiveChat(type)} />
       
       <AnimatePresence>
         {activeChat && <ChatPanel isOpen={!!activeChat} onClose={() => setActiveChat(null)} recipient={activeChat} />}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showProfile && <ProfileScreen onClose={() => setShowProfile(false)} onOpenOrders={() => setActivePanel('orders')} onOpenFavorites={() => setActivePanel('favorites')} />}
       </AnimatePresence>
     </div>
   );

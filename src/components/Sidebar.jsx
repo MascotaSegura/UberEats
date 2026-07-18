@@ -5,7 +5,7 @@ import { AuthContext } from '../context/AuthContext';
 import AuthModal from './AuthModal';
 import PWAInstallModal from './PWAInstallModal';
 
-const Sidebar = ({ isOpen, onClose, onMenuSelect }) => {
+const Sidebar = ({ isOpen, onClose, onMenuSelect, onOpenProfile }) => {
   // Prevent body scroll when sidebar is open
   useEffect(() => {
     if (isOpen) {
@@ -69,7 +69,7 @@ const Sidebar = ({ isOpen, onClose, onMenuSelect }) => {
         {user ? (
           <button 
             className="w-full py-3 bg-[#F3F4F6] hover:bg-[#ECECEE] active:bg-[#ECECEE] text-[#1E1E1E] rounded-full font-medium text-[14px] active:scale-[0.98] transition-all outline-none focus-visible:bg-[#ECECEE] flex items-center justify-center gap-2"
-            onClick={() => { openAuth('profile'); }}
+            onClick={() => { onOpenProfile(); onClose(); }}
           >
             <div className="w-6 h-6 rounded-full bg-[#1E1E1E] text-white flex items-center justify-center text-[11px] font-bold">
               {user.name.charAt(0).toUpperCase()}
@@ -163,7 +163,7 @@ const Sidebar = ({ isOpen, onClose, onMenuSelect }) => {
           </div>
           <button 
             onClick={onClose}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F3F4F6] hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-95 transition-all outline-none"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F3F4F6] hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] transition-all outline-none"
           >
             <X size={20} weight="bold" />
           </button>

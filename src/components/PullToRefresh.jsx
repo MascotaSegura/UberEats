@@ -57,7 +57,7 @@ const PullToRefresh = ({ onRefresh, children }) => {
       
       if (pullDistance > THRESHOLD) {
         setIsRefreshing(true);
-        controls.start({ y: 60, transition: { type: 'spring', stiffness: 300, damping: 20 } });
+        controls.start({ y: 60, transition: { type: 'spring', damping: 25, stiffness: 200 } });
         
         try {
           await onRefresh();
@@ -65,12 +65,12 @@ const PullToRefresh = ({ onRefresh, children }) => {
           setIsRefreshing(false);
           setIsPulling(false);
           setPullProgress(0);
-          controls.start({ y: 0, transition: { type: 'spring', stiffness: 300, damping: 20 } });
+          controls.start({ y: 0, transition: { type: 'spring', damping: 25, stiffness: 200 } });
         }
       } else if (isPulling) {
         setIsPulling(false);
         setPullProgress(0);
-        controls.start({ y: 0, transition: { type: 'spring', stiffness: 300, damping: 20 } });
+        controls.start({ y: 0, transition: { type: 'spring', damping: 25, stiffness: 200 } });
       }
       
       startY.current = 0;
@@ -108,7 +108,13 @@ const PullToRefresh = ({ onRefresh, children }) => {
             <SpinnerGap size={24} color="#06C167" weight="bold" className="animate-spin" />
           ) : (
             <motion.div
-              style={{ rotate: pullProgress * 180, opacity: pullProgress }}
+              style={{ 
+                rotate: pullProgress >= 1 ? 180 : 0, 
+                opacity: Math.max(0.3, pullProgress),
+                scale: 0.8 + (pullProgress * 0.2)
+              }}
+              animate={{ rotate: pullProgress >= 1 ? 180 : 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
             >
               <ArrowDown size={24} color="#1E1E1E" weight="bold" />
             </motion.div>

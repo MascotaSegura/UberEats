@@ -19,7 +19,7 @@ const PWABadge = () => {
       
       <div className="flex items-center gap-2 shrink-0">
         <button
-          className="bg-white text-[#1E1E1E] px-3 py-1.5 rounded-full text-[13px] font-bold hover:bg-gray-100 active:bg-gray-200 active:scale-95 transition-all outline-none"
+          className="bg-white text-[#1E1E1E] px-3 py-1.5 rounded-full text-[13px] font-bold hover:bg-gray-100 active:bg-gray-200 active:scale-[0.95] transition-all outline-none"
           onClick={() => updateServiceWorker(true)}
         >
           <div className="flex items-center gap-1.5">

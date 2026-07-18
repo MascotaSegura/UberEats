@@ -22,6 +22,7 @@ export const CartProvider = ({ children }) => {
     else if (status === null) setIsTrackingOpen(false);
   };
   const [deliveryMode, setDeliveryMode] = useState(() => loadSaved('ubereats_mode', 'delivery')); // 'delivery' | 'pickup'
+  const [favorites, setFavorites] = useState(() => loadSaved('ubereats_favorites', []));
 
   const [addresses, setAddresses] = useState(() => loadSaved('ubereats_addresses', []));
   const [activePromo, setActivePromo] = useState(() => loadSaved('ubereats_promo', null));
@@ -78,6 +79,10 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('ubereats_mode', JSON.stringify(deliveryMode));
   }, [deliveryMode]);
+
+  useEffect(() => {
+    localStorage.setItem('ubereats_favorites', JSON.stringify(favorites));
+  }, [favorites]);
 
   useEffect(() => {
     localStorage.setItem('ubereats_promo', JSON.stringify(activePromo));
@@ -235,6 +240,34 @@ export const CartProvider = ({ children }) => {
     setSelectedPaymentMethod((prev) => prev || newCard);
   };
 
+  const removeCard = (id) => {
+    setSavedCards((prev) => {
+      const filtered = prev.filter(c => c.id !== id);
+      if (selectedPaymentMethod?.id === id) {
+        setSelectedPaymentMethod(filtered.length > 0 ? filtered[0] : null);
+      }
+      return filtered;
+    });
+  };
+
+  const updateCard = (id, updatedData) => {
+    setSavedCards((prev) => {
+      const updated = prev.map(c => c.id === id ? { ...c, ...updatedData } : c);
+      if (selectedPaymentMethod?.id === id) {
+        setSelectedPaymentMethod(updated.find(c => c.id === id));
+      }
+      return updated;
+    });
+  };
+
+  const toggleFavorite = (productId) => {
+    setFavorites((prev) => 
+      prev.includes(productId) 
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -266,8 +299,12 @@ export const CartProvider = ({ children }) => {
         removePromo,
         savedCards,
         addCard,
+        removeCard,
+        updateCard,
         selectedPaymentMethod,
         setSelectedPaymentMethod,
+        favorites,
+        toggleFavorite,
       }}
     >
       {children}

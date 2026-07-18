@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
   const { user, login, register, logout } = useContext(AuthContext);
   
-  // Views: 'phone_input', 'verify_code', 'name_input', 'profile'
+  // Views: 'phone_input', 'verify_code', 'name_input'
   const [view, setView] = useState('phone_input');
   const [phone, setPhone] = useState('');
   const [countryCode, setCountryCode] = useState('+52');
@@ -28,18 +28,14 @@ const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
   const isSignup = initialView === 'signup';
   useEffect(() => {
     if (isOpen) {
-      if (user) {
-        setView('profile');
-      } else {
-        setView('phone_input');
-      }
+      setView('phone_input');
       setPhone('');
       setCode('');
       setName('');
       setError('');
       setCountryOpen(false);
     }
-  }, [isOpen, initialView, user]);
+  }, [isOpen, initialView]);
 
   // Close country dropdown when clicking outside
   useEffect(() => {
@@ -126,7 +122,6 @@ const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
             {view === 'phone_input' && (isSignup ? 'Crea tu cuenta' : 'Iniciar sesión')}
             {view === 'verify_code' && 'Verifica tu número'}
             {view === 'name_input' && 'Ingresa tu nombre'}
-            {view === 'profile' && 'Mi Perfil'}
           </h2>
           <button
             className="absolute right-4 w-9 h-9 bg-[#F3F4F6] rounded-full flex items-center justify-center hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all shrink-0"
@@ -137,25 +132,7 @@ const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-          {view === 'profile' ? (
-            <div className="flex flex-col items-center">
-              <div className="w-24 h-24 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-4">
-                <User size={48} weight="fill" color="#D1D1D6" />
-              </div>
-              <h3 className="text-xl font-bold text-[#1E1E1E] mb-1">{user.name}</h3>
-              <p className="text-[#8E8E93] mb-8">{user.phone || user.email}</p>
-              
-              <button
-                className="w-full bg-[#F3F4F6] text-[#1E1E1E] py-3.5 rounded-full font-medium hover:bg-[#ECECEE] active:bg-[#ECECEE] transition-all active:scale-[0.98] outline-none focus-visible:bg-[#ECECEE]"
-                onClick={() => {
-                  logout();
-                  onClose();
-                }}
-              >
-                Cerrar Sesión
-              </button>
-            </div>
-          ) : view === 'phone_input' ? (
+          {view === 'phone_input' ? (
             <form onSubmit={handlePhoneSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5 mt-2">
                 <p className="text-[15px] text-[#8E8E93] mb-4 text-center">

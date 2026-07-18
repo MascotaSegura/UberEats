@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Minus, Plus, ShareNetwork, Check, MagnifyingGlassPlus } from '@phosphor-icons/react';
+import { X, Minus, Plus, ShareNetwork, Check, MagnifyingGlassPlus, Heart } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import ImageViewer from './ImageViewer';
 
@@ -18,7 +18,8 @@ const ProductModal = ({ product, onClose }) => {
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [copied, setCopied] = useState(false);
   const [isImageExpanded, setIsImageExpanded] = useState(false);
-  const { addToCart } = useCart();
+  const { addToCart, favorites = [], toggleFavorite = () => {} } = useCart();
+  const isFavorite = favorites.includes(product?.id);
 
   const [selectedVariants, setSelectedVariants] = useState(() => {
     const defaults = {};
@@ -148,9 +149,20 @@ const ProductModal = ({ product, onClose }) => {
             >
               <X size={20} weight="bold" color="#1E1E1E" />
             </div>
-            {/* Share Button */}
+            {/* Favorite Button */}
             <div
               className="w-10 h-10 bg-white md:bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all pointer-events-auto md:order-1"
+              onClick={() => toggleFavorite(product.id)}
+              onKeyDown={handleKeyDown(() => toggleFavorite(product.id))}
+              role="button"
+              tabIndex={0}
+              aria-label={isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+            >
+              <Heart size={20} weight={isFavorite ? "fill" : "bold"} color={isFavorite ? "#FF3B30" : "currentColor"} />
+            </div>
+            {/* Share Button */}
+            <div
+              className="w-10 h-10 bg-white md:bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all pointer-events-auto md:order-0"
               onClick={handleShare}
               onKeyDown={handleKeyDown(handleShare)}
               role="button"

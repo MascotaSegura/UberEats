@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { X, Trash, Plus, Minus, CheckCircle, Package, Truck, ShoppingCart, CreditCard, CaretLeft, CaretRight, Ticket } from '@phosphor-icons/react';
+import React, { useRef, useState, useContext } from 'react';
+import { X, Trash, Plus, Minus, CheckCircle, ShoppingCart, CreditCard, CaretLeft, CaretRight, Ticket } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import DeliverySelector from './DeliverySelector';
 import { motion, useAnimation } from 'framer-motion';
@@ -30,13 +30,13 @@ const CartItemComponent = ({ item, updateQuantity, removeFromCart }) => {
       <motion.div
         drag="x"
         dragConstraints={{ left: 0, right: 0 }}
-        dragElastic={{ left: 1, right: 0 }}
+        dragElastic={{ left: 0.5, right: 0 }}
         onDragEnd={(e, info) => {
           if (info.offset.x < -100 || info.velocity.x < -500) {
             controls.start({ x: -window.innerWidth });
             setTimeout(handleDelete, 200);
           } else {
-            controls.start({ x: 0 });
+            controls.start({ x: 0, transition: { type: "spring", damping: 25, stiffness: 200 } });
           }
         }}
         animate={controls}
@@ -125,15 +125,15 @@ const CartPanel = ({ onClose }) => {
     savedCards,
   } = useCart();
 
-  const { user } = React.useContext(AuthContext);
-  const [authModalConfig, setAuthModalConfig] = React.useState({ isOpen: false, view: 'login' });
+  const { user } = useContext(AuthContext);
+  const [authModalConfig, setAuthModalConfig] = useState({ isOpen: false, view: 'login' });
 
-  const [errorMsg, setErrorMsg] = React.useState('');
-  const [showNotificationModal, setShowNotificationModal] = React.useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
-  const [promoInput, setPromoInput] = React.useState('');
-  const [promoError, setPromoError] = React.useState('');
-  const [activeView, setActiveView] = React.useState('cart');
+  const [promoInput, setPromoInput] = useState('');
+  const [promoError, setPromoError] = useState('');
+  const [activeView, setActiveView] = useState('cart');
 
   const handleApplyPromo = () => {
     if (!promoInput.trim()) return;
