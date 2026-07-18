@@ -16,7 +16,6 @@ import HelpPanel from '../components/HelpPanel';
 import OrderTrackingScreen from '../components/OrderTrackingScreen';
 import ChatPanel from '../components/ChatPanel';
 import { products } from '../data/products';
-import { useCart } from '../context/useCart';
 
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -28,7 +27,6 @@ const Home = () => {
   const [activePanel, setActivePanel] = useState(null);
   const [activeChat, setActiveChat] = useState(null);
 
-  const { orderStatus } = useCart();
 
   const trimmedQuery = searchQuery.trim().toLowerCase();
 
