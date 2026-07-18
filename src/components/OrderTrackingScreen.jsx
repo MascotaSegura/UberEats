@@ -264,13 +264,13 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
     if (isPickup) {
       return createPortal(
         <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#F3F4F6] overflow-hidden animate-fade-in isolate p-4">
-          <div className="absolute top-[max(1rem,env(safe-area-inset-top,1rem))] left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform" onClick={resetOrder}>
+          <button type="button" className="absolute top-[max(1rem,env(safe-area-inset-top,1rem))] left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform outline-none focus-visible:bg-[#ECECEE]" onClick={resetOrder} aria-label="Cerrar tracking">
             <X size={24} weight="bold" color="#1E1E1E" />
-          </div>
+          </button>
           {pipSupported && (
-            <div className="absolute top-[max(1rem,env(safe-area-inset-top,1rem))] right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform" onClick={togglePip} title="Picture in Picture">
+            <button type="button" className="absolute top-[max(1rem,env(safe-area-inset-top,1rem))] right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform outline-none focus-visible:bg-[#ECECEE]" onClick={togglePip} title="Picture in Picture" aria-label="Picture in Picture">
               <Browsers size={24} weight="bold" color="#1E1E1E" />
-            </div>
+            </button>
           )}
 
           <div className="w-full max-w-[480px] bg-white rounded-2xl p-8 flex flex-col items-center">
@@ -307,9 +307,9 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
               })}
             </div>
             {currentStep === 2 && (
-              <div className="w-full bg-[#06C167] text-white py-4 rounded-full flex justify-center font-bold text-[16px] cursor-pointer transition-all hover:bg-[#05a055] active:bg-[#05a055] active:scale-[0.98] outline-none animate-fade-in" onClick={completeOrder}>
+              <button type="button" className="w-full bg-[#06C167] text-white py-4 rounded-full flex justify-center font-bold text-[16px] cursor-pointer transition-all hover:bg-[#05a055] active:bg-[#05a055] active:scale-[0.98] outline-none focus-visible:opacity-90 animate-fade-in" onClick={completeOrder}>
                 Volver al inicio
-              </div>
+              </button>
             )}
           </div>
         </div>,
@@ -321,13 +321,13 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
       <div className="fixed inset-0 z-[100] flex flex-col md:flex-row bg-white overflow-hidden animate-fade-in isolate">
         <div id="tracking-map" className="w-full flex-1 md:w-auto bg-[#F3F4F6] relative z-0 md:order-2" />
         
-        <div className="md:hidden absolute top-[max(1rem,env(safe-area-inset-top,1rem))] left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform" onClick={resetOrder}>
+        <button type="button" className="md:hidden absolute top-[max(1rem,env(safe-area-inset-top,1rem))] left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform outline-none focus-visible:bg-[#ECECEE]" onClick={resetOrder} aria-label="Cerrar tracking">
           <X size={24} weight="bold" color="#1E1E1E" />
-        </div>
+        </button>
         {pipSupported && (
-          <div className="md:hidden absolute top-[max(1rem,env(safe-area-inset-top,1rem))] right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform" onClick={togglePip} title="Picture in Picture">
+          <button type="button" className="md:hidden absolute top-[max(1rem,env(safe-area-inset-top,1rem))] right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer z-10 active:scale-[0.95] transition-transform outline-none focus-visible:bg-[#ECECEE]" onClick={togglePip} title="Picture in Picture" aria-label="Picture in Picture">
             <Browsers size={24} weight="bold" color="#1E1E1E" />
-          </div>
+          </button>
         )}
 
         <div className="w-full md:w-[400px] xl:w-[480px] bg-white rounded-t-2xl md:rounded-none p-6 pb-[max(1.5rem,env(safe-area-inset-bottom,1.5rem))] md:p-8 z-10 relative mt-[-20px] md:mt-0 flex flex-col md:h-full md:order-1 overflow-y-auto shrink-0">
@@ -337,13 +337,13 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
              </div>
              <div className="hidden md:flex gap-2">
                {pipSupported && (
-                 <div className="w-10 h-10 bg-[#F3F4F6] hover:bg-[#ECECEE] rounded-full flex items-center justify-center cursor-pointer active:scale-[0.95] transition-transform shrink-0" onClick={togglePip} title="Picture in Picture">
+                 <button type="button" className="w-10 h-10 bg-[#F3F4F6] hover:bg-[#ECECEE] rounded-full flex items-center justify-center cursor-pointer active:scale-[0.95] transition-transform shrink-0 outline-none focus-visible:bg-[#ECECEE]" onClick={togglePip} title="Picture in Picture" aria-label="Picture in Picture">
                    <Browsers size={20} weight="bold" color="#1E1E1E" />
-                 </div>
+                 </button>
                )}
-               <div className="w-10 h-10 bg-[#F3F4F6] hover:bg-[#ECECEE] rounded-full flex items-center justify-center cursor-pointer active:scale-[0.95] transition-transform shrink-0" onClick={resetOrder}>
+               <button type="button" className="w-10 h-10 bg-[#F3F4F6] hover:bg-[#ECECEE] rounded-full flex items-center justify-center cursor-pointer active:scale-[0.95] transition-transform shrink-0 outline-none focus-visible:bg-[#ECECEE]" onClick={resetOrder} aria-label="Cerrar tracking">
                  <X size={20} weight="bold" color="#1E1E1E" />
-               </div>
+               </button>
              </div>
           </div>
 
@@ -388,20 +388,20 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
                   <p className="text-[14px] text-[#8E8E93]">Honda Moto • 98% Satisfacción</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] transition-all outline-none focus-visible:opacity-80" onClick={() => onOpenChat?.('driver')}>
+                  <button type="button" className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] transition-all outline-none focus-visible:opacity-80" onClick={() => onOpenChat?.('driver')} aria-label="Chatear con el repartidor">
                     <ChatTeardropText size={20} weight="fill" color="#1E1E1E" />
-                  </div>
-                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] transition-all outline-none focus-visible:opacity-80">
+                  </button>
+                  <button type="button" className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:scale-[0.95] transition-all outline-none focus-visible:opacity-80" aria-label="Llamar al repartidor">
                     <Phone size={20} weight="fill" color="#1E1E1E" />
-                  </div>
+                  </button>
                 </div>
               </div>
             )}
 
             {currentStep === 2 && (
-              <div className="w-full bg-[#06C167] text-white py-4 md:py-4 rounded-full flex justify-center font-bold text-[16px] cursor-pointer transition-all hover:bg-[#05a055] active:bg-[#05a055] active:scale-[0.98] outline-none animate-fade-in mt-auto" onClick={completeOrder}>
+              <button type="button" className="w-full bg-[#06C167] text-white py-4 md:py-4 rounded-full flex justify-center font-bold text-[16px] cursor-pointer transition-all hover:bg-[#05a055] active:bg-[#05a055] active:scale-[0.98] outline-none focus-visible:opacity-90 animate-fade-in mt-auto" onClick={completeOrder}>
                 Volver al inicio
-              </div>
+              </button>
             )}
           </div>
         </div>

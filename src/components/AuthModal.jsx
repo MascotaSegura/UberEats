@@ -4,7 +4,7 @@ import { X, User, Phone, CaretLeft, CaretDown, Check } from '@phosphor-icons/rea
 import { AuthContext } from '../context/AuthContext';
 
 const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
-  const { user, login, register, logout } = useContext(AuthContext);
+  const { login, register } = useContext(AuthContext);
   
   // Views: 'phone_input', 'verify_code', 'name_input'
   const [view, setView] = useState('phone_input');

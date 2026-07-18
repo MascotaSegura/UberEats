@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { X, Heart, Storefront } from '@phosphor-icons/react';
+import { X, Heart } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import { products } from '../data/products';
 import ProductCard from './ProductCard';

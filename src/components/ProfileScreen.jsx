@@ -402,6 +402,9 @@ const ProfileScreen = ({ onClose, onOpenOrders, onOpenFavorites }) => {
                     <div 
                       key={card.id} 
                       onClick={() => handleEditCard(card)}
+                      onKeyDown={handleKeyDown(() => handleEditCard(card))}
+                      role="button"
+                      tabIndex={0}
                       className="flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-colors outline-none bg-[#F3F4F6] hover:bg-[#ECECEE] focus-visible:opacity-80 group"
                     >
                       <div className="w-12 h-8 rounded-2xl flex items-center justify-center bg-white shrink-0">
@@ -420,6 +423,9 @@ const ProfileScreen = ({ onClose, onOpenOrders, onOpenFavorites }) => {
                   <div 
                     className="flex items-center gap-4 p-4 rounded-2xl cursor-pointer outline-none focus-visible:opacity-80 transition-all hover:bg-[#F3F4F6] active:bg-[#F3F4F6] mt-2"
                     onClick={handleAddCardClick}
+                    onKeyDown={handleKeyDown(handleAddCardClick)}
+                    role="button"
+                    tabIndex={0}
                   >
                     <div className="w-10 h-10 bg-[#F3F4F6] rounded-full flex items-center justify-center">
                       <Plus size={20} weight="bold" color="#1E1E1E" />
