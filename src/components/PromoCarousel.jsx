@@ -10,7 +10,7 @@ const promos = [
     buttonText: 'Pedir ahora',
     bgColor: 'bg-[#06C167]',
     textColor: 'text-white',
-    image: import.meta.env.BASE_URL + 'images/classic_burger.png',
+    image: import.meta.env.BASE_URL + 'images/hamburguesa_clasica.png',
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ const promos = [
     buttonText: 'Ordenar',
     bgColor: 'bg-[#06C167]',
     textColor: 'text-white',
-    image: import.meta.env.BASE_URL + 'images/double_burger.png',
+    image: import.meta.env.BASE_URL + 'images/hamburguesa_doble_queso.png',
   },
   {
     id: 3,
@@ -28,7 +28,7 @@ const promos = [
     buttonText: 'Ver oferta',
     bgColor: 'bg-[#06C167]',
     textColor: 'text-white',
-    image: import.meta.env.BASE_URL + 'images/crispy_fries.png',
+    image: import.meta.env.BASE_URL + 'images/papas_crujientes.png',
   },
   {
     id: 4,
@@ -37,7 +37,7 @@ const promos = [
     buttonText: 'Agregar',
     bgColor: 'bg-[#06C167]',
     textColor: 'text-white',
-    image: import.meta.env.BASE_URL + 'images/ice_cola.png',
+    image: import.meta.env.BASE_URL + 'images/refresco_helado.png',
   },
   {
     id: 5,
@@ -46,7 +46,7 @@ const promos = [
     buttonText: 'Pedir postre',
     bgColor: 'bg-[#06C167]',
     textColor: 'text-white',
-    image: import.meta.env.BASE_URL + 'images/chocolate_brownie.png',
+    image: import.meta.env.BASE_URL + 'images/brownie_chocolate.png',
   },
   {
     id: 6,
@@ -55,7 +55,7 @@ const promos = [
     buttonText: 'Ver combo',
     bgColor: 'bg-[#9E6202]',
     textColor: 'text-white',
-    image: import.meta.env.BASE_URL + 'images/combo_clasico.png',
+    image: import.meta.env.BASE_URL + 'images/combo_clasico_promo.png',
   },
   {
     id: 7,
@@ -64,7 +64,7 @@ const promos = [
     buttonText: 'Elegir tamaño',
     bgColor: 'bg-[#06C167]',
     textColor: 'text-white',
-    image: import.meta.env.BASE_URL + 'images/pizza_pepperoni.png',
+    image: import.meta.env.BASE_URL + 'images/pizza_pepperoni_promo.png',
   },
   {
     id: 8,
@@ -73,7 +73,7 @@ const promos = [
     buttonText: 'Pedir alitas',
     bgColor: 'bg-[#06C167]',
     textColor: 'text-white',
-    image: import.meta.env.BASE_URL + 'images/alitas_bbq.png',
+    image: import.meta.env.BASE_URL + 'images/alitas_bbq_promo.png',
   },
 ];
 
