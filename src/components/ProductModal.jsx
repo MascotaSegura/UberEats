@@ -100,7 +100,7 @@ const ProductModal = ({ product, onClose }) => {
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
-        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         drag="y"
         dragConstraints={{ top: 0, bottom: 0 }}
         dragElastic={{ top: 0, bottom: 0.5 }}
@@ -137,41 +137,63 @@ const ProductModal = ({ product, onClose }) => {
         <div className="flex-1 min-h-0 flex flex-col w-full md:w-[55%] bg-white relative">
           
           {/* Header absoluto */}
-          <div className="absolute md:relative top-0 left-0 w-full flex justify-between md:justify-end gap-2 px-4 py-3 pt-[max(1rem,env(safe-area-inset-top,1rem))] z-20 md:bg-white shrink-0 pointer-events-none md:pointer-events-auto">
-            {/* Close Button */}
-            <div
-              className="w-10 h-10 bg-white md:bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all pointer-events-auto md:order-2"
-              onClick={onClose}
-              onKeyDown={handleKeyDown(onClose)}
-              role="button"
-              tabIndex={0}
-              aria-label="Cerrar"
-            >
-              <X size={20} weight="bold" color="#1E1E1E" />
+          <div className="absolute md:relative top-0 left-0 w-full flex justify-between md:justify-end items-center px-4 py-3 pt-[max(1rem,env(safe-area-inset-top,1rem))] z-20 md:bg-white shrink-0 pointer-events-none md:pointer-events-auto">
+            
+            {/* Left side: Close Button (Mobile Only) */}
+            <div className="md:hidden pointer-events-auto">
+              <div
+                className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all"
+                onClick={onClose}
+                onKeyDown={handleKeyDown(onClose)}
+                role="button"
+                tabIndex={0}
+                aria-label="Cerrar"
+              >
+                <X size={20} weight="bold" color="#1E1E1E" />
+              </div>
             </div>
-            {/* Favorite Button */}
-            <div
-              className="w-10 h-10 bg-white md:bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all pointer-events-auto md:order-1"
-              onClick={() => toggleFavorite(product.id)}
-              onKeyDown={handleKeyDown(() => toggleFavorite(product.id))}
-              role="button"
-              tabIndex={0}
-              aria-label={isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
-            >
-              <Heart size={20} weight={isFavorite ? "fill" : "bold"} color={isFavorite ? "#FF3B30" : "currentColor"} />
-            </div>
-            {/* Share Button */}
-            <div
-              className="w-10 h-10 bg-white md:bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all pointer-events-auto md:order-0"
-              onClick={handleShare}
-              onKeyDown={handleKeyDown(handleShare)}
-              role="button"
-              tabIndex={0}
-              aria-label={copied ? 'Enlace copiado' : 'Compartir'}
-            >
-              {copied
-                ? <Check size={20} weight="bold" color="#06C167" />
-                : <ShareNetwork size={20} weight="bold" color="#1E1E1E" />}
+
+            {/* Right side: Actions + Desktop Close */}
+            <div className="flex items-center gap-2 pointer-events-auto">
+              {/* Share Button */}
+              <div
+                className="w-10 h-10 bg-white md:bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all"
+                onClick={handleShare}
+                onKeyDown={handleKeyDown(handleShare)}
+                role="button"
+                tabIndex={0}
+                aria-label={copied ? 'Enlace copiado' : 'Compartir'}
+              >
+                {copied
+                  ? <Check size={20} weight="bold" color="#06C167" />
+                  : <ShareNetwork size={20} weight="bold" color="#1E1E1E" />}
+              </div>
+
+              {/* Favorite Button */}
+              <div
+                className="w-10 h-10 bg-white md:bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all"
+                onClick={() => toggleFavorite(product.id)}
+                onKeyDown={handleKeyDown(() => toggleFavorite(product.id))}
+                role="button"
+                tabIndex={0}
+                aria-label={isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+              >
+                <Heart size={20} weight={isFavorite ? "fill" : "bold"} color={isFavorite ? "#FF3B30" : "currentColor"} />
+              </div>
+
+              {/* Close Button (Desktop Only) */}
+              <div className="hidden md:block">
+                <div
+                  className="w-10 h-10 bg-[#F3F4F6] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ECECEE] active:bg-[#ECECEE] active:scale-[0.95] outline-none focus-visible:bg-[#ECECEE] transition-all"
+                  onClick={onClose}
+                  onKeyDown={handleKeyDown(onClose)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Cerrar"
+                >
+                  <X size={20} weight="bold" color="#1E1E1E" />
+                </div>
+              </div>
             </div>
           </div>
 

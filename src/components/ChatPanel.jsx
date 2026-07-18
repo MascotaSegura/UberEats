@@ -73,7 +73,7 @@ const ChatPanel = ({ isOpen, onClose, recipient }) => {
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
-        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         drag="y"
         dragConstraints={{ top: 0, bottom: 0 }}
         dragElastic={{ top: 0, bottom: 0.5 }}
@@ -96,9 +96,9 @@ const ChatPanel = ({ isOpen, onClose, recipient }) => {
           >
             <X size={20} weight="bold" color="#1E1E1E" />
           </div>
-          <div className="flex-1 flex flex-col items-center justify-center pr-10">
+          <div className="flex-1 flex items-center justify-center pr-10 gap-3">
             {recipient === 'driver' ? (
-              <div className="w-10 h-10 rounded-full bg-[#D1D1D6] overflow-hidden mb-1 shrink-0">
+              <div className="w-10 h-10 rounded-full bg-[#D1D1D6] overflow-hidden shrink-0">
                 <img
                   src={`${import.meta.env.BASE_URL}images/driver.jpg`}
                   alt="Carlos M."
@@ -106,16 +106,18 @@ const ChatPanel = ({ isOpen, onClose, recipient }) => {
                 />
               </div>
             ) : (
-              <div className="w-10 h-10 rounded-full bg-[#1E1E1E] text-white flex items-center justify-center mb-1">
+              <div className="w-10 h-10 rounded-full bg-[#1E1E1E] text-white flex items-center justify-center shrink-0">
                 <Headset size={18} weight="bold" />
               </div>
             )}
-            <h2 className="text-[15px] font-semibold text-[#1E1E1E] leading-tight">
-              {recipient === 'driver' ? 'Carlos M.' : 'Soporte Técnico'}
-            </h2>
-            <p className="text-[12px] font-medium text-[#06C167] leading-tight">
-              En línea
-            </p>
+            <div className="flex flex-col items-start">
+              <h2 className="text-[15px] font-semibold text-[#1E1E1E] leading-tight">
+                {recipient === 'driver' ? 'Carlos M.' : 'Soporte Técnico'}
+              </h2>
+              <p className="text-[12px] font-medium text-[#06C167] leading-tight">
+                En línea
+              </p>
+            </div>
           </div>
         </div>
 

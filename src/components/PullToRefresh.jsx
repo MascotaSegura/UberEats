@@ -114,7 +114,7 @@ const PullToRefresh = ({ onRefresh, children }) => {
                 scale: 0.8 + (pullProgress * 0.2)
               }}
               animate={{ rotate: pullProgress >= 1 ? 180 : 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
               <ArrowDown size={24} color="#1E1E1E" weight="bold" />
             </motion.div>

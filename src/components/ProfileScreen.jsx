@@ -13,7 +13,7 @@ const handleKeyDown = (fn) => (e) => {
 
 const ToggleSwitch = ({ checked, onChange }) => (
   <div 
-    className={`w-12 h-7 flex items-center rounded-full p-1 cursor-pointer transition-colors ${checked ? 'bg-[#06C167]' : 'bg-[#E5E5E7]'}`}
+    className={`w-12 h-7 flex items-center rounded-full p-1 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#06C167] focus-visible:ring-offset-2 transition-colors ${checked ? 'bg-[#06C167]' : 'bg-[#E5E5E7]'}`}
     onClick={onChange}
     role="switch"
     aria-checked={checked}
@@ -190,7 +190,7 @@ const ProfileScreen = ({ onClose, onOpenOrders, onOpenFavorites }) => {
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
-        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         drag="x"
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={{ left: 0, right: 0.5 }}
@@ -353,8 +353,8 @@ const ProfileScreen = ({ onClose, onOpenOrders, onOpenFavorites }) => {
                 transition={{ duration: 0.2 }}
                 className="w-full flex flex-col min-h-full"
               >
-                <div className="bg-white flex flex-col py-2 px-4 mt-4">
-                  <div className="flex items-center justify-between py-4 px-4 border-b border-[#F3F4F6] last:border-0">
+                <div className="bg-white flex flex-col gap-2 py-4 px-4 mt-4">
+                  <div className="flex items-center justify-between p-4 bg-[#F3F4F6] rounded-2xl">
                     <div className="flex items-center gap-4">
                       <Bell size={24} weight="fill" color="#1E1E1E" />
                       <span className="text-[16px] font-medium text-[#1E1E1E]">Notificaciones Push</span>
@@ -364,7 +364,7 @@ const ProfileScreen = ({ onClose, onOpenOrders, onOpenFavorites }) => {
                       onChange={() => setSettings(s => ({ ...s, notifications: !s.notifications }))} 
                     />
                   </div>
-                  <div className="flex items-center justify-between py-4 px-4 border-b border-[#F3F4F6] last:border-0">
+                  <div className="flex items-center justify-between p-4 bg-[#F3F4F6] rounded-2xl">
                     <div className="flex items-center gap-4">
                       <EnvelopeSimple size={24} weight="fill" color="#1E1E1E" />
                       <span className="text-[16px] font-medium text-[#1E1E1E]">Promos por Correo</span>
@@ -374,7 +374,7 @@ const ProfileScreen = ({ onClose, onOpenOrders, onOpenFavorites }) => {
                       onChange={() => setSettings(s => ({ ...s, promos: !s.promos }))} 
                     />
                   </div>
-                  <div className="flex items-center justify-between py-4 px-4 border-b border-[#F3F4F6] last:border-0">
+                  <div className="flex items-center justify-between p-4 bg-[#F3F4F6] rounded-2xl">
                     <div className="flex items-center gap-4">
                       <NavigationArrow size={24} weight="fill" color="#1E1E1E" />
                       <span className="text-[16px] font-medium text-[#1E1E1E]">Usar Ubicación</span>
@@ -528,7 +528,7 @@ const ProfileScreen = ({ onClose, onOpenOrders, onOpenFavorites }) => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               className="bg-white w-full max-w-[320px] p-6 rounded-[24px] relative z-10 flex flex-col items-center"
             >
               <div className="w-16 h-16 bg-[#FF3B30]/10 rounded-full flex items-center justify-center mb-4 text-[#FF3B30]">

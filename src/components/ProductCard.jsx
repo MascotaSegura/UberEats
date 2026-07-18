@@ -107,7 +107,7 @@ const ProductCard = ({ product, onClick }) => {
           </div>
         )}
         <button
-          className="absolute top-0 right-0 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-[#1E1E1E] hover:bg-white active:scale-[0.95] transition-all outline-none focus-visible:bg-white"
+          className="absolute top-2 right-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-[#1E1E1E] hover:bg-white active:scale-[0.95] transition-all outline-none focus-visible:bg-white"
           onClick={handleFavoriteClick}
           aria-label={isFavorite ? "Quitar de favoritos" : "Agregar a favoritos"}
         >

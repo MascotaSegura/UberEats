@@ -36,7 +36,7 @@ const CartItemComponent = ({ item, updateQuantity, removeFromCart }) => {
             controls.start({ x: -window.innerWidth });
             setTimeout(handleDelete, 200);
           } else {
-            controls.start({ x: 0, transition: { type: "spring", damping: 25, stiffness: 200 } });
+            controls.start({ x: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } });
           }
         }}
         animate={controls}
@@ -187,7 +187,7 @@ const CartPanel = ({ onClose }) => {
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
-        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         drag="y"
         dragConstraints={{ top: 0, bottom: 0 }}
         dragElastic={{ top: 0, bottom: 0.5 }}
