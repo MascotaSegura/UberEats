@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
 import { CaretLeft, CaretRight } from '@phosphor-icons/react';
 
 const promos = [
@@ -103,6 +102,7 @@ const PromoCard = ({ promo }) => (
       <img
         src={promo.image}
         alt={promo.title}
+        loading="lazy"
         className="w-full h-full object-cover"
       />
     </div>
@@ -112,6 +112,7 @@ const PromoCard = ({ promo }) => (
 const PromoCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(1);
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     const updateView = () => {
@@ -126,12 +127,26 @@ const PromoCarousel = () => {
 
   const maxIndex = Math.max(0, promos.length - cardsPerView);
 
+  const handleScroll = (e) => {
+    if (!scrollRef.current) return;
+    const scrollLeft = e.target.scrollLeft;
+    const cardWidth = scrollRef.current.clientWidth / cardsPerView;
+    const newIndex = Math.round(scrollLeft / cardWidth);
+    setCurrentIndex(Math.min(Math.max(newIndex, 0), maxIndex));
+  };
+
   const slideLeft = () => {
-    if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
+    if (scrollRef.current) {
+      const cardWidth = scrollRef.current.clientWidth / cardsPerView;
+      scrollRef.current.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+    }
   };
 
   const slideRight = () => {
-    if (currentIndex < maxIndex) setCurrentIndex(currentIndex + 1);
+    if (scrollRef.current) {
+      const cardWidth = scrollRef.current.clientWidth / cardsPerView;
+      scrollRef.current.scrollBy({ left: cardWidth, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -149,41 +164,28 @@ const PromoCarousel = () => {
         </button>
         <button
           onClick={(e) => { e.preventDefault(); slideRight(); }}
-          disabled={currentIndex === maxIndex}
+          disabled={currentIndex >= maxIndex}
           className="hidden md:flex absolute right-0 xl:-right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white rounded-full items-center justify-center text-[#1E1E1E] opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#F3F4F6] active:scale-95 disabled:opacity-0"
           aria-label="Siguiente"
         >
           <CaretRight size={20} weight="bold" />
         </button>
 
-        {/* Swipe Slider Container */}
-        <div className="w-full overflow-hidden">
-          <motion.div
-            className="flex w-full"
-            animate={{ x: `-${currentIndex * (100 / cardsPerView)}%` }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.1}
-            onDragEnd={(e, { offset, velocity }) => {
-              const swipeThreshold = 50;
-              if (offset.x < -swipeThreshold || velocity.x < -500) {
-                slideRight();
-              } else if (offset.x > swipeThreshold || velocity.x > 500) {
-                slideLeft();
-              }
-            }}
-          >
-            {promos.map((promo) => (
-              <div
-                key={promo.id}
-                className="shrink-0 p-2"
-                style={{ width: `${100 / cardsPerView}%` }}
-              >
-                <PromoCard promo={promo} />
-              </div>
-            ))}
-          </motion.div>
+        {/* Native Scroll Container */}
+        <div 
+          ref={scrollRef}
+          onScroll={handleScroll}
+          className="flex w-full overflow-x-auto snap-x snap-mandatory touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {promos.map((promo) => (
+            <div
+              key={promo.id}
+              className="shrink-0 p-2 snap-center"
+              style={{ width: `${100 / cardsPerView}%` }}
+            >
+              <PromoCard promo={promo} />
+            </div>
+          ))}
         </div>
 
         {/* Pagination Dots (Mobile) */}

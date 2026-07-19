@@ -535,7 +535,7 @@ const ProfileScreen = ({ onClose, onOpenOrders, onOpenFavorites }) => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="bg-white w-full max-w-[320px] p-6 rounded-[24px] relative z-10 flex flex-col items-center"
+              className="bg-white w-full max-w-[320px] p-6 rounded-2xl relative z-10 flex flex-col items-center"
             >
               <div className="w-16 h-16 bg-[#FF3B30]/10 rounded-full flex items-center justify-center mb-4 text-[#FF3B30]">
                 <SignOut size={32} weight="bold" />
