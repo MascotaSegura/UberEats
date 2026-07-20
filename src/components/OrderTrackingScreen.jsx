@@ -381,7 +381,7 @@ const OrderTrackingScreen = ({ onOpenChat }) => {
             {currentStep > 0 && (
               <div className="w-full bg-[#F3F4F6] rounded-2xl p-4 flex items-center gap-4 mb-6 animate-fade-in">
                 <div className="w-12 h-12 bg-[#D1D1D6] rounded-full overflow-hidden shrink-0">
-                   <img src={`${import.meta.env.BASE_URL}images/driver.jpg`} alt="Repartidor" className="w-full h-full object-cover mix-blend-multiply" />
+                   <img src={`${import.meta.env.BASE_URL}images/repartidor.png`} alt="Repartidor" className="w-full h-full object-cover mix-blend-multiply" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="font-bold text-[#1E1E1E] text-[16px]">Carlos M.</h4>

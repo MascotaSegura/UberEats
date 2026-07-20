@@ -100,7 +100,7 @@ const ChatPanel = ({ isOpen, onClose, recipient }) => {
             {recipient === 'driver' ? (
               <div className="w-10 h-10 rounded-full bg-[#D1D1D6] overflow-hidden shrink-0">
                 <img
-                  src={`${import.meta.env.BASE_URL}images/driver.jpg`}
+                  src={`${import.meta.env.BASE_URL}images/repartidor.png`}
                   alt="Carlos M."
                   className="w-full h-full object-cover mix-blend-multiply"
                 />
