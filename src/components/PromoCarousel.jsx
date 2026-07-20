@@ -206,7 +206,7 @@ const PromoCarousel = ({ onProductSelect }) => {
       <div 
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex w-full overflow-x-auto snap-x snap-mandatory md:snap-none touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex w-full overflow-x-auto overflow-y-hidden overscroll-x-contain snap-x snap-mandatory md:snap-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {/* Left Spacer to push first item inwards without clipping */}
         <div className="shrink-0" style={{ width: getSpacerWidth() }} />
