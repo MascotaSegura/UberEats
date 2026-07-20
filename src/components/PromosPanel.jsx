@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { X } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
+import PullToRefresh from './PullToRefresh';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -19,6 +20,12 @@ const PromosPanel = ({ onClose }) => {
   const { applyPromo, activePromo } = useCart();
   const [inputCode, setInputCode] = useState('');
   const [message, setMessage] = useState(null);
+  const scrollContainerRef = useRef(null);
+
+  const handleRefresh = async () => {
+    // Simulate network request
+    await new Promise(resolve => setTimeout(resolve, 1500));
+  };
 
   const handleApply = () => {
     if (!inputCode.trim()) return;
@@ -71,7 +78,8 @@ const PromosPanel = ({ onClose }) => {
           </h2>
         </div>
 
-        <div className="flex-1 min-h-0 overflow-y-auto p-6">
+        <div className="flex-1 min-h-0 overflow-y-auto p-6" ref={scrollContainerRef}>
+          <PullToRefresh onRefresh={handleRefresh} scrollRef={scrollContainerRef} bgClass="bg-transparent">
           <div className="flex items-center bg-[#F3F4F6] rounded-full px-4 py-1 mb-2 focus-within:bg-[#ECECEE] transition-colors">
              <input 
                 type="text" 
@@ -132,6 +140,7 @@ const PromosPanel = ({ onClose }) => {
               </div>
             ))}
           </div>
+          </PullToRefresh>
         </div>
       </motion.div>
     </motion.div>

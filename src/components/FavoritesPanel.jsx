@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { X, Heart } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import { products } from '../data/products';
 import ProductCard from './ProductCard';
+import PullToRefresh from './PullToRefresh';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -14,6 +15,12 @@ const handleKeyDown = (fn) => (e) => {
 
 const FavoritesPanel = ({ onClose, onProductClick }) => {
   const { favorites = [] } = useCart();
+  const scrollContainerRef = useRef(null);
+
+  const handleRefresh = async () => {
+    // Simulate network request
+    await new Promise(resolve => setTimeout(resolve, 1500));
+  };
   
   // Get full product objects for the favorited items
   const favoriteProducts = products.filter(p => favorites.includes(p.id));
@@ -61,9 +68,10 @@ const FavoritesPanel = ({ onClose, onProductClick }) => {
           </h2>
         </div>
 
-        <div className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]" ref={scrollContainerRef}>
+          <PullToRefresh onRefresh={handleRefresh} scrollRef={scrollContainerRef} bgClass="bg-transparent">
           {favoriteProducts.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center py-10 text-center">
+            <div className="h-full min-h-[300px] flex flex-col items-center justify-center py-10 text-center">
               <div className="w-20 h-20 bg-[#ECECEE] rounded-full flex items-center justify-center mb-6">
                 <Heart size={40} weight="fill" color="#D1D1D6" />
               </div>
@@ -87,6 +95,7 @@ const FavoritesPanel = ({ onClose, onProductClick }) => {
               ))}
             </div>
           )}
+          </PullToRefresh>
         </div>
       </motion.div>
     </motion.div>

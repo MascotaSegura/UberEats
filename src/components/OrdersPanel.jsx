@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { X, Receipt, Package } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
+import PullToRefresh from './PullToRefresh';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -17,6 +18,12 @@ const mockOrders = [
 
 const OrdersPanel = ({ onClose }) => {
   const { activeOrder, setOrderStatus } = useCart();
+  const scrollContainerRef = useRef(null);
+
+  const handleRefresh = async () => {
+    // Simulate network request
+    await new Promise(resolve => setTimeout(resolve, 1500));
+  };
 
   return (
     <motion.div
@@ -59,16 +66,17 @@ const OrdersPanel = ({ onClose }) => {
           </h2>
         </div>
 
-        <div className="flex-1 min-h-0 overflow-y-auto p-6">
-          {mockOrders.length === 0 && !activeOrder ? (
-            <div className="h-full flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-20 h-20 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-6">
-                <Receipt size={40} weight="fill" color="#D1D1D6" />
+        <div className="flex-1 min-h-0 overflow-y-auto p-6" ref={scrollContainerRef}>
+          <PullToRefresh onRefresh={handleRefresh} scrollRef={scrollContainerRef} bgClass="bg-transparent">
+            {mockOrders.length === 0 && !activeOrder ? (
+              <div className="h-full min-h-[300px] flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-20 h-20 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-6">
+                  <Receipt size={40} weight="fill" color="#D1D1D6" />
+                </div>
+                <h3 className="text-xl font-semibold text-[#1E1E1E] mb-2">No tienes pedidos</h3>
+                <p className="text-[15px] text-[#8E8E93] max-w-[250px]">¡Realiza tu primer pedido y aparecerá aquí!</p>
               </div>
-              <h3 className="text-xl font-semibold text-[#1E1E1E] mb-2">No tienes pedidos</h3>
-              <p className="text-[15px] text-[#8E8E93] max-w-[250px]">¡Realiza tu primer pedido y aparecerá aquí!</p>
-            </div>
-          ) : (
+            ) : (
             <div className="flex flex-col gap-4">
               {activeOrder && (
                 <div 
@@ -109,6 +117,7 @@ const OrdersPanel = ({ onClose }) => {
               ))}
             </div>
           )}
+          </PullToRefresh>
         </div>
       </motion.div>
     </motion.div>

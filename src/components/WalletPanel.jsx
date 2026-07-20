@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { X, Wallet, CreditCard, Plus } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
+import PullToRefresh from './PullToRefresh';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -44,6 +45,12 @@ const WalletPanel = ({ onClose }) => {
   const { savedCards, addCard, selectedPaymentMethod, setSelectedPaymentMethod } = useCart();
   const [isAdding, setIsAdding] = useState(false);
   const [showFundMsg, setShowFundMsg] = useState(false);
+  const scrollContainerRef = useRef(null);
+
+  const handleRefresh = async () => {
+    // Simulate network request
+    await new Promise(resolve => setTimeout(resolve, 1500));
+  };
 
   const [cardNumber, setCardNumber] = useState('');
   const [expiry, setExpiry] = useState('');
@@ -136,7 +143,8 @@ const WalletPanel = ({ onClose }) => {
           </h2>
         </div>
 
-        <div className="flex-1 min-h-0 overflow-y-auto p-6">
+        <div className="flex-1 min-h-0 overflow-y-auto p-6" ref={scrollContainerRef}>
+          <PullToRefresh onRefresh={handleRefresh} scrollRef={scrollContainerRef} bgClass="bg-transparent">
           <div className="bg-[#1E1E1E] text-white p-6 rounded-2xl mb-8 flex flex-col gap-1">
             <span className="text-[14px] text-[#D1D1D6] font-medium">Uber Cash</span>
             <span className="text-3xl font-bold">$150.00 <span className="text-[14px] font-medium text-[#8E8E93]">MXN</span></span>
@@ -254,6 +262,7 @@ const WalletPanel = ({ onClose }) => {
               </div>
             )}
           </div>
+          </PullToRefresh>
         </div>
       </motion.div>
     </motion.div>

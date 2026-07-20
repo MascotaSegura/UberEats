@@ -126,6 +126,57 @@ const PromoCarousel = ({ onProductSelect }) => {
   const [cardsPerView, setCardsPerView] = useState(1);
   const scrollRef = useRef(null);
 
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isHorizontal = null;
+
+    const handleTouchStart = (e) => {
+      if (e.touches.length !== 1) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      isHorizontal = null;
+    };
+
+    const handleTouchMove = (e) => {
+      if (!e.touches.length) return;
+      const touchX = e.touches[0].clientX;
+      const touchY = e.touches[0].clientY;
+      const deltaX = Math.abs(touchX - touchStartX);
+      const deltaY = Math.abs(touchY - touchStartY);
+
+      if (isHorizontal === null) {
+        if (deltaX > 5 || deltaY > 5) {
+          isHorizontal = deltaX > deltaY;
+        }
+      }
+
+      if (isHorizontal) {
+        const isAtLeftBoundary = el.scrollLeft <= 0;
+        const isAtRightBoundary = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+        const swipingRight = (touchX - touchStartX) > 0;
+        const swipingLeft = (touchX - touchStartX) < 0;
+
+        if ((isAtLeftBoundary && swipingRight) || (isAtRightBoundary && swipingLeft)) {
+          if (e.cancelable) {
+            e.preventDefault();
+          }
+        }
+      }
+    };
+
+    el.addEventListener('touchstart', handleTouchStart, { passive: true });
+    el.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+    return () => {
+      el.removeEventListener('touchstart', handleTouchStart);
+      el.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, []);
+
   const handlePromoClick = (promo) => {
     if (!onProductSelect) return;
     const product = products.find((p) => p.id === promo.productId);

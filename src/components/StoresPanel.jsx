@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { X, Storefront, MapPin } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
+import PullToRefresh from './PullToRefresh';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -12,6 +13,12 @@ const handleKeyDown = (fn) => (e) => {
 
 const StoresPanel = ({ onClose }) => {
   const { branches, pickupBranch, setPickupBranch, setDeliveryMode } = useCart();
+  const scrollContainerRef = useRef(null);
+
+  const handleRefresh = async () => {
+    // Simulate network request
+    await new Promise(resolve => setTimeout(resolve, 1500));
+  };
 
   const handleSelectBranch = (branch) => {
     setPickupBranch(branch);
@@ -59,9 +66,10 @@ const StoresPanel = ({ onClose }) => {
           </h2>
         </div>
 
-        <div className="flex-1 min-h-0 overflow-y-auto p-6">
+        <div className="flex-1 min-h-0 overflow-y-auto p-6" ref={scrollContainerRef}>
+          <PullToRefresh onRefresh={handleRefresh} scrollRef={scrollContainerRef} bgClass="bg-transparent">
           {!branches || branches.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center py-20 text-center">
+            <div className="h-full min-h-[300px] flex flex-col items-center justify-center py-20 text-center">
               <div className="w-20 h-20 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-6">
                 <Storefront size={40} weight="fill" color="#D1D1D6" />
               </div>
@@ -99,6 +107,7 @@ const StoresPanel = ({ onClose }) => {
               })}
             </div>
           )}
+          </PullToRefresh>
         </div>
       </motion.div>
     </motion.div>
