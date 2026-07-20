@@ -149,21 +149,27 @@ const PromoCarousel = () => {
     }
   };
 
+  const getSpacerWidth = () => {
+    const basePadding = cardsPerView === 1 ? '1rem' : '1.5rem';
+    return `calc((100% - min(100%, 80rem)) / 2 + ${basePadding})`;
+  };
+
   const getCardWidth = () => {
-    if (cardsPerView === 3) return 'calc((100% - 5rem) / 3)';
-    if (cardsPerView === 2) return 'calc((100% - 4rem) / 2)';
-    return 'calc(100% - 2rem)';
+    if (cardsPerView === 3) return 'calc((min(100%, 80rem) - 5rem) / 3)';
+    if (cardsPerView === 2) return 'calc((min(100%, 80rem) - 4rem) / 2)';
+    return 'calc(min(100%, 80rem) - 2rem)';
   };
 
   return (
-    <div className="w-full pt-4 pb-2 overflow-hidden">
-      <div className="max-w-7xl mx-auto relative group">
-
+    <div className="w-full pt-4 pb-2 overflow-hidden relative group">
+      
+      {/* Container for Arrows (Aligned to max-w-7xl) */}
+      <div className="absolute inset-y-0 left-0 right-0 max-w-7xl mx-auto pointer-events-none z-20">
         {/* Navigation Arrows for Tablet/Desktop */}
         <button
           onClick={(e) => { e.preventDefault(); slideLeft(); }}
           disabled={currentIndex === 0}
-          className="hidden md:flex absolute left-2 xl:-left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white rounded-full items-center justify-center text-[#1E1E1E] opacity-0 group-hover:opacity-100 transition-all hover:bg-[#E5E5E7] active:bg-[#E5E5E7] active:scale-95 disabled:opacity-0"
+          className="hidden md:flex absolute left-2 xl:-left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center text-[#1E1E1E] opacity-0 group-hover:opacity-100 transition-all hover:bg-[#E5E5E7] active:bg-[#E5E5E7] active:scale-95 disabled:opacity-0 pointer-events-auto"
           aria-label="Anterior"
         >
           <CaretLeft size={20} weight="bold" />
@@ -171,48 +177,48 @@ const PromoCarousel = () => {
         <button
           onClick={(e) => { e.preventDefault(); slideRight(); }}
           disabled={currentIndex >= maxIndex}
-          className="hidden md:flex absolute right-2 xl:-right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white rounded-full items-center justify-center text-[#1E1E1E] opacity-0 group-hover:opacity-100 transition-all hover:bg-[#E5E5E7] active:bg-[#E5E5E7] active:scale-95 disabled:opacity-0"
+          className="hidden md:flex absolute right-2 xl:-right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center text-[#1E1E1E] opacity-0 group-hover:opacity-100 transition-all hover:bg-[#E5E5E7] active:bg-[#E5E5E7] active:scale-95 disabled:opacity-0 pointer-events-auto"
           aria-label="Siguiente"
         >
           <CaretRight size={20} weight="bold" />
         </button>
-
-        {/* Native Scroll Container */}
-        <div 
-          ref={scrollRef}
-          onScroll={handleScroll}
-          className="flex w-full overflow-x-auto snap-x snap-mandatory md:snap-none touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        >
-          {/* Left Spacer to push first item inwards without clipping */}
-          <div className="shrink-0 w-4 md:w-6" />
-          
-          {promos.map((promo, index) => (
-            <div
-              key={promo.id}
-              className={`shrink-0 snap-center py-2 ${index < promos.length - 1 ? 'mr-4' : ''}`}
-              style={{ width: getCardWidth() }}
-            >
-              <PromoCard promo={promo} />
-            </div>
-          ))}
-
-          {/* Right Spacer */}
-          <div className="shrink-0 w-4 md:w-6" />
-        </div>
-
-        {/* Pagination Dots (Mobile) */}
-        {cardsPerView === 1 && (
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 pointer-events-none">
-            {promos.map((_, i) => (
-              <div
-                key={i}
-                className={`w-1.5 h-1.5 rounded-full transition-colors ${i === currentIndex ? 'bg-white' : 'bg-white/40'}`}
-              />
-            ))}
-          </div>
-        )}
-
       </div>
+
+      {/* Native Scroll Container (Full Bleed) */}
+      <div 
+        ref={scrollRef}
+        onScroll={handleScroll}
+        className="flex w-full overflow-x-auto snap-x snap-mandatory md:snap-none touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {/* Left Spacer to push first item inwards without clipping */}
+        <div className="shrink-0" style={{ width: getSpacerWidth() }} />
+        
+        {promos.map((promo, index) => (
+          <div
+            key={promo.id}
+            className={`shrink-0 snap-center py-2 ${index < promos.length - 1 ? 'mr-4' : ''}`}
+            style={{ width: getCardWidth() }}
+          >
+            <PromoCard promo={promo} />
+          </div>
+        ))}
+
+        {/* Right Spacer */}
+        <div className="shrink-0" style={{ width: getSpacerWidth() }} />
+      </div>
+
+      {/* Pagination Dots (Mobile) */}
+      {cardsPerView === 1 && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 pointer-events-none">
+          {promos.map((_, i) => (
+            <div
+              key={i}
+              className={`w-1.5 h-1.5 rounded-full transition-colors ${i === currentIndex ? 'bg-white' : 'bg-white/40'}`}
+            />
+          ))}
+        </div>
+      )}
+
     </div>
   );
 };
