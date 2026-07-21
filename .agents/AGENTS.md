@@ -26,3 +26,7 @@ Cualquier IA que trabaje en este proyecto tiene la autoridad explícita para pro
 
 ### Verificación y Rigor (Cero Suposiciones)
 - Ningún agente debe reportar un error visual o lógico como "resuelto" sin haber verificado con certeza real cómo interactúan las clases CSS o la lógica entre sí dentro de su contexto. La certeza real se obtiene validando el estado inicial, el estado final y el contenedor padre.
+
+### Prohibición de Controles Nativos del Navegador
+- **Regla Estricta:** Queda terminantemente prohibido el uso de elementos interactivos nativos del navegador que no puedan ser estilizados en su totalidad con CSS (por ejemplo, `<select>` y sus `<option>`, `<input type="date">`, `<input type="time">`, o el botón genérico de `<input type="file">`).
+- **Solución Obligatoria:** Cualquier requerimiento que involucre selección en listas, fechas o carga de archivos debe ser implementado mediante componentes de React personalizados (Custom Components). Deben simular el comportamiento deseado utilizando etiquetas base (como `div`, `ul`, `li`, `button`) y estilos propios (Tailwind CSS), respetando siempre el "flat design", los contrastes adecuados y los bordes redondeados del manifiesto visual del proyecto.

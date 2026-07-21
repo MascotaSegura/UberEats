@@ -2,6 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from '@phosphor-icons/react';
 import { ProductsContext } from '../../context/ProductsContext';
+import CustomSelect from './CustomSelect';
+import DragDropUploader from './DragDropUploader';
+import OptionsEditor from './OptionsEditor';
 
 const ProductFormModal = ({ isOpen, onClose, product }) => {
   const { products, addProduct, updateProduct } = useContext(ProductsContext);
@@ -13,7 +16,9 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
     description: '',
     price: '',
     category: '',
-    image: import.meta.env.BASE_URL + 'images/producto_hamburguesa_clasica.png',
+    image: '',
+    ingredients: [],
+    singleChoiceOptions: [],
   });
 
   useEffect(() => {
@@ -23,13 +28,15 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
         description: product.description || '',
         price: product.price || '',
         category: product.category || '',
-        image: product.image || import.meta.env.BASE_URL + 'images/producto_hamburguesa_clasica.png',
+        image: product.image || '',
+        ingredients: product.ingredients || [],
+        singleChoiceOptions: product.singleChoiceOptions || [],
       });
       if (product.category && !uniqueCategories.includes(product.category)) {
         setIsNewCategory(true);
       }
     }
-  }, [product]);
+  }, [product, uniqueCategories]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,9 +47,18 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
     e.preventDefault();
     if (!formData.name || !formData.price || !formData.category) return;
     
+    // Cleanup empty options
+    const cleanOptions = formData.singleChoiceOptions
+      .filter(g => g.title.trim() !== '')
+      .map(g => ({
+        ...g,
+        options: g.options.filter(o => o.label.trim() !== '')
+      }));
+
     const productPayload = {
       ...formData,
       price: parseFloat(formData.price),
+      singleChoiceOptions: cleanOptions,
     };
 
     if (product) {
@@ -58,10 +74,10 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
   return createPortal(
     <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center bg-[#1E1E1E]/40 md:p-4">
       <div 
-        className="bg-white w-full h-[90vh] md:h-auto md:max-h-[85vh] md:max-w-[500px] flex flex-col rounded-t-2xl md:rounded-2xl overflow-hidden relative animate-slide-up md:animate-fade-in"
+        className="bg-white w-full h-[90vh] md:h-auto md:max-h-[85vh] md:w-[600px] flex flex-col rounded-t-2xl md:rounded-2xl overflow-hidden relative animate-slide-up md:animate-fade-in"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center px-6 py-4 bg-white shrink-0 relative">
+        <div className="flex items-center px-6 py-4 bg-white shrink-0 relative border-b border-[#F3F4F6]">
           <h2 className="flex-1 text-center font-semibold text-lg text-[#1E1E1E]">
             {product ? 'Editar Producto' : 'Nuevo Producto'}
           </h2>
@@ -74,7 +90,16 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 bg-white">
-          <form id="product-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form id="product-form" onSubmit={handleSubmit} className="flex flex-col gap-5">
+            
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[13px] font-semibold text-[#1E1E1E]">Imagen del Producto</label>
+              <DragDropUploader 
+                value={formData.image} 
+                onChange={(val) => setFormData(prev => ({ ...prev, image: val }))} 
+              />
+            </div>
+
             <div className="flex flex-col gap-1.5">
               <label className="text-[13px] font-semibold text-[#1E1E1E]">Nombre</label>
               <input
@@ -88,26 +113,11 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
               />
             </div>
             
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-semibold text-[#1E1E1E]">Precio ($ MXN)</label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                placeholder="Ej. 150.00"
-                step="0.01"
-                className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
-                required
-              />
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-semibold text-[#1E1E1E]">Categoría</label>
-              {!isNewCategory ? (
-                <div className="flex gap-2">
-                  <select
-                    name="category"
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5 relative">
+                <label className="text-[13px] font-semibold text-[#1E1E1E]">Categoría</label>
+                {!isNewCategory ? (
+                  <CustomSelect
                     value={formData.category}
                     onChange={(e) => {
                       if (e.target.value === '__NEW__') {
@@ -117,50 +127,49 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
                         handleChange(e);
                       }
                     }}
-                    className="flex-1 bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors appearance-none cursor-pointer"
+                    options={[
+                      ...uniqueCategories.map(cat => ({ value: cat, label: cat })),
+                      { value: '__NEW__', label: '+ Añadir nueva categoría...' }
+                    ]}
+                    placeholder="Seleccionar..."
                     required
-                  >
-                    <option value="" disabled>Selecciona una categoría...</option>
-                    {uniqueCategories.map(cat => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                    <option value="__NEW__">+ Añadir nueva categoría...</option>
-                  </select>
-                </div>
-              ) : (
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    placeholder="Ej. postres"
-                    className="flex-1 bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
-                    required
-                    autoFocus
                   />
-                  <button
-                    type="button"
-                    onClick={() => { setIsNewCategory(false); setFormData(prev => ({...prev, category: ''})) }}
-                    className="px-4 bg-[#F3F4F6] text-[#1E1E1E] rounded-xl font-medium text-[13px] hover:bg-[#ECECEE] transition-colors outline-none"
-                  >
-                    Cancelar
-                  </button>
-                </div>
-              )}
-            </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                      placeholder="Ej. postres"
+                      className="flex-1 bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
+                      required
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      onClick={() => { setIsNewCategory(false); setFormData(prev => ({...prev, category: ''})) }}
+                      className="px-4 bg-[#F3F4F6] text-[#1E1E1E] rounded-xl font-medium text-[13px] hover:bg-[#ECECEE] transition-colors outline-none shrink-0"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                )}
+              </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-semibold text-[#1E1E1E]">URL Imagen</label>
-              <input
-                type="text"
-                name="image"
-                value={formData.image}
-                onChange={handleChange}
-                placeholder="Ruta o URL de la imagen"
-                className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
-                required
-              />
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[13px] font-semibold text-[#1E1E1E]">Precio Base ($)</label>
+                <input
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  placeholder="0.00"
+                  step="0.01"
+                  className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
+                  required
+                />
+              </div>
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -174,6 +183,14 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
                 className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors resize-none"
               />
             </div>
+
+            <OptionsEditor 
+              ingredients={formData.ingredients}
+              onChangeIngredients={(val) => setFormData(prev => ({ ...prev, ingredients: val }))}
+              singleChoiceOptions={formData.singleChoiceOptions}
+              onChangeSingleChoiceOptions={(val) => setFormData(prev => ({ ...prev, singleChoiceOptions: val }))}
+            />
+
           </form>
         </div>
 
