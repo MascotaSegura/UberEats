@@ -282,7 +282,9 @@ const PromoCarousel = ({ onProductSelect }) => {
           {promos.map((_, i) => (
             <div
               key={i}
-              className={`w-1.5 h-1.5 rounded-full transition-colors ${i === currentIndex ? 'bg-white' : 'bg-white/40'}`}
+              className={`h-1.5 rounded-full transition-all duration-300 ease-in-out ${
+                i === currentIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/40'
+              }`}
             />
           ))}
         </div>
