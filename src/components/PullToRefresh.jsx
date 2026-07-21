@@ -109,9 +109,12 @@ const PullToRefresh = ({ onRefresh, children, scrollRef }) => {
           setPullPx(0);
           setPullProgress(0);
           setGestureState('idle');
+          if (e.cancelable) e.preventDefault();
+        } else {
+          // If they weren't pulling, they are just scrolling normally down the page.
+          // Relinquish control to the browser.
+          eligible.current = false;
         }
-        // Still prevent native bounce while we were pulling
-        if (e.cancelable) e.preventDefault();
         return;
       }
 
