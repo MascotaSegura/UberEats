@@ -55,7 +55,7 @@ const OptionsEditor = ({ ingredients, onChangeIngredients, singleChoiceOptions, 
   };
 
   return (
-    <div className="flex flex-col gap-6 mt-2 pt-6 border-t border-[#F3F4F6]">
+    <div className="flex flex-col gap-6 mt-2 pt-6">
       {/* Ingredientes */}
       <div className="flex flex-col gap-2">
         <label className="text-[13px] font-semibold text-[#1E1E1E]">Ingredientes (Opcional)</label>
@@ -80,12 +80,12 @@ const OptionsEditor = ({ ingredients, onChangeIngredients, singleChoiceOptions, 
             onChange={(e) => setIngredientInput(e.target.value)}
             onKeyDown={addIngredient}
             placeholder="Ej. Tomate (presiona Enter para añadir)"
-            className="flex-1 bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
+            className="flex-1 bg-[#F3F4F6] rounded-2xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
           />
           <button
             type="button"
             onClick={addIngredient}
-            className="w-12 bg-[#F3F4F6] text-[#1E1E1E] rounded-xl flex items-center justify-center hover:bg-[#ECECEE] transition-colors outline-none shrink-0"
+            className="w-12 bg-[#F3F4F6] text-[#1E1E1E] rounded-2xl flex items-center justify-center hover:bg-[#ECECEE] transition-colors outline-none shrink-0"
           >
             <Plus size={20} weight="bold" />
           </button>
@@ -111,7 +111,7 @@ const OptionsEditor = ({ ingredients, onChangeIngredients, singleChoiceOptions, 
             <button
               type="button"
               onClick={() => removeOptionGroup(groupIdx)}
-              className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#FF3B30] opacity-0 group-hover:opacity-100 transition-all hover:bg-[#FFF0F0] active:scale-95 outline-none shadow-sm"
+              className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#FF3B30] opacity-0 group-hover:opacity-100 transition-all hover:bg-[#FFF0F0] active:scale-95 outline-none shadow-none"
               title="Eliminar grupo"
             >
               <Trash size={16} weight="fill" />
@@ -123,7 +123,7 @@ const OptionsEditor = ({ ingredients, onChangeIngredients, singleChoiceOptions, 
                 value={group.title}
                 onChange={(e) => updateOptionGroup(groupIdx, 'title', e.target.value)}
                 placeholder="Título del grupo (Ej. Elige tu tamaño)"
-                className="w-full bg-white rounded-xl px-4 py-2.5 text-[14px] text-[#1E1E1E] outline-none font-medium"
+                className="w-full bg-white rounded-2xl px-4 py-2.5 text-[14px] text-[#1E1E1E] outline-none font-medium"
               />
               <label className="flex items-center gap-2 mt-1 cursor-pointer w-max">
                 <div className={`w-10 h-6 rounded-full p-1 transition-colors ${group.required ? 'bg-[#06C167]' : 'bg-[#D1D1D6]'}`}>
@@ -141,9 +141,9 @@ const OptionsEditor = ({ ingredients, onChangeIngredients, singleChoiceOptions, 
                     value={opt.label}
                     onChange={(e) => updateOptionInGroup(groupIdx, optIdx, 'label', e.target.value)}
                     placeholder="Opción (Ej. Grande)"
-                    className="flex-1 bg-white rounded-xl px-4 py-2.5 text-[14px] text-[#1E1E1E] outline-none"
+                    className="flex-1 bg-white rounded-2xl px-4 py-2.5 text-[14px] text-[#1E1E1E] outline-none"
                   />
-                  <div className="w-24 bg-white rounded-xl flex items-center px-3 focus-within:ring-1 focus-within:ring-[#1E1E1E]">
+                  <div className="w-24 bg-white rounded-2xl flex items-center px-3 focus-within:ring-1 focus-within:ring-[#1E1E1E]">
                     <span className="text-[#8E8E93] font-semibold text-[14px]">$</span>
                     <input
                       type="number"
@@ -156,7 +156,7 @@ const OptionsEditor = ({ ingredients, onChangeIngredients, singleChoiceOptions, 
                   <button
                     type="button"
                     onClick={() => removeOptionFromGroup(groupIdx, optIdx)}
-                    className="w-10 bg-white rounded-xl flex items-center justify-center text-[#FF3B30] hover:bg-[#FFF0F0] active:scale-95 transition-colors outline-none shrink-0"
+                    className="w-10 bg-white rounded-2xl flex items-center justify-center text-[#FF3B30] hover:bg-[#FFF0F0] active:scale-95 transition-colors outline-none shrink-0"
                   >
                     <X size={16} weight="bold" />
                   </button>
@@ -165,7 +165,7 @@ const OptionsEditor = ({ ingredients, onChangeIngredients, singleChoiceOptions, 
               <button
                 type="button"
                 onClick={() => addOptionToGroup(groupIdx)}
-                className="mt-1 w-full border border-dashed border-[#D1D1D6] rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[13px] font-bold text-[#8E8E93] hover:text-[#1E1E1E] hover:border-[#1E1E1E] hover:bg-white transition-all outline-none"
+                className="mt-1 w-full border border-dashed border-[#D1D1D6] rounded-2xl py-2.5 flex items-center justify-center gap-1.5 text-[13px] font-bold text-[#8E8E93] hover:text-[#1E1E1E] hover:border-[#1E1E1E] hover:bg-white transition-all outline-none"
               >
                 <Plus size={14} weight="bold" />
                 Añadir opción

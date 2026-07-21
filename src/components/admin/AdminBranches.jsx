@@ -52,7 +52,7 @@ const AdminBranches = () => {
             placeholder="Buscar sucursal por nombre o dirección..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white rounded-full h-12 pl-11 pr-4 text-[15px] text-[#1E1E1E] outline-none border border-transparent focus:border-[#E5E5EA] shadow-sm transition-all"
+            className="w-full bg-white rounded-full h-12 pl-11 pr-4 text-[15px] text-[#1E1E1E] outline-none border border-transparent focus:border-[#E5E5EA] transition-all"
           />
         </div>
       </div>
@@ -62,7 +62,7 @@ const AdminBranches = () => {
           {filteredBranches.map(branch => (
             <div key={branch.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-[#F3F4F6] rounded-2xl hover:bg-[#ECECEE] transition-colors">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shrink-0 text-[#1E1E1E]">
+                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shrink-0 text-[#1E1E1E]">
                   <Storefront size={24} weight="fill" />
                 </div>
                 <div className="flex flex-col pr-4">

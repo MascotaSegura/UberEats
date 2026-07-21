@@ -106,7 +106,7 @@ const AdminLayout = () => {
       </div>
 
       {/* Mobile Bottom Nav */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#F3F4F6] pb-[env(safe-area-inset-bottom)] z-50 flex items-center justify-around px-2">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-none pt-2 pb-[env(safe-area-inset-bottom)] z-50 flex items-center justify-around px-2">
         {tabs.map(tab => (
           <button
             key={tab.id}

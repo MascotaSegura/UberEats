@@ -2,9 +2,13 @@ import React, { useState, useContext, useRef, useEffect } from 'react';
 import { AdminContext } from '../../context/AdminContext';
 import { ChatCircle, Check, CaretDown, Trash, MagnifyingGlass, PaperPlaneRight, CaretLeft } from '@phosphor-icons/react';
 
+const TICKET_STATUS_FILTERS = ['Todos', 'Abierto', 'En progreso', 'Resuelto'];
+
 const AdminSupport = () => {
   const { tickets, updateTicketStatus, deleteTicket, addTicketMessage } = useContext(AdminContext);
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('Todos');
+  const [recentOnly, setRecentOnly] = useState(false);
   const [activeTicketId, setActiveTicketId] = useState(null);
   const [messageInput, setMessageInput] = useState('');
   const chatScrollRef = useRef(null);
@@ -29,10 +33,14 @@ const AdminSupport = () => {
     setMessageInput('');
   };
 
-  const filteredTickets = tickets.filter(t => 
-    t.subject.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    t.user.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredTickets = tickets.filter(t => {
+    const matchesSearch =
+      t.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      t.user.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'Todos' || t.status === statusFilter;
+    const matchesRecent = !recentOnly || (Date.now() - new Date(t.date).getTime() < 86400000);
+    return matchesSearch && matchesStatus && matchesRecent;
+  });
 
   const activeTicket = tickets.find(t => t.id === activeTicketId);
 
@@ -47,7 +55,7 @@ const AdminSupport = () => {
     return (
       <div className="flex-1 flex flex-col h-full bg-[#F3F4F6] relative z-10 animate-fade-in pb-24 md:pb-0">
         {/* Chat Header */}
-        <div className="flex items-center justify-between p-4 bg-white border-b border-[#E5E5EA] shrink-0">
+        <div className="flex items-center justify-between p-4 bg-white shrink-0 shadow-none pb-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setActiveTicketId(null)}
@@ -85,7 +93,7 @@ const AdminSupport = () => {
               const isAdmin = msg.sender === 'admin';
               return (
                 <div key={msg.id} className={`flex flex-col max-w-[80%] ${isAdmin ? 'self-end items-end' : 'self-start items-start'}`}>
-                  <div className={`px-4 py-2.5 rounded-2xl ${isAdmin ? 'bg-[#1E1E1E] text-white rounded-tr-sm' : 'bg-white text-[#1E1E1E] rounded-tl-sm shadow-sm'}`}>
+                  <div className={`px-4 py-2.5 rounded-2xl ${isAdmin ? 'bg-[#1E1E1E] text-white rounded-tr-sm' : 'bg-white text-[#1E1E1E] rounded-tl-sm'}`}>
                     <p className="text-[15px]">{msg.text}</p>
                   </div>
                   <span className="text-[11px] text-[#8E8E93] mt-1 mx-1">{formatDate(msg.date)}</span>
@@ -96,7 +104,7 @@ const AdminSupport = () => {
         </div>
 
         {/* Chat Input */}
-        <div className="p-4 bg-white border-t border-[#E5E5EA] shrink-0">
+        <div className="p-4 bg-white shrink-0 pt-4">
           <form onSubmit={handleSendMessage} className="flex gap-2">
             <input
               type="text"
@@ -133,8 +141,35 @@ const AdminSupport = () => {
             placeholder="Buscar ticket por cliente o asunto..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white rounded-full h-12 pl-11 pr-4 text-[15px] text-[#1E1E1E] outline-none border border-transparent focus:border-[#E5E5EA] shadow-sm transition-all"
+            className="w-full bg-white rounded-full h-12 pl-11 pr-4 text-[15px] text-[#1E1E1E] outline-none border border-transparent focus:border-[#E5E5EA] transition-all"
           />
+        </div>
+
+        {/* Status Filter Pills */}
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {TICKET_STATUS_FILTERS.map(filter => (
+            <button
+              key={filter}
+              onClick={() => setStatusFilter(filter)}
+              className={`px-4 py-2 rounded-full text-[13px] font-bold whitespace-nowrap outline-none transition-all active:scale-95 ${
+                statusFilter === filter
+                  ? 'bg-[#1E1E1E] text-white'
+                  : 'bg-white text-[#1E1E1E] hover:bg-[#E5E5E7]'
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
+          <button
+            onClick={() => setRecentOnly(prev => !prev)}
+            className={`px-4 py-2 rounded-full text-[13px] font-bold whitespace-nowrap outline-none transition-all active:scale-95 ${
+              recentOnly
+                ? 'bg-[#1E1E1E] text-white'
+                : 'bg-white text-[#1E1E1E] hover:bg-[#E5E5E7]'
+            }`}
+          >
+            Recientes (24h)
+          </button>
         </div>
       </div>
 
@@ -147,7 +182,7 @@ const AdminSupport = () => {
               className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-[#F3F4F6] rounded-2xl hover:bg-[#ECECEE] transition-colors cursor-pointer group"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shrink-0 text-[#1E1E1E] group-hover:scale-105 transition-transform">
+                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shrink-0 text-[#1E1E1E] group-hover:scale-105 transition-transform">
                   <ChatCircle size={24} weight="fill" />
                 </div>
                 <div className="flex flex-col">
@@ -184,7 +219,7 @@ const AdminSupport = () => {
             </div>
           ))}
           {filteredTickets.length === 0 && (
-            <div className="p-10 text-center text-[#8E8E93]">No hay tickets de soporte activos.</div>
+            <div className="p-10 text-center text-[#8E8E93]">No hay tickets que coincidan con los filtros.</div>
           )}
         </div>
       </div>

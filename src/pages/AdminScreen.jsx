@@ -91,7 +91,7 @@ const AdminScreen = ({ isEmbedded = false }) => {
 
       <div className="p-4 md:p-6 flex-1 max-w-5xl w-full mx-auto flex flex-col gap-4">
         {/* Search */}
-        <div className="flex items-center bg-white rounded-full h-11 px-4 focus-within:bg-[#FAFAFA] transition-colors w-full">
+        <div className="flex items-center bg-white rounded-full h-12 px-4 focus-within:bg-[#FAFAFA] transition-colors w-full">
           <MagnifyingGlass size={20} weight="bold" color="#8E8E93" />
           <input
             type="text"
@@ -111,7 +111,7 @@ const AdminScreen = ({ isEmbedded = false }) => {
               {filteredProducts.map((product) => (
                 <div key={product.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-[#F3F4F6] rounded-2xl hover:bg-[#ECECEE] transition-colors">
                   <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-1 shrink-0">
+                    <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center p-1 shrink-0">
                       <img src={product.image} alt={product.name} className="max-w-full max-h-full object-contain mix-blend-multiply" />
                     </div>
                     <div className="flex flex-col">

@@ -49,7 +49,7 @@ const BranchFormModal = ({ isOpen, onClose, branch }) => {
         className="bg-white w-full h-auto max-h-[90vh] md:w-[500px] flex flex-col rounded-t-2xl md:rounded-2xl overflow-hidden relative animate-slide-up md:animate-fade-in"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center px-6 py-4 bg-white shrink-0 relative border-b border-[#F3F4F6]">
+        <div className="flex items-center px-6 py-4 bg-white shrink-0 relative pb-4 shadow-none">
           <h2 className="flex-1 text-center font-semibold text-lg text-[#1E1E1E]">
             {branch ? 'Editar Sucursal' : 'Nueva Sucursal'}
           </h2>
@@ -72,7 +72,7 @@ const BranchFormModal = ({ isOpen, onClose, branch }) => {
                 value={formData.label}
                 onChange={handleChange}
                 placeholder="Ej. Sucursal Sur"
-                className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
+                className="w-full bg-[#F3F4F6] rounded-2xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
                 required
                 autoFocus
               />
@@ -86,7 +86,7 @@ const BranchFormModal = ({ isOpen, onClose, branch }) => {
                 value={formData.detail}
                 onChange={handleChange}
                 placeholder="Ej. 15-20 min"
-                className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
+                className="w-full bg-[#F3F4F6] rounded-2xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
               />
             </div>
 
@@ -98,14 +98,14 @@ const BranchFormModal = ({ isOpen, onClose, branch }) => {
                 onChange={handleChange}
                 placeholder="Ingresa la calle, número, colonia..."
                 rows={3}
-                className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors resize-none"
+                className="w-full bg-[#F3F4F6] rounded-2xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors resize-none"
               />
             </div>
 
           </form>
         </div>
 
-        <div className="p-4 bg-white shrink-0 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-[#F3F4F6]">
+        <div className="p-4 bg-white shrink-0 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-none">
           <button
             type="submit"
             form="branch-form"

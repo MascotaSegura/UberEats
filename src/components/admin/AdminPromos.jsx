@@ -20,7 +20,7 @@ const PromoFormModal = ({ isOpen, onClose, onSave }) => {
   return (
     <div className="fixed inset-0 z-[70] flex items-end md:items-center justify-center bg-[#1E1E1E]/40 md:p-4">
       <div className="bg-white w-full h-auto md:w-[420px] flex flex-col rounded-t-2xl md:rounded-2xl overflow-hidden animate-slide-up md:animate-fade-in">
-        <div className="flex items-center px-6 py-4 bg-white shrink-0 relative border-b border-[#F3F4F6]">
+        <div className="flex items-center px-6 py-4 bg-white shrink-0 relative pb-4 shadow-none">
           <h2 className="flex-1 text-center font-semibold text-lg text-[#1E1E1E]">Nuevo Cupón</h2>
           <button
             onClick={onClose}
@@ -38,7 +38,7 @@ const PromoFormModal = ({ isOpen, onClose, onSave }) => {
               value={formData.code}
               onChange={e => setFormData(p => ({ ...p, code: e.target.value }))}
               placeholder="Ej. DESCUENTO15"
-              className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors uppercase"
+              className="w-full bg-[#F3F4F6] rounded-2xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors uppercase"
               required
               autoFocus
             />
@@ -52,7 +52,7 @@ const PromoFormModal = ({ isOpen, onClose, onSave }) => {
                   type="button"
                   key={t}
                   onClick={() => setFormData(p => ({ ...p, type: t }))}
-                  className={`flex-1 py-2.5 rounded-xl text-[13px] font-bold transition-all outline-none active:scale-95 ${
+                  className={`flex-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all outline-none active:scale-95 ${
                     formData.type === t ? 'bg-[#1E1E1E] text-white' : 'bg-[#F3F4F6] text-[#1E1E1E] hover:bg-[#ECECEE]'
                   }`}
                 >
@@ -72,13 +72,13 @@ const PromoFormModal = ({ isOpen, onClose, onSave }) => {
               onChange={e => setFormData(p => ({ ...p, discount: e.target.value }))}
               placeholder={formData.type === 'percentage' ? '0.15' : '50.00'}
               step="0.01"
-              className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
+              className="w-full bg-[#F3F4F6] rounded-2xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
               required
             />
           </div>
         </form>
 
-        <div className="p-4 bg-white border-t border-[#F3F4F6] pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div className="p-4 bg-white pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-none">
           <button
             type="submit"
             form="promo-form"
@@ -125,7 +125,7 @@ const AdminPromos = () => {
             placeholder="Buscar cupón por código..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white rounded-full h-12 pl-11 pr-4 text-[15px] text-[#1E1E1E] outline-none border border-transparent focus:border-[#E5E5EA] shadow-sm transition-all"
+            className="w-full bg-white rounded-full h-12 pl-11 pr-4 text-[15px] text-[#1E1E1E] outline-none border border-transparent focus:border-[#E5E5EA] transition-all"
           />
         </div>
       </div>
@@ -135,7 +135,7 @@ const AdminPromos = () => {
           {filteredPromos.map(promo => (
             <div key={promo.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-[#F3F4F6] rounded-2xl hover:bg-[#ECECEE] transition-colors">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shrink-0 text-[#1E1E1E] font-bold text-lg">
+                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shrink-0 text-[#1E1E1E] font-bold text-lg">
                   %
                 </div>
                 <div className="flex flex-col">

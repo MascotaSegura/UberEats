@@ -39,7 +39,7 @@ const AdminUsers = () => {
             placeholder="Buscar por nombre, correo o teléfono..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white rounded-full h-12 pl-11 pr-4 text-[15px] text-[#1E1E1E] outline-none border border-transparent focus:border-[#E5E5EA] shadow-sm transition-all"
+            className="w-full bg-white rounded-full h-12 pl-11 pr-4 text-[15px] text-[#1E1E1E] outline-none border border-transparent focus:border-[#E5E5EA] transition-all"
           />
         </div>
       </div>
@@ -57,7 +57,7 @@ const AdminUsers = () => {
                   <span className="text-[13px] text-[#8E8E93] mt-0.5">{user.email} • {user.phone}</span>
                 </div>
               </div>
-              <div className="flex items-center gap-3 mt-4 md:mt-0 border-t md:border-t-0 border-white pt-3 md:pt-0 justify-end">
+              <div className="flex items-center gap-3 mt-4 md:mt-0 pt-3 md:pt-0 justify-end">
                 <span className="text-[12px] text-[#8E8E93] font-medium">Registrado: {user.registered}</span>
                 <button
                   onClick={() => handleDeleteClick(user.id)}

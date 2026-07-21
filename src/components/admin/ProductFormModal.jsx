@@ -77,7 +77,7 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
         className="bg-white w-full h-[90vh] md:h-auto md:max-h-[85vh] md:w-[600px] flex flex-col rounded-t-2xl md:rounded-2xl overflow-hidden relative animate-slide-up md:animate-fade-in"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center px-6 py-4 bg-white shrink-0 relative border-b border-[#F3F4F6]">
+        <div className="flex items-center px-6 py-4 bg-white shrink-0 relative pb-4 shadow-none">
           <h2 className="flex-1 text-center font-semibold text-lg text-[#1E1E1E]">
             {product ? 'Editar Producto' : 'Nuevo Producto'}
           </h2>
@@ -108,7 +108,7 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Ej. Hamburguesa Doble"
-                className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
+                className="w-full bg-[#F3F4F6] rounded-2xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
                 required
               />
             </div>
@@ -142,14 +142,14 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
                       value={formData.category}
                       onChange={handleChange}
                       placeholder="Ej. postres"
-                      className="flex-1 bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
+                      className="flex-1 bg-[#F3F4F6] rounded-2xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
                       required
                       autoFocus
                     />
                     <button
                       type="button"
                       onClick={() => { setIsNewCategory(false); setFormData(prev => ({...prev, category: ''})) }}
-                      className="px-4 bg-[#F3F4F6] text-[#1E1E1E] rounded-xl font-medium text-[13px] hover:bg-[#ECECEE] transition-colors outline-none shrink-0"
+                      className="px-4 bg-[#F3F4F6] text-[#1E1E1E] rounded-2xl font-medium text-[13px] hover:bg-[#ECECEE] transition-colors outline-none shrink-0"
                     >
                       Cancelar
                     </button>
@@ -166,7 +166,7 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
                   onChange={handleChange}
                   placeholder="0.00"
                   step="0.01"
-                  className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
+                  className="w-full bg-[#F3F4F6] rounded-2xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
                   required
                 />
               </div>
@@ -180,7 +180,7 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
                 onChange={handleChange}
                 placeholder="Ingresa una breve descripción del producto..."
                 rows={3}
-                className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors resize-none"
+                className="w-full bg-[#F3F4F6] rounded-2xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors resize-none"
               />
             </div>
 
@@ -194,7 +194,7 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
           </form>
         </div>
 
-        <div className="p-4 bg-white shrink-0 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-[#F3F4F6]">
+        <div className="p-4 bg-white shrink-0 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-none">
           <button
             type="submit"
             form="product-form"
