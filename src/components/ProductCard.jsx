@@ -88,7 +88,7 @@ const ProductCard = React.memo(({ product, onClick }) => {
 
   return (
     <div
-      className="bg-white p-4 flex flex-col cursor-pointer hover:-translate-y-1 hover:bg-[#FAFAFA] active:bg-[#FAFAFA] active:scale-[0.98] transition-all outline-none focus-visible:bg-[#F9F9F9] rounded-2xl"
+      className="bg-white p-4 flex flex-col cursor-pointer hover:bg-[#FAFAFA] active:bg-[#FAFAFA] active:scale-[0.98] transition-all outline-none focus-visible:bg-[#FAFAFA] rounded-2xl"
       onClick={() => { onClick(product); }}
       onKeyDown={handleKeyDown(() => { onClick(product); })}
       role="button"

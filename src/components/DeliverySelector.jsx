@@ -174,7 +174,7 @@ export const DeliveryLocation = ({ setActiveModal, variant = 'header' }) => {
 export const DeliveryModeMobile = ({ setActiveModal, variant = 'header' }) => {
   const { deliveryMode } = useCart();
   const currentModeLabel = deliveryMode === 'delivery' ? 'A Domicilio' : 'Recoger';
-  const bgClass = variant === 'header' ? 'bg-[#F3F4F6] hover:bg-[#ECECEE] active:bg-[#ECECEE]' : 'bg-white hover:bg-[#F3F4F6] active:bg-[#F3F4F6]';
+  const bgClass = variant === 'header' ? 'bg-[#F3F4F6] hover:bg-[#ECECEE] active:bg-[#ECECEE]' : 'bg-white hover:bg-[#ECECEE] active:bg-[#ECECEE]';
 
   return (
     <div

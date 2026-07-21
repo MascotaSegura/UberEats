@@ -1,4 +1,4 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { MagnifyingGlass, Storefront } from '@phosphor-icons/react';
 import Header from '../components/Header';
@@ -6,7 +6,8 @@ import CategoryNav from '../components/CategoryNav';
 import ProductCard from '../components/ProductCard';
 import PromoCarousel from '../components/PromoCarousel';
 import PullToRefresh from '../components/PullToRefresh';
-import { products } from '../data/products';
+import { ProductCardSkeleton } from '../components/SkeletonComponents';
+import { ProductsContext } from '../context/ProductsContext';
 
 const ProductModal = lazy(() => import('../components/ProductModal'));
 const CartPanel = lazy(() => import('../components/CartPanel'));
@@ -21,16 +22,27 @@ const OrderTrackingScreen = lazy(() => import('../components/OrderTrackingScreen
 const ChatPanel = lazy(() => import('../components/ChatPanel'));
 const ProfileScreen = lazy(() => import('../components/ProfileScreen'));
 
+// Number of skeleton cards to show — matches a typical initial render count
+const SKELETON_COUNT = 10;
+
 const Home = () => {
+  const { products } = React.useContext(ProductsContext);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activePanel, setActivePanel] = useState(null);
   const [activeChat, setActiveChat] = useState(null);
   const [showProfile, setShowProfile] = useState(false);
+
+  // Simulate initial data fetch (600ms)
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   const trimmedQuery = searchQuery.trim().toLowerCase();
 
@@ -45,9 +57,10 @@ const Home = () => {
   });
 
   const handleRefresh = async () => {
+    setIsLoading(true);
     // Simulate network delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    // Usually you would fetch new products here
+    setIsLoading(false);
   };
 
   return (
@@ -68,8 +81,14 @@ const Home = () => {
 
       <PullToRefresh onRefresh={handleRefresh}>
         <div className="w-full pb-[max(1rem,env(safe-area-inset-bottom))]">
-          <PromoCarousel onProductSelect={setSelectedProduct} />
-          {filteredProducts.length > 0 ? (
+          <PromoCarousel onProductSelect={setSelectedProduct} isLoading={isLoading} />
+          {isLoading ? (
+            <div className="max-w-7xl mx-auto p-4 sm:p-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+              {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : filteredProducts.length > 0 ? (
             <div className="max-w-7xl mx-auto p-4 sm:p-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
               {filteredProducts.map((product) => (
                 <ProductCard

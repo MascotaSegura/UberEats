@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion, useDragControls } from 'framer-motion';
 import { X, Storefront, MapPin } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import { useModalHistory } from '../hooks/useModalHistory';
 import PullToRefresh from './PullToRefresh';
+import { BranchItemSkeleton } from './SkeletonComponents';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -17,9 +18,18 @@ const StoresPanel = ({ onClose }) => {
   const { branches, pickupBranch, setPickupBranch, setDeliveryMode } = useCart();
   const dragControls = useDragControls();
   const scrollContainerRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulate initial data fetch
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleRefresh = async () => {
+    setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsLoading(false);
   };
 
   const handleSelectBranch = (branch) => {
@@ -85,7 +95,12 @@ const StoresPanel = ({ onClose }) => {
         <div className="flex-1 min-h-0 overflow-y-auto" ref={scrollContainerRef}>
           <PullToRefresh onRefresh={handleRefresh} scrollRef={scrollContainerRef}>
             <div className="p-6">
-              {!branches || branches.length === 0 ? (
+              {isLoading ? (
+                <div className="flex flex-col gap-4">
+                  <BranchItemSkeleton />
+                  <BranchItemSkeleton />
+                </div>
+              ) : !branches || branches.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center py-20 text-center">
                   <div className="w-20 h-20 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-6">
                     <Storefront size={40} weight="fill" color="#D1D1D6" />

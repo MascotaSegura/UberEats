@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, useDragControls } from 'framer-motion';
 import { X, CreditCard, Plus } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import { useModalHistory } from '../hooks/useModalHistory';
 import PullToRefresh from './PullToRefresh';
+import { CardItemSkeleton } from './SkeletonComponents';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -50,10 +51,19 @@ const WalletPanel = ({ onClose }) => {
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
   const [errorMsg, setErrorMsg] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const scrollContainerRef = useRef(null);
 
+  // Simulate initial data fetch
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleRefresh = async () => {
+    setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsLoading(false);
   };
 
   const handleAddCard = () => {
@@ -157,7 +167,12 @@ const WalletPanel = ({ onClose }) => {
               <h3 className="font-semibold text-[#1E1E1E] text-[16px] mb-4">Métodos de pago</h3>
 
               <div className="flex flex-col gap-3">
-                {savedCards.map((card) => (
+                {isLoading ? (
+                  <>
+                    <CardItemSkeleton />
+                    <CardItemSkeleton />
+                  </>
+                ) : savedCards.map((card) => (
                   <div
                     key={card.id}
                     onClick={() => setSelectedPaymentMethod(card)}

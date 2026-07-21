@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
+import { AdminContext } from './AdminContext';
 
 export const CartContext = createContext();
 
@@ -40,10 +41,7 @@ export const CartProvider = ({ children }) => {
     return cards.length > 0 ? cards[0] : null;
   });
   
-  const [branches] = useState([
-    { id: 'br-1', label: 'Sucursal Centro', detail: '15-20 min' },
-    { id: 'br-2', label: 'Sucursal Norte', detail: '20-30 min' },
-  ]);
+  const { branches, promos: adminPromos } = useContext(AdminContext);
   
   const [deliveryAddress, setDeliveryAddress] = useState(() => {
     const loadedAddresses = loadSaved('ubereats_addresses', []);
@@ -57,7 +55,7 @@ export const CartProvider = ({ children }) => {
 
   const [pickupBranch, setPickupBranch] = useState(() => {
     const activeId = loadSaved('ubereats_active_branch', null);
-    return branches.find(b => b.id === activeId) || branches[0];
+    return branches?.find(b => b.id === activeId) || branches?.[0] || null;
   });
 
   useEffect(() => {
@@ -220,11 +218,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const applyPromo = (code) => {
-    const validPromos = {
-      'FREESHIP': { code: 'FREESHIP', discount: 25.00, type: 'shipping' },
-      'BURGER20': { code: 'BURGER20', discount: 0.20, type: 'percentage' }
-    };
-    const promo = validPromos[code.toUpperCase()];
+    const promo = adminPromos.find(p => p.code.toUpperCase() === code.toUpperCase());
     if (promo) {
       setActivePromo(promo);
       return { success: true };

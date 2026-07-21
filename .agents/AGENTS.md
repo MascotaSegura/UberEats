@@ -19,3 +19,10 @@ Cualquier IA que trabaje en este proyecto tiene la autoridad explícita para pro
 4. **Reporte Obligatorio:** Cada vez que un agente agregue una nueva regla bajo este criterio, debe informar explícitamente al usuario en su respuesta de chat: qué regla exacta se agregó al archivo y cuál es la justificación técnica detrás de esa decisión.
 
 **Advertencia Crítica a Agentes:** Este es un archivo delicado y maestro que rige el comportamiento estructural y visual de todo el proyecto. Ejerce esta autonomía con extremo cuidado y rigor analítico para evitar el abuso, las contradicciones o la inflación innecesaria de directrices.
+
+### Validación Estricta de Contraste (Hover/Active)
+- Cualquier cambio a los estados interactivos (`hover`, `active`, `focus`) debe contrastar visiblemente tanto con el estado de reposo del elemento como con el **color de fondo de su contenedor padre**. 
+- Queda estrictamente prohibido usar el mismo color del fondo padre para un estado hover (ej. una tarjeta blanca sobre un fondo `#F3F4F6` jamás debe tener `hover:bg-[#F3F4F6]`). Utiliza tonos como `#FAFAFA` o `#ECECEE` según la jerarquía visual requerida.
+
+### Verificación y Rigor (Cero Suposiciones)
+- Ningún agente debe reportar un error visual o lógico como "resuelto" sin haber verificado con certeza real cómo interactúan las clases CSS o la lógica entre sí dentro de su contexto. La certeza real se obtiene validando el estado inicial, el estado final y el contenedor padre.

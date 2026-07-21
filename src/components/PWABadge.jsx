@@ -25,12 +25,12 @@ const PWABadge = () => {
     <div className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-[300] w-[90%] max-w-[340px] bg-[#1E1E1E] text-white p-3 rounded-2xl flex items-center justify-between gap-3 animate-slide-up mx-auto">
       <div className="flex flex-col gap-0.5 pl-1 flex-1">
         <span className="text-[14px] font-semibold leading-tight">Nueva versión disponible</span>
-        <span className="text-[12px] text-gray-300 leading-tight">Actualiza para ver los cambios</span>
+        <span className="text-[12px] text-[#8E8E93] leading-tight">Actualiza para ver los cambios</span>
       </div>
       
       <div className="flex items-center gap-2 shrink-0">
         <button
-          className="bg-white text-[#1E1E1E] px-3 py-1.5 rounded-full text-[13px] font-bold hover:bg-gray-100 active:bg-gray-200 active:scale-[0.95] transition-all outline-none"
+          className="bg-white text-[#1E1E1E] px-3 py-1.5 rounded-full text-[13px] font-bold hover:bg-[#ECECEE] active:bg-[#E5E5EA] active:scale-[0.95] transition-all outline-none"
           onClick={() => updateServiceWorker(true)}
         >
           <div className="flex items-center gap-1.5">

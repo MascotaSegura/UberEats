@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, useDragControls } from 'framer-motion';
 import { X } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import { useModalHistory } from '../hooks/useModalHistory';
 import PullToRefresh from './PullToRefresh';
+import { PromoItemSkeleton } from './SkeletonComponents';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -22,11 +23,20 @@ const PromosPanel = ({ onClose }) => {
   const { applyPromo, activePromo } = useCart();
   const [inputCode, setInputCode] = useState('');
   const [message, setMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const dragControls = useDragControls();
   const scrollContainerRef = useRef(null);
 
+  // Simulate initial data fetch
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleRefresh = async () => {
+    setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsLoading(false);
   };
 
   const handleApply = () => {
@@ -136,7 +146,12 @@ const PromosPanel = ({ onClose }) => {
               <h3 className="font-semibold text-[#1E1E1E] text-[16px] mb-4">Promociones disponibles</h3>
               
               <div className="flex flex-col gap-4">
-                {mockPromos.map((promo) => (
+                {isLoading ? (
+                  <>
+                    <PromoItemSkeleton />
+                    <PromoItemSkeleton />
+                  </>
+                ) : mockPromos.map((promo) => (
                   <div key={promo.id} className="bg-[#06C167]/10 p-5 rounded-2xl flex flex-col gap-2">
                     <span className="font-bold text-[#06C167] text-[18px]">{promo.title}</span>
                     <span className="text-[#1E1E1E] text-[14px] mb-2 max-w-[80%]">{promo.desc}</span>

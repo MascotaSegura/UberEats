@@ -29,6 +29,13 @@
     from { transform: translateX(100%); }
     to { transform: translateX(0); }
   }
+
+  /* Skeleton shimmer: a white overlay sweeps across a solid base color.
+     Flat design compliant — no gradient on the base element itself. */
+  @keyframes skeletonShimmer {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(100%); }
+  }
 }
 
 
@@ -65,4 +72,19 @@ svg,
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Skeleton shimmer utility: place as a child of overflow-hidden elements.
+   The parent element has a solid base color; this child sweeps across it.
+   Complies with flat design rules — no gradient on the base. */
+.skeleton-shimmer {
+  position: absolute;
+  inset: 0;
+  animation: skeletonShimmer 1.4s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.55) 50%,
+    transparent 100%
+  );
 }

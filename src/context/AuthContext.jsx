@@ -24,19 +24,23 @@ export const AuthProvider = ({ children }) => {
 
   const login = (phone) => {
     // Simulated login with phone
+    const isAdmin = phone === '9999999999';
     setUser({
-      name: `Usuario ${phone.slice(-4)}`,
+      name: isAdmin ? 'Administrador' : `Usuario ${phone.slice(-4)}`,
       email: `${phone}@uber.com`,
-      phone: phone
+      phone: phone,
+      isAdmin: isAdmin
     });
   };
 
   const register = (phone, name) => {
     // Simulated registration
+    const isAdmin = phone === '9999999999' || name.toLowerCase().includes('admin');
     setUser({
       name: name,
       email: `${phone}@uber.com`,
-      phone: phone
+      phone: phone,
+      isAdmin: isAdmin
     });
   };
 

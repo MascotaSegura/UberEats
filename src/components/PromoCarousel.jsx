@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { CaretLeft, CaretRight } from '@phosphor-icons/react';
-import { products } from '../data/products';
+import { ProductsContext } from '../context/ProductsContext';
+import { PromoCardSkeleton } from './SkeletonComponents';
 
 const promos = [
   {
@@ -121,7 +122,8 @@ const PromoCard = ({ promo, onSelect }) => (
   </div>
 );
 
-const PromoCarousel = ({ onProductSelect }) => {
+const PromoCarousel = ({ onProductSelect, isLoading = false }) => {
+  const { products } = useContext(ProductsContext);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(1);
   const scrollRef = useRef(null);
@@ -229,65 +231,87 @@ const PromoCarousel = ({ onProductSelect }) => {
     return 'calc(min(100%, 80rem) - 2rem)';
   };
 
+  // Number of skeleton placeholders matches cardsPerView so layout doesn't jump
+  const skeletonCount = cardsPerView === 3 ? 3 : cardsPerView === 2 ? 2 : 1;
+
   return (
-    <div className="w-full pt-4 pb-2 overflow-hidden relative group">
-      
-      {/* Container for Arrows (Aligned to max-w-7xl) */}
-      <div className="absolute inset-y-0 left-0 right-0 max-w-7xl mx-auto pointer-events-none z-20">
-        {/* Navigation Arrows for Tablet/Desktop */}
-        <button
-          onClick={(e) => { e.preventDefault(); slideLeft(); }}
-          disabled={currentIndex === 0}
-          className="hidden md:flex absolute left-2 xl:-left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center text-[#1E1E1E] opacity-0 group-hover:opacity-100 transition-all hover:bg-[#E5E5E7] active:bg-[#E5E5E7] active:scale-95 disabled:opacity-0 pointer-events-auto"
-          aria-label="Anterior"
-        >
-          <CaretLeft size={20} weight="bold" />
-        </button>
-        <button
-          onClick={(e) => { e.preventDefault(); slideRight(); }}
-          disabled={currentIndex >= maxIndex}
-          className="hidden md:flex absolute right-2 xl:-right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center text-[#1E1E1E] opacity-0 group-hover:opacity-100 transition-all hover:bg-[#E5E5E7] active:bg-[#E5E5E7] active:scale-95 disabled:opacity-0 pointer-events-auto"
-          aria-label="Siguiente"
-        >
-          <CaretRight size={20} weight="bold" />
-        </button>
-      </div>
+    <div className="w-full pt-4 pb-2 overflow-hidden relative group" aria-busy={isLoading}>
 
-      {/* Native Scroll Container (Full Bleed) */}
-      <div 
-        ref={scrollRef}
-        onScroll={handleScroll}
-        className="flex w-full overflow-x-auto overflow-y-hidden overscroll-x-contain snap-x snap-mandatory md:snap-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {/* Left Spacer to push first item inwards without clipping */}
-        <div className="shrink-0" style={{ width: getSpacerWidth() }} />
-        
-        {promos.map((promo, index) => (
-          <div
-            key={promo.id}
-            className={`shrink-0 snap-center py-2 ${index < promos.length - 1 ? 'mr-4' : ''}`}
-            style={{ width: getCardWidth() }}
-          >
-            <PromoCard promo={promo} onSelect={() => handlePromoClick(promo)} />
-          </div>
-        ))}
-
-        {/* Right Spacer */}
-        <div className="shrink-0" style={{ width: getSpacerWidth() }} />
-      </div>
-
-      {/* Pagination Dots (Mobile) */}
-      {cardsPerView === 1 && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 pointer-events-none">
-          {promos.map((_, i) => (
+      {isLoading ? (
+        /* ── Skeleton state: same scroll container structure ── */
+        <div className="flex w-full overflow-x-hidden">
+          <div className="shrink-0" style={{ width: getSpacerWidth() }} />
+          {Array.from({ length: skeletonCount }).map((_, i) => (
             <div
               key={i}
-              className={`h-1.5 rounded-full transition-all duration-300 ease-in-out ${
-                i === currentIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/40'
-              }`}
-            />
+              className={`shrink-0 py-2 ${i < skeletonCount - 1 ? 'mr-4' : ''}`}
+              style={{ width: getCardWidth() }}
+            >
+              <PromoCardSkeleton />
+            </div>
           ))}
+          <div className="shrink-0" style={{ width: getSpacerWidth() }} />
         </div>
+      ) : (
+        <>
+          {/* Container for Arrows (Aligned to max-w-7xl) */}
+          <div className="absolute inset-y-0 left-0 right-0 max-w-7xl mx-auto pointer-events-none z-20">
+            {/* Navigation Arrows for Tablet/Desktop */}
+            <button
+              onClick={(e) => { e.preventDefault(); slideLeft(); }}
+              disabled={currentIndex === 0}
+              className="hidden md:flex absolute left-2 xl:-left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center text-[#1E1E1E] opacity-0 group-hover:opacity-100 transition-all hover:bg-[#E5E5E7] active:bg-[#E5E5E7] active:scale-95 disabled:opacity-0 pointer-events-auto"
+              aria-label="Anterior"
+            >
+              <CaretLeft size={20} weight="bold" />
+            </button>
+            <button
+              onClick={(e) => { e.preventDefault(); slideRight(); }}
+              disabled={currentIndex >= maxIndex}
+              className="hidden md:flex absolute right-2 xl:-right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center text-[#1E1E1E] opacity-0 group-hover:opacity-100 transition-all hover:bg-[#E5E5E7] active:bg-[#E5E5E7] active:scale-95 disabled:opacity-0 pointer-events-auto"
+              aria-label="Siguiente"
+            >
+              <CaretRight size={20} weight="bold" />
+            </button>
+          </div>
+
+          {/* Native Scroll Container (Full Bleed) */}
+          <div 
+            ref={scrollRef}
+            onScroll={handleScroll}
+            className="flex w-full overflow-x-auto overflow-y-hidden overscroll-x-contain snap-x snap-mandatory md:snap-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {/* Left Spacer to push first item inwards without clipping */}
+            <div className="shrink-0" style={{ width: getSpacerWidth() }} />
+            
+            {promos.map((promo, index) => (
+              <div
+                key={promo.id}
+                className={`shrink-0 snap-center py-2 ${index < promos.length - 1 ? 'mr-4' : ''}`}
+                style={{ width: getCardWidth() }}
+              >
+                <PromoCard promo={promo} onSelect={() => handlePromoClick(promo)} />
+              </div>
+            ))}
+
+            {/* Right Spacer */}
+            <div className="shrink-0" style={{ width: getSpacerWidth() }} />
+          </div>
+
+          {/* Pagination Dots (Mobile) */}
+          {cardsPerView === 1 && (
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 pointer-events-none">
+              {promos.map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-1.5 rounded-full transition-all duration-300 ease-in-out ${
+                    i === currentIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/40'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </>
       )}
 
     </div>
