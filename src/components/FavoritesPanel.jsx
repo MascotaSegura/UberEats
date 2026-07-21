@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useDragControls } from 'framer-motion';
 import { X, Heart } from '@phosphor-icons/react';
+import { useModalHistory } from '../hooks/useModalHistory';
 import { useCart } from '../context/useCart';
 import { products } from '../data/products';
 import ProductCard from './ProductCard';
@@ -14,6 +15,7 @@ const handleKeyDown = (fn) => (e) => {
 };
 
 const FavoritesPanel = ({ onClose, onProductClick }) => {
+  useModalHistory(true, onClose);
   const { favorites = [] } = useCart();
   const dragControls = useDragControls();
   const scrollContainerRef = useRef(null);

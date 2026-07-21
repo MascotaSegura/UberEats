@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { CaretDown, Check, X, PencilSimple, MapPin, Storefront, Moped } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
 import AddressForm from './AddressForm';
+import { useModalHistory } from '../hooks/useModalHistory';
 
 
 const handleKeyDown = (fn) => (e) => {
@@ -13,6 +14,7 @@ const handleKeyDown = (fn) => (e) => {
 };
 
 export const ModalDropdown = ({ isOpen, onClose, title, items, selectedId, onSelect, showAddAction, onAddAction, onEditAction }) => {
+  useModalHistory(isOpen, onClose);
   if (!isOpen) return null;
 
   return createPortal(

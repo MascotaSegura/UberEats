@@ -1,6 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { X, Export, PlusSquare } from '@phosphor-icons/react';
+import { useModalHistory } from '../hooks/useModalHistory';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -10,6 +11,7 @@ const handleKeyDown = (fn) => (e) => {
 };
 
 const PWAInstallModal = ({ isOpen, onClose }) => {
+  useModalHistory(isOpen, onClose);
   if (!isOpen) return null;
 
   return createPortal(

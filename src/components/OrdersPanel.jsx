@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useDragControls } from 'framer-motion';
 import { X, Receipt, Package } from '@phosphor-icons/react';
+import { useModalHistory } from '../hooks/useModalHistory';
 import { useCart } from '../context/useCart';
 import PullToRefresh from './PullToRefresh';
 
@@ -17,6 +18,7 @@ const mockOrders = [
 ];
 
 const OrdersPanel = ({ onClose }) => {
+  useModalHistory(true, onClose);
   const { activeOrder, setOrderStatus } = useCart();
   const dragControls = useDragControls();
   const scrollContainerRef = useRef(null);

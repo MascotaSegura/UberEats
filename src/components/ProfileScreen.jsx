@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CaretLeft, Receipt, MapPin, CreditCard, Heart, Gear, SignOut, PencilSimple, Bell, EnvelopeSimple, NavigationArrow, Plus, Trash } from '@phosphor-icons/react';
 import { AuthContext } from '../context/AuthContext';
 import { useCart } from '../context/useCart';
+import { useModalHistory } from '../hooks/useModalHistory';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -60,6 +61,7 @@ const formatExpiry = (val) => {
 };
 
 const ProfileScreen = ({ onClose, onOpenOrders, onOpenFavorites }) => {
+  useModalHistory(true, onClose);
   const { user, logout, updateUser } = useContext(AuthContext);
   const { savedCards, addCard, removeCard, updateCard } = useCart();
   const [currentView, setCurrentView] = useState('menu'); // 'menu', 'edit', 'settings', 'payments', 'payment_form'

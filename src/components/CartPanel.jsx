@@ -3,6 +3,7 @@ import { X, Trash, Plus, Minus, CheckCircle, ShoppingCart, CreditCard, CaretLeft
 import { useCart } from '../context/useCart';
 import DeliverySelector from './DeliverySelector';
 import { motion, useAnimation } from 'framer-motion';
+import { useModalHistory } from '../hooks/useModalHistory';
 
 import { AuthContext } from '../context/AuthContext';
 import AuthModal from './AuthModal';
@@ -115,6 +116,8 @@ const CartItemComponent = ({ item, updateQuantity, removeFromCart }) => {
 
 
 const CartPanel = ({ onClose }) => {
+  useModalHistory(true, onClose);
+
   const {
     cartItems,
     getCartTotal,

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useDragControls } from 'framer-motion';
 import { X, PaperPlaneRight, Headset } from '@phosphor-icons/react';
+import { useModalHistory } from '../hooks/useModalHistory';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -19,6 +20,7 @@ const supportMessages = [
 ];
 
 const ChatPanel = ({ isOpen, onClose, recipient }) => {
+  useModalHistory(isOpen, onClose);
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef(null);

@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion, useDragControls } from 'framer-motion';
 import { X } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
+import { useModalHistory } from '../hooks/useModalHistory';
 import PullToRefresh from './PullToRefresh';
 
 const handleKeyDown = (fn) => (e) => {
@@ -17,6 +18,7 @@ const mockPromos = [
 ];
 
 const PromosPanel = ({ onClose }) => {
+  useModalHistory(true, onClose);
   const { applyPromo, activePromo } = useCart();
   const [inputCode, setInputCode] = useState('');
   const [message, setMessage] = useState(null);

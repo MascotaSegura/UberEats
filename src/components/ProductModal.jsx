@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Minus, Plus, ShareNetwork, Check, MagnifyingGlassPlus, Heart } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
+import { useModalHistory } from '../hooks/useModalHistory';
 import ImageViewer from './ImageViewer';
 
 
@@ -13,6 +14,7 @@ const handleKeyDown = (fn) => (e) => {
 };
 
 const ProductModal = ({ product, onClose }) => {
+  useModalHistory(true, onClose);
   const [quantity, setQuantity] = useState(1);
   const [removedIngredients, setRemovedIngredients] = useState([]);
   const [specialInstructions, setSpecialInstructions] = useState('');

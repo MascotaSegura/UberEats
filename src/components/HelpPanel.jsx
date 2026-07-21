@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, useDragControls } from 'framer-motion';
 import { X, CaretDown, CaretUp, Question } from '@phosphor-icons/react';
+import { useModalHistory } from '../hooks/useModalHistory';
 import PullToRefresh from './PullToRefresh';
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -17,6 +18,7 @@ const faqs = [
 ];
 
 const HelpPanel = ({ onClose, onOpenChat }) => {
+  useModalHistory(true, onClose);
   const [expanded, setExpanded] = useState(null);
   const dragControls = useDragControls();
   const scrollContainerRef = useRef(null);

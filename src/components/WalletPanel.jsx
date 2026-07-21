@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion, useDragControls } from 'framer-motion';
 import { X, CreditCard, Plus } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
+import { useModalHistory } from '../hooks/useModalHistory';
 import PullToRefresh from './PullToRefresh';
 
 const handleKeyDown = (fn) => (e) => {
@@ -40,6 +41,7 @@ const formatExpiry = (val) => {
 };
 
 const WalletPanel = ({ onClose }) => {
+  useModalHistory(true, onClose);
   const { savedCards, addCard, selectedPaymentMethod, setSelectedPaymentMethod } = useCart();
   const dragControls = useDragControls();
   const [isAdding, setIsAdding] = useState(false);

@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { X, MapPin, NavigationArrow } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
+import { useModalHistory } from '../hooks/useModalHistory';
 
 const handleKeyDown = (fn) => (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -11,6 +12,7 @@ const handleKeyDown = (fn) => (e) => {
 };
 
 const AddressForm = ({ onClose, initialData }) => {
+  useModalHistory(true, onClose);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [isLocating, setIsLocating] = useState(false);

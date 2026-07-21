@@ -1,8 +1,10 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { BellRinging, X } from '@phosphor-icons/react';
+import { useModalHistory } from '../hooks/useModalHistory';
 
 const NotificationModal = ({ isOpen, onClose, onAllow }) => {
+  useModalHistory(isOpen, onClose);
   if (!isOpen) return null;
 
   return createPortal(

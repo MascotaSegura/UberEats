@@ -2,9 +2,11 @@ import React, { useState, useContext, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { X, User, Phone, CaretLeft, CaretDown, Check } from '@phosphor-icons/react';
 import { AuthContext } from '../context/AuthContext';
+import { useModalHistory } from '../hooks/useModalHistory';
 
 const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
   const { login, register } = useContext(AuthContext);
+  useModalHistory(isOpen, onClose);
   
   // Views: 'phone_input', 'verify_code', 'name_input'
   const [view, setView] = useState('phone_input');

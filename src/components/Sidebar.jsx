@@ -4,8 +4,10 @@ import { Receipt, Wallet, Tag, Storefront, Question, X, DeviceMobile } from '@ph
 import { AuthContext } from '../context/AuthContext';
 import AuthModal from './AuthModal';
 import PWAInstallModal from './PWAInstallModal';
+import { useModalHistory } from '../hooks/useModalHistory';
 
 const Sidebar = ({ isOpen, onClose, onMenuSelect, onOpenProfile }) => {
+  useModalHistory(isOpen, onClose);
   // Prevent body scroll when sidebar is open
   useEffect(() => {
     if (isOpen) {

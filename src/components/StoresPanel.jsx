@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { motion, useDragControls } from 'framer-motion';
 import { X, Storefront, MapPin } from '@phosphor-icons/react';
 import { useCart } from '../context/useCart';
+import { useModalHistory } from '../hooks/useModalHistory';
 import PullToRefresh from './PullToRefresh';
 
 const handleKeyDown = (fn) => (e) => {
@@ -12,6 +13,7 @@ const handleKeyDown = (fn) => (e) => {
 };
 
 const StoresPanel = ({ onClose }) => {
+  useModalHistory(true, onClose);
   const { branches, pickupBranch, setPickupBranch, setDeliveryMode } = useCart();
   const dragControls = useDragControls();
   const scrollContainerRef = useRef(null);
