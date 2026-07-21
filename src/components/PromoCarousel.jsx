@@ -10,7 +10,7 @@ const promos = [
     subtitle: '20% OFF en tu primera orden del día.',
     buttonText: 'Pedir ahora',
     bgColor: 'bg-[#06C167]',
-    textColor: 'text-white',
+    textColor: 'text-[#1E1E1E]',
     image: import.meta.env.BASE_URL + 'images/promo_hamburguesa_clasica.png',
   },
   {
@@ -20,7 +20,7 @@ const promos = [
     subtitle: 'Doble sabor, doble queso. Envío gratis hoy.',
     buttonText: 'Ordenar',
     bgColor: 'bg-[#06C167]',
-    textColor: 'text-white',
+    textColor: 'text-[#1E1E1E]',
     image: import.meta.env.BASE_URL + 'images/promo_hamburguesa_doble.png',
   },
   {
@@ -30,7 +30,7 @@ const promos = [
     subtitle: '2x1 en papas fritas los fines de semana.',
     buttonText: 'Ver oferta',
     bgColor: 'bg-[#06C167]',
-    textColor: 'text-white',
+    textColor: 'text-[#1E1E1E]',
     image: import.meta.env.BASE_URL + 'images/promo_papas_fritas.png',
   },
   {
@@ -40,7 +40,7 @@ const promos = [
     subtitle: '2x1 en bebidas frías seleccionadas.',
     buttonText: 'Agregar',
     bgColor: 'bg-[#06C167]',
-    textColor: 'text-white',
+    textColor: 'text-[#1E1E1E]',
     image: import.meta.env.BASE_URL + 'images/promo_refresco_cola.png',
   },
   {
@@ -50,7 +50,7 @@ const promos = [
     subtitle: 'El postre que tu orden estaba esperando.',
     buttonText: 'Pedir postre',
     bgColor: 'bg-[#06C167]',
-    textColor: 'text-white',
+    textColor: 'text-[#1E1E1E]',
     image: import.meta.env.BASE_URL + 'images/promo_brownie.png',
   },
   {
@@ -70,7 +70,7 @@ const promos = [
     subtitle: 'Masa madre artesanal con pepperoni crujiente.',
     buttonText: 'Elegir tamaño',
     bgColor: 'bg-[#06C167]',
-    textColor: 'text-white',
+    textColor: 'text-[#1E1E1E]',
     image: import.meta.env.BASE_URL + 'images/promo_pizza_pepperoni.png',
   },
   {
@@ -80,7 +80,7 @@ const promos = [
     subtitle: '10 piezas bañadas en salsa BBQ secreta.',
     buttonText: 'Pedir alitas',
     bgColor: 'bg-[#06C167]',
-    textColor: 'text-white',
+    textColor: 'text-[#1E1E1E]',
     image: import.meta.env.BASE_URL + 'images/promo_alitas_bbq.png',
   },
 ];
@@ -95,19 +95,19 @@ const PromoCard = ({ promo, onSelect }) => (
     aria-label={`Ver ${promo.title}`}
   >
     {/* Left Content */}
-    <div className={`flex-1 h-full flex flex-col justify-center py-4 pl-5 lg:pl-6 pr-2 z-10 ${promo.textColor}`}>
-      <h3 className="text-[17px] lg:text-[20px] font-bold leading-tight mb-1.5 line-clamp-2">
-        {promo.title}
-      </h3>
-      <p className="text-[13px] lg:text-[14px] opacity-90 leading-snug mb-3 line-clamp-2">
-        {promo.subtitle}
-      </p>
-      <div className="flex items-start">
-        <span className="inline-flex items-center justify-center px-4 py-1.5 bg-white text-[#1E1E1E] rounded-full text-[13px] font-bold">
-          {promo.buttonText}
-        </span>
+      <div className="flex-1 h-full flex flex-col justify-center py-4 pl-5 lg:pl-6 pr-2 z-10">
+        <h3 className={`text-[17px] lg:text-[20px] font-bold leading-tight mb-1.5 line-clamp-2 ${promo.textColor}`}>
+          {promo.title}
+        </h3>
+        <p className={`text-[13px] lg:text-[14px] opacity-90 leading-snug mb-3 line-clamp-2 ${promo.textColor}`}>
+          {promo.subtitle}
+        </p>
+        <div className="flex items-start">
+          <span className="inline-flex items-center justify-center px-4 py-1.5 bg-white text-[#1E1E1E] rounded-full text-[13px] font-bold">
+            {promo.buttonText}
+          </span>
+        </div>
       </div>
-    </div>
 
     {/* Right Image Container */}
     <div className="w-[120px] lg:w-[150px] xl:w-[180px] h-full shrink-0">
@@ -279,10 +279,14 @@ const PromoCarousel = ({ onProductSelect }) => {
       {/* Pagination Dots (Mobile) */}
       {cardsPerView === 1 && (
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 pointer-events-none">
-          {promos.map((_, i) => (
+          {promos.map((p, i) => (
             <div
               key={i}
-              className={`w-1.5 h-1.5 rounded-full transition-colors ${i === currentIndex ? 'bg-white' : 'bg-white/40'}`}
+              className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                i === currentIndex
+                  ? (p.textColor === 'text-white' ? 'bg-white' : 'bg-[#1E1E1E]')
+                  : (p.textColor === 'text-white' ? 'bg-white/40' : 'bg-[#1E1E1E]/30')
+              }`}
             />
           ))}
         </div>
