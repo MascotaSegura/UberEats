@@ -27,8 +27,8 @@ export const AdminProvider = ({ children }) => {
 
   // Branches State
   const [branches, setBranches] = useState(() => loadSaved('admin_branches', [
-    { id: 'br-1', label: 'Sucursal Centro', detail: '15-20 min', isActive: true },
-    { id: 'br-2', label: 'Sucursal Norte', detail: '20-30 min', isActive: true },
+    { id: 'br-1', label: 'Sucursal Centro', detail: '15-20 min', address: 'Av. Reforma 220, Col. Centro', isActive: true },
+    { id: 'br-2', label: 'Sucursal Norte', detail: '20-30 min', address: 'Blvd. Valle Verde 1450', isActive: true },
   ]));
 
   // Users State (Simulated list for dashboard)
@@ -65,14 +65,38 @@ export const AdminProvider = ({ children }) => {
 
   // Support Tickets State
   const [tickets, setTickets] = useState(() => loadSaved('admin_tickets', [
-    { id: 't-1', user: 'Ana Silva', subject: 'Problema con mi pedido #ord-1', status: 'Abierto', date: new Date().toISOString() },
-    { id: 't-2', user: 'Carlos Díaz', subject: 'Duda sobre cupones de descuento', status: 'Resuelto', date: new Date(Date.now() - 86400000).toISOString() },
+    { 
+      id: 't-1', user: 'Ana Silva', subject: 'Problema con mi pedido #ord-1', status: 'Abierto', date: new Date().toISOString(),
+      messages: [
+        { id: 'm1', sender: 'user', text: 'Hola, mi pedido no ha llegado y ya pasó el tiempo estimado.', date: new Date(Date.now() - 3600000).toISOString() }
+      ]
+    },
+    { 
+      id: 't-2', user: 'Carlos Díaz', subject: 'Duda sobre cupones de descuento', status: 'Resuelto', date: new Date(Date.now() - 86400000).toISOString(),
+      messages: [
+        { id: 'm1', sender: 'user', text: '¿Puedo usar dos cupones a la vez?', date: new Date(Date.now() - 86400000).toISOString() },
+        { id: 'm2', sender: 'admin', text: 'Hola Carlos, de momento solo se puede usar un cupón por pedido.', date: new Date(Date.now() - 86000000).toISOString() }
+      ]
+    },
   ]));
 
   useEffect(() => localStorage.setItem('admin_tickets', JSON.stringify(tickets)), [tickets]);
 
   const updateTicketStatus = (id, newStatus) => setTickets(prev => prev.map(t => t.id === id ? { ...t, status: newStatus } : t));
   const deleteTicket = (id) => setTickets(prev => prev.filter(t => t.id !== id));
+  
+  const addTicketMessage = (ticketId, text, sender = 'admin') => {
+    setTickets(prev => prev.map(t => {
+      if (t.id === ticketId) {
+        return {
+          ...t,
+          messages: [...(t.messages || []), { id: `m-${Date.now()}`, sender, text, date: new Date().toISOString() }],
+          status: sender === 'admin' ? 'En progreso' : t.status
+        };
+      }
+      return t;
+    }));
+  };
 
   return (
     <AdminContext.Provider value={{
@@ -80,7 +104,7 @@ export const AdminProvider = ({ children }) => {
       promos, addPromo, updatePromo, deletePromo,
       branches, addBranch, updateBranch, deleteBranch,
       users, deleteUser,
-      tickets, updateTicketStatus, deleteTicket
+      tickets, updateTicketStatus, deleteTicket, addTicketMessage
     }}>
       {children}
     </AdminContext.Provider>
