@@ -4,7 +4,9 @@ import { X } from '@phosphor-icons/react';
 import { ProductsContext } from '../../context/ProductsContext';
 
 const ProductFormModal = ({ isOpen, onClose, product }) => {
-  const { addProduct, updateProduct } = useContext(ProductsContext);
+  const { products, addProduct, updateProduct } = useContext(ProductsContext);
+  const uniqueCategories = Array.from(new Set(products.map(p => p.category)));
+  const [isNewCategory, setIsNewCategory] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -23,6 +25,9 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
         category: product.category || '',
         image: product.image || import.meta.env.BASE_URL + 'images/producto_hamburguesa_clasica.png',
       });
+      if (product.category && !uniqueCategories.includes(product.category)) {
+        setIsNewCategory(true);
+      }
     }
   }, [product]);
 
@@ -99,15 +104,50 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
 
             <div className="flex flex-col gap-1.5">
               <label className="text-[13px] font-semibold text-[#1E1E1E]">Categoría</label>
-              <input
-                type="text"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                placeholder="Ej. burgers, drinks, pizzas"
-                className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
-                required
-              />
+              {!isNewCategory ? (
+                <div className="flex gap-2">
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={(e) => {
+                      if (e.target.value === '__NEW__') {
+                        setIsNewCategory(true);
+                        setFormData(prev => ({ ...prev, category: '' }));
+                      } else {
+                        handleChange(e);
+                      }
+                    }}
+                    className="flex-1 bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors appearance-none cursor-pointer"
+                    required
+                  >
+                    <option value="" disabled>Selecciona una categoría...</option>
+                    {uniqueCategories.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                    <option value="__NEW__">+ Añadir nueva categoría...</option>
+                  </select>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    placeholder="Ej. postres"
+                    className="flex-1 bg-[#F3F4F6] rounded-xl px-4 py-3 text-[15px] text-[#1E1E1E] outline-none focus:bg-[#ECECEE] transition-colors"
+                    required
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    onClick={() => { setIsNewCategory(false); setFormData(prev => ({...prev, category: ''})) }}
+                    className="px-4 bg-[#F3F4F6] text-[#1E1E1E] rounded-xl font-medium text-[13px] hover:bg-[#ECECEE] transition-colors outline-none"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-col gap-1.5">

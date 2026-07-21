@@ -39,7 +39,7 @@ const AdminOrders = () => {
                 <button
                   onClick={() => cycleStatus(order.id, order.status)}
                   className={`px-4 py-2 rounded-full font-bold text-[13px] flex items-center gap-2 outline-none transition-all active:scale-95 ${
-                    order.status === 'Entregado' ? 'bg-[#E5F7ED] text-[#06C167]' : 'bg-white text-[#1E1E1E] hover:bg-[#F3F4F6]'
+                    order.status === 'Entregado' ? 'bg-[#E5F7ED] text-[#06C167]' : 'bg-white text-[#1E1E1E] hover:bg-[#E5E5E7]'
                   }`}
                 >
                   {order.status === 'Entregado' && <Check size={16} weight="bold" />}

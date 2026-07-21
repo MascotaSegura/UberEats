@@ -63,12 +63,24 @@ export const AdminProvider = ({ children }) => {
   // Users CRUD
   const deleteUser = (id) => setUsers(prev => prev.filter(u => u.id !== id));
 
+  // Support Tickets State
+  const [tickets, setTickets] = useState(() => loadSaved('admin_tickets', [
+    { id: 't-1', user: 'Ana Silva', subject: 'Problema con mi pedido #ord-1', status: 'Abierto', date: new Date().toISOString() },
+    { id: 't-2', user: 'Carlos Díaz', subject: 'Duda sobre cupones de descuento', status: 'Resuelto', date: new Date(Date.now() - 86400000).toISOString() },
+  ]));
+
+  useEffect(() => localStorage.setItem('admin_tickets', JSON.stringify(tickets)), [tickets]);
+
+  const updateTicketStatus = (id, newStatus) => setTickets(prev => prev.map(t => t.id === id ? { ...t, status: newStatus } : t));
+  const deleteTicket = (id) => setTickets(prev => prev.filter(t => t.id !== id));
+
   return (
     <AdminContext.Provider value={{
       orders, updateOrderStatus, deleteOrder,
       promos, addPromo, updatePromo, deletePromo,
       branches, addBranch, updateBranch, deleteBranch,
-      users, deleteUser
+      users, deleteUser,
+      tickets, updateTicketStatus, deleteTicket
     }}>
       {children}
     </AdminContext.Provider>

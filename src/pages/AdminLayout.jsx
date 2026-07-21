@@ -9,6 +9,8 @@ import AdminOrders from '../components/admin/AdminOrders';
 import AdminPromos from '../components/admin/AdminPromos';
 import AdminBranches from '../components/admin/AdminBranches';
 import AdminUsers from '../components/admin/AdminUsers';
+import AdminSupport from '../components/admin/AdminSupport';
+import { Headset } from '@phosphor-icons/react';
 
 const AdminLayout = () => {
   const { user } = useContext(AuthContext);
@@ -56,6 +58,7 @@ const AdminLayout = () => {
     { id: 'promos', label: 'Promociones', icon: Tag },
     { id: 'branches', label: 'Sucursales', icon: Storefront },
     { id: 'users', label: 'Usuarios', icon: Users },
+    { id: 'support', label: 'Soporte', icon: Headset },
   ];
 
   return (
@@ -98,6 +101,7 @@ const AdminLayout = () => {
           {activeTab === 'promos' && <AdminPromos />}
           {activeTab === 'branches' && <AdminBranches />}
           {activeTab === 'users' && <AdminUsers />}
+          {activeTab === 'support' && <AdminSupport />}
         </div>
       </div>
 

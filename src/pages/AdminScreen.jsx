@@ -144,7 +144,7 @@ const AdminScreen = ({ isEmbedded = false }) => {
       {/* FAB for Mobile */}
       <button
         onClick={handleAdd}
-        className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-[#06C167] text-white rounded-full flex items-center justify-center hover:bg-[#05a055] active:scale-[0.95] transition-all outline-none z-40"
+        className={`md:hidden fixed right-6 w-14 h-14 bg-[#06C167] text-white rounded-full flex items-center justify-center hover:bg-[#05a055] active:scale-[0.95] transition-all outline-none z-40 ${isEmbedded ? 'bottom-24' : 'bottom-6'}`}
       >
         <Plus size={24} weight="bold" />
       </button>
