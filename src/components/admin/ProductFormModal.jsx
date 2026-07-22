@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X } from '@phosphor-icons/react';
 import { ProductsContext } from '../../context/ProductsContext';
 import CustomSelect from './CustomSelect';
@@ -69,15 +70,33 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return createPortal(
-    <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center bg-[#1E1E1E]/40 md:p-4">
-      <div 
-        className="bg-white w-full h-[90vh] md:h-auto md:max-h-[85vh] md:w-[600px] flex flex-col rounded-t-2xl md:rounded-2xl overflow-hidden relative animate-slide-up md:animate-fade-in"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center px-6 py-4 bg-white shrink-0 relative pb-4 shadow-none">
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[60] flex items-end md:items-center justify-center bg-[#1E1E1E]/40 md:p-4"
+          onClick={onClose}
+        >
+          <motion.div 
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            drag="y"
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={{ top: 0, bottom: 0.5 }}
+            onDragEnd={(e, info) => {
+              if (info.offset.y > 100 || info.velocity.y > 500) {
+                onClose();
+              }
+            }}
+            className="bg-white w-full h-[90vh] md:h-auto md:max-h-[85vh] md:w-[600px] flex flex-col rounded-t-2xl md:rounded-2xl overflow-hidden relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center px-6 py-4 bg-white shrink-0 relative pb-4 shadow-none">
           <h2 className="flex-1 text-center font-semibold text-lg text-[#1E1E1E]">
             {product ? 'Editar Producto' : 'Nuevo Producto'}
           </h2>
@@ -203,8 +222,10 @@ const ProductFormModal = ({ isOpen, onClose, product }) => {
             {product ? 'Guardar Cambios' : 'Crear Producto'}
           </button>
         </div>
-      </div>
-    </div>,
+        </motion.div>
+      </motion.div>
+      )}
+    </AnimatePresence>,
     document.body
   );
 };

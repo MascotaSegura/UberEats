@@ -176,13 +176,11 @@ const AdminScreen = ({ isEmbedded = false }) => {
       </button>
 
       {/* Modal Form */}
-      {activeModal && (
-        <ProductFormModal
-          isOpen={activeModal}
-          onClose={() => setActiveModal(false)}
-          product={editingProduct}
-        />
-      )}
+      <ProductFormModal
+        isOpen={activeModal}
+        onClose={() => setActiveModal(false)}
+        product={editingProduct}
+      />
     </div>
   );
 };

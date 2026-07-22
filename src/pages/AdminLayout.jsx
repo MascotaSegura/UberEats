@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Storefront, Package, Users, Tag, ListDashes, ChartPieSlice, SignOut
 } from '@phosphor-icons/react';
@@ -61,6 +62,23 @@ const AdminLayout = () => {
     { id: 'support', label: 'Soporte', icon: Headset },
   ];
 
+  const handleDragEnd = (e, { offset, velocity }) => {
+    const swipe = offset.x;
+    if (swipe < -50) {
+      // swipe left -> next tab
+      const currentIndex = tabs.findIndex(t => t.id === activeTab);
+      if (currentIndex < tabs.length - 1) {
+        changeTab(tabs[currentIndex + 1].id);
+      }
+    } else if (swipe > 50) {
+      // swipe right -> prev tab
+      const currentIndex = tabs.findIndex(t => t.id === activeTab);
+      if (currentIndex > 0) {
+        changeTab(tabs[currentIndex - 1].id);
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F3F4F6] flex flex-col md:flex-row">
       {/* Desktop Sidebar */}
@@ -94,14 +112,29 @@ const AdminLayout = () => {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-h-screen min-w-0 pb-[64px] md:pb-0">
-        <div className="flex-1 flex flex-col relative w-full h-full max-w-full">
-          {activeTab === 'overview' && <AdminOverview />}
-          {activeTab === 'products' && <AdminProducts isEmbedded />}
-          {activeTab === 'orders' && <AdminOrders />}
-          {activeTab === 'promos' && <AdminPromos />}
-          {activeTab === 'branches' && <AdminBranches />}
-          {activeTab === 'users' && <AdminUsers />}
-          {activeTab === 'support' && <AdminSupport />}
+        <div className="flex-1 flex flex-col relative w-full h-full max-w-full overflow-hidden overflow-x-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ x: 20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -20, opacity: 0 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.2}
+              onDragEnd={handleDragEnd}
+              className="flex-1 flex flex-col absolute inset-0 bg-[#F3F4F6]"
+            >
+              {activeTab === 'overview' && <AdminOverview />}
+              {activeTab === 'products' && <AdminProducts isEmbedded />}
+              {activeTab === 'orders' && <AdminOrders />}
+              {activeTab === 'promos' && <AdminPromos />}
+              {activeTab === 'branches' && <AdminBranches />}
+              {activeTab === 'users' && <AdminUsers />}
+              {activeTab === 'support' && <AdminSupport />}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 
