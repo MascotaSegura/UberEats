@@ -12,7 +12,7 @@ const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
   const [view, setView] = useState('phone_input');
   const [phone, setPhone] = useState('');
   const [countryCode, setCountryCode] = useState('+52');
-  const [countryFlag, setCountryFlag] = useState('🇲🇽');
+  const [countryIso, setCountryIso] = useState('mx');
   const [countryOpen, setCountryOpen] = useState(false);
   const countryRef = useRef(null);
   const [code, setCode] = useState('');
@@ -20,11 +20,14 @@ const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
   const [error, setError] = useState('');
 
   const countryCodes = [
-    { code: '+52', flag: '🇲🇽', label: 'México' },
-    { code: '+1',  flag: '🇺🇸', label: 'EE.UU.' },
-    { code: '+34', flag: '🇪🇸', label: 'España' },
-    { code: '+54', flag: '🇦🇷', label: 'Argentina' },
-    { code: '+57', flag: '🇨🇴', label: 'Colombia' },
+    { code: '+52', iso: 'mx', label: 'México' },
+    { code: '+1',  iso: 'us', label: 'EE.UU.' },
+    { code: '+34', iso: 'es', label: 'España' },
+    { code: '+54', iso: 'ar', label: 'Argentina' },
+    { code: '+57', iso: 'co', label: 'Colombia' },
+    { code: '+56', iso: 'cl', label: 'Chile' },
+    { code: '+51', iso: 'pe', label: 'Perú' },
+    { code: '+55', iso: 'br', label: 'Brasil' },
   ];
   
   const isSignup = initialView === 'signup';
@@ -147,34 +150,42 @@ const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
                   <div ref={countryRef} className="relative shrink-0 mr-2">
                     <button
                       type="button"
-                      className="flex items-center gap-1 h-8 px-2 rounded-full bg-[#ECECEE] hover:bg-[#E0E0E2] active:bg-[#E0E0E2] transition-colors outline-none focus-visible:opacity-80 text-[15px] font-medium text-[#1E1E1E]"
+                      className="flex items-center gap-1.5 h-8 px-2.5 rounded-full bg-[#ECECEE] hover:bg-[#E0E0E2] active:bg-[#E0E0E2] transition-colors outline-none focus-visible:opacity-80 text-[14px] font-medium text-[#1E1E1E]"
                       onClick={() => setCountryOpen((v) => !v)}
                       aria-label="Seleccionar código de país"
                     >
-                      <span>{countryFlag}</span>
+                      <img 
+                        src={`https://flagcdn.com/w160/${countryIso}.png`} 
+                        alt={countryIso}
+                        className="w-5 h-3.5 object-cover rounded-[3px]"
+                      />
                       <span>{countryCode}</span>
                       <CaretDown size={12} weight="bold" className={`transition-transform duration-200 ${countryOpen ? 'rotate-180' : ''}`} />
                     </button>
                     {countryOpen && (
-                      <div className="absolute top-full left-0 mt-2 z-[300] bg-white rounded-2xl overflow-hidden min-w-[170px]">
+                      <div className="absolute top-full left-0 mt-2 z-[300] bg-white rounded-2xl overflow-hidden min-w-[180px]">
                         {countryCodes.map((c) => (
                           <button
                             key={c.code}
                             type="button"
-                            className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-[14px] font-medium transition-colors outline-none hover:bg-[#F3F4F6] active:bg-[#F3F4F6] ${
+                            className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 text-[14px] font-medium transition-colors outline-none hover:bg-[#F3F4F6] active:bg-[#F3F4F6] ${
                               countryCode === c.code ? 'text-[#1E1E1E] bg-[#F3F4F6]' : 'text-[#1E1E1E]'
                             }`}
                             onClick={() => {
                               setCountryCode(c.code);
-                              setCountryFlag(c.flag);
+                              setCountryIso(c.iso);
                               setCountryOpen(false);
                             }}
                           >
-                            <span className="flex items-center gap-2">
-                              <span>{c.flag}</span>
+                            <span className="flex items-center gap-2.5">
+                              <img 
+                                src={`https://flagcdn.com/w160/${c.iso}.png`} 
+                                alt={c.label}
+                                className="w-5 h-3.5 object-cover rounded-[3px]"
+                              />
                               <span>{c.label}</span>
                             </span>
-                            <span className="text-[#8E8E93]">{c.code}</span>
+                            <span className="text-[#8E8E93] text-[13px]">{c.code}</span>
                             {countryCode === c.code && <Check size={15} weight="bold" color="#1E1E1E" />}
                           </button>
                         ))}

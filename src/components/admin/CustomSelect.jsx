@@ -35,7 +35,7 @@ const CustomSelect = ({ value, onChange, options, placeholder, required }) => {
       {required && !value && <input type="hidden" required />}
 
       {isOpen && (
-        <div className="absolute top-full mt-2 left-0 right-0 bg-white rounded-2xl p-2 z-[60] animate-fade-in shadow-none border-transparent max-h-60 overflow-y-auto">
+        <div className="absolute top-full mt-2 left-0 right-0 bg-white rounded-2xl p-2 z-[60] animate-fade-in shadow-none border border-[#E5E5EA] max-h-60 overflow-y-auto">
           <ul className="flex flex-col gap-1">
             {options.map((opt) => (
               <li key={opt.value}>

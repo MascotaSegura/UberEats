@@ -33,9 +33,9 @@ export const AdminProvider = ({ children }) => {
 
   // Users State (Simulated list for dashboard)
   const [users, setUsers] = useState(() => loadSaved('admin_users', [
-    { id: 'u-1', name: 'Juan Pérez', email: 'juan@uber.com', phone: '5551234567', registered: '2023-10-01' },
-    { id: 'u-2', name: 'María Gómez', email: 'maria@uber.com', phone: '5559876543', registered: '2023-11-15' },
-    { id: 'u-3', name: 'Carlos López', email: 'carlos@uber.com', phone: '5554567890', registered: '2024-01-20' },
+    { id: 'u-1', name: 'Juan Pérez', email: 'juan@uber.com', phone: '55 5123 4567', registered: '2023-10-01' },
+    { id: 'u-2', name: 'María Gómez', email: 'maria@uber.com', phone: '55 9876 5432', registered: '2023-11-15' },
+    { id: 'u-3', name: 'Carlos López', email: 'carlos@uber.com', phone: '55 4567 8900', registered: '2024-01-20' },
   ]));
 
   // Persist
